@@ -1,0 +1,102 @@
+.title-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 2vw;
+  color: $c--text-heading--light;
+  position: relative;
+  width: max-content;
+  margin: 11vw auto 3vw;
+
+  @include breakpoint($md) {
+    font-size: .89em;
+    margin: 3em auto 2em;
+  }
+
+  &--footer {
+    background-image: url("images/footer-graphic.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin: 0;
+    padding: 5.5em 0;
+    font-size: 2vw;
+
+    @include breakpoint($sm) {
+      font-size: .75em;
+    }
+  }
+
+  &:hover {
+    color: $c--white;
+  }
+
+  > a.home-link {
+    text-indent: -9999px;
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+h1.site-title {
+  display: flex;
+  flex-direction: column;
+  margin: 0 0 .1em;
+  line-height: 1.2;
+  font-size: 5em;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  letter-spacing: .05em;
+  margin-right: -.05em;
+  color: inherit;
+
+  .article {
+    font-size: .45em;
+    letter-spacing: .75em;
+    margin-right: -.75em;
+    margin-bottom: -.4em;
+  }
+}
+
+h2.site-subtitle {
+  margin: 0;
+  line-height: 1.625;
+  font-size: 1.5em;
+  letter-spacing: .2em;
+  color: inherit;
+  width: 27em;
+  text-align: center;
+  font-weight: bold;
+
+  @include breakpoint($md) {
+    display: block;
+    font-size: .75em;
+    line-height: 1.2;
+    letter-spacing: .44em;
+    color: inherit;
+    width: auto;
+  }
+
+  @include breakpoint($sm-down) {
+    display: flex;
+    flex-direction: column;
+
+    .line-1 {
+      font-size: .75em;
+      letter-spacing: .25em;
+    }
+
+    .line-2 {
+      margin-top: .25em;
+      font-size: .75em;
+      letter-spacing: .25em;
+    }
+  }
+}
+

@@ -1,0 +1,59 @@
+body {
+  width: 100%;
+}
+
+.site {
+  width: 100%;
+}
+
+.wrapper {
+  width: 100%;
+  max-width: 1000px;
+  padding: 0;
+  margin: 0 auto;
+}
+
+.container {
+  padding: 1em;
+  width: 100%;
+  max-width: 100%;
+}
+
+.row {
+  margin: 0;
+}
+
+.content-layout {
+
+  &.has-sidebar {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+
+    main.site-main {
+      flex: none;
+      margin-bottom: 1.5rem;
+
+      @include breakpoint($md) {
+        width: 60%;
+        margin-bottom: 0;
+      }
+    }
+
+    aside.sidebar {
+      flex: none;
+
+      @include breakpoint($md) {
+        width: 35%;
+      }
+    }
+
+    @include breakpoint($md) {
+      flex-direction: row;
+    }
+
+  }
+
+}
+
+

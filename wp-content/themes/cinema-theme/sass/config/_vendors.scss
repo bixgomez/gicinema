@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Work+Sans:wght@400;500;600&display=swap');
+@import "breakpoint";
+
+@font-face {
+  font-family: 'Franchise Bold';
+  font-style: normal;
+  font-weight: bold;
+  src: local('Franchise Bold'), url('fonts/Franchise-Bold-hinted.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Brothers Regular';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Brothers Regular'), url('fonts/Brothers-Regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Prata Regular';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Prata Regular'), url('fonts/Prata-Regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Suranna Regular';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Suranna Regular'), url('fonts/Suranna-Regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Native Regular';
+  font-style: italic;
+  font-weight: normal;
+  src: local('Native Regular'), url('fonts/Native-Regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Native Italic';
+  font-style: italic;
+  font-weight: normal;
+  src: local('Native Italic'), url('fonts/Native-Italic.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Native Light';
+  font-style: normal;
+  font-weight: light;
+  src: local('Native Light'), url('fonts/Native-Light.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Native Light Italic';
+  font-style: normal;
+  font-weight: light;
+  src: local('Native Light Italic'), url('fonts/Native-Light-Italic.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Native Bold';
+  font-style: normal;
+  font-weight: bold;
+  src: local('Native Bold'), url('fonts/Native-Bold.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Native Bold Italic';
+  font-style: normal;
+  font-weight: bold;
+  src: local('Native Bold Italic'), url('fonts/Native-Bold-Italic.woff') format('woff');
+}

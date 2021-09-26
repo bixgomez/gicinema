@@ -1,0 +1,51 @@
+/**
+ * Partial for adding standard breakpoint variables
+ */
+// @import "breakpoint";
+// Breakpoint control variables
+// $breakpoint-to-ems: true;
+// @include breakpoint-set('no query fallbacks', true);
+// @include breakpoint-set('to ems', true);
+
+// Breakpoint variables
+$xxs: 0;
+$xs: 465px;
+$sm: 600px;
+$md: 783px;
+$lg: 1005px;
+$xl: 1100px;
+$xxl: 1200px;
+$xxxl: 1400px;
+$max-site-width: $xl;
+
+//Breakpoint variables
+$xxs-only: $xxs ($xs - 1);
+$xxs-up: $xxs;
+$xxs-down: 0 ($xs - 1);
+
+$xs-only: $xs ($sm - 1);
+$xs-up: $xs;
+$xs-down: 0 ($sm - 1);
+
+$sm-only: $sm ($md - 1);
+$sm-up: $sm;
+$sm-down: 0 ($md - 1);
+
+$md-only: $md ($lg - 1);
+$md-up: $md;
+$md-down: 0 ($lg - 1);
+
+$lg-only: $lg ($xl - 1);
+$lg-up: $lg;
+$lg-down: 0 ($xl - 1);
+
+$xl-only: $xl ($xxl - 1);
+$xl-up: $xl;
+$xl-down: 0 ($xxl - 1);
+
+$xxl-only: $xxl ($xxxl - 1);
+$xxl-up: $xxl;
+$xxl-down: 0 ($xxxl - 1);
+
+$xxxl-only: $xxxl;
+$xxxl-up: $xxxl;

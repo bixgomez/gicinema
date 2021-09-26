@@ -1,0 +1,75 @@
+/*!
+Theme Name: Cinema Theme
+Theme URI: http://underscores.me/
+Author: Richard Gilbert
+Author URI: http://fezziwigmedia.com/
+Description: A custom theme for an independent cinema.
+Version: 1.0.0
+License: GNU General Public License v2 or later
+License URI: LICENSE
+Text Domain: cinema_theme
+Tags: custom-background, custom-logo, custom-menu, featured-images, threaded-comments, translation-ready
+
+This theme, like WordPress, is licensed under the GPL.
+Use it to make something cool, have fun, and share what you've learned with others.
+
+Cinema Theme is based on Underscores https://underscores.me/, (C) 2012-2017 Automattic, Inc.
+Underscores is distributed under the terms of the GNU GPL v2 or later.
+
+Normalizing styles have been helped along thanks to the fine work of
+Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
+*/
+
+/*--------------------------------------------------------------
+>>> TABLE OF CONTENTS:
+----------------------------------------------------------------
+# Normalize
+# Typography
+# Elements
+# Forms
+# Navigation
+	## Links
+	## Menus
+# Accessibility
+# Alignments
+# Clearings
+# Widgets
+# Content
+	## Posts and pages
+	## Comments
+# Infinite scroll
+# Media
+	## Captions
+	## Galleries
+--------------------------------------------------------------*/
+@import "config/**/*.scss";
+@import "variables/**/*.scss";
+@import "mixins/**/*.scss";
+
+@import "normalize";
+
+@import "typography/**/*.scss";
+
+@import "forms/forms";
+
+@import "navigation/**/*.scss";
+
+@import "modules/accessibility";
+
+@import "modules/alignments";
+
+@import "modules/clearings";
+
+@import "site/secondary/widgets";
+
+@import "site/site";
+
+// @import "modules/infinite-scroll";
+
+@import "media/media";
+
+@import "elements/**/*.scss";
+
+@import "components/**/*.scss";
+
+@import "admin/**/*.scss";

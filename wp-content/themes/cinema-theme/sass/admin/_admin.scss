@@ -1,0 +1,203 @@
+body.login-action-login {
+  display: flex;
+
+  #login {
+    width: 40%;
+    min-width: 275px;
+    max-width: 400px;
+    padding: 15px 0 0 0;
+    margin: auto;
+  }
+}
+
+body.login {
+
+  h1 a {
+    background-image: url(../cinema-theme/images/logo_2019.png);
+    height: 100px;
+    width: 100px;
+    background-size: 100px;
+  }
+}
+
+body.wp-core-ui,
+body.wp-admin {
+  background-image: none;
+  background-color: $c--admin-background;
+  font-family: $font__admin-main;
+  color: $c--black;
+
+  p, h1, h2, h3, h4, h5, span, button {
+    font-family: $font__admin-main;
+  }
+
+  ul {
+    list-style: none;
+  }
+
+  .wp-submenu {
+    margin: 0;
+  }
+}
+
+#adminmenu,
+#adminmenu .wp-submenu,
+#adminmenuback,
+#adminmenuwrap {
+  // background-color: $c--admin-color;
+}
+
+#adminmenu .wp-has-current-submenu .wp-submenu .wp-submenu-head,
+#adminmenu .wp-menu-arrow,
+#adminmenu .wp-menu-arrow div,
+#adminmenu li.current a.menu-top,
+#adminmenu li.wp-has-current-submenu a.wp-has-current-submenu,
+.folded #adminmenu li.current.menu-top,
+.folded #adminmenu li.wp-has-current-submenu {
+  // background-color: $c--admin-button;
+}
+
+.accordion-section-title:after,
+.handlediv,
+.item-edit,
+.postbox .handlediv.button-link,
+.toggle-indicator {
+  color: $c--admin-button-border;
+}
+
+.wp-core-ui .button-primary {
+  background: $c--admin-button;
+  border-color: $c--admin-button-border;
+
+  &:hover,
+  &:focus,
+  &:active {
+    background: $c--admin-button--hover;
+    border-color: $c--admin-button-border--hover;
+  }
+}
+
+#wp-content-editor-tools {
+  background-color: transparent;
+}
+
+.postbox-header {
+  background-color: $c--admin-heading-background;
+  border-bottom: 1px solid $c--admin-field-border;
+}
+
+.community-events ul {
+  background-color: $c--admin-fieldset-background;
+}
+
+h2.hndle {
+  // background-color: $c--admin-heading-background;
+}
+
+.postbox {
+  border-color: $c--admin-field-border;
+  box-shadow: 0 1px 1px rgba(0,0,0,.04);
+  background-color: $c--admin-fieldset-background;
+}
+
+#comment-link-box, #edit-slug-box {
+  padding: 0;
+  color: $c--admin-heading;
+}
+
+.wp-editor-expand #wp-content-editor-tools {
+  border-color: $c--admin-field-border;
+}
+
+button.wp-switch-editor {
+  border-color: $c--admin-field-border;
+}
+
+div.wp-editor-container {
+  border-color: $c--admin-field-border;
+}
+
+#post-status-info {
+  border-color: $c--admin-field-border;
+}
+
+.postbox .hndle, .stuffbox .hndle {
+  border-color: $c--admin-field-border;
+}
+
+#screen-meta {
+  background-color: $c--admin-fieldset-background;
+  border-color: $c--admin-field-border;
+}
+
+#screen-meta-links .show-settings {
+  border-color: $c--admin-field-border;
+  background-color: $c--admin-fieldset-background;
+}
+
+ul#adminmenu a.wp-has-current-submenu:after,
+ul#adminmenu>li.current>a.current:after {
+  border-right-color: rgba($c--white, .625);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="url"],
+input[type="password"],
+input[type="search"],
+input[type="number"],
+input[type="tel"],
+input[type="range"],
+input[type="date"],
+input[type="month"],
+input[type="week"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="color"],
+textarea {
+  color: rgba($c--black, .75);
+  border-color: $c--admin-field-border;
+  border-radius: 0;
+  padding: 3px;
+}
+
+.handle-order-lower,
+.handle-order-higher {
+  display: none;
+}
+
+.submitbox {
+  background-color: $c--admin-fieldset-background;
+}
+
+#major-publishing-actions {
+  background-color: $c--admin-fieldset-background;
+}
+
+#poststuff #titlewrap {
+  position: relative;
+  border: 1px solid $c--admin-field-border;
+  background-color: #fff;
+
+  #title-prompt-text,
+  #title {
+    padding: 3px 8px;
+    font-size: 1.7em;
+    line-height: 1.2;
+    height: 1.7em;
+    width: 100%;
+    outline: 0;
+    margin: 0;
+    background-color: transparent;
+    border: none;
+  }
+
+  #title-prompt-text {
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}

@@ -1,0 +1,57 @@
+#acf-group_5bfe57b1e3102:not(.closed) .inside.acf-fields.-top {
+
+  display: grid;
+  grid-template-areas:
+    "basis basis"
+    "from to"
+    "text text"
+    "screenings screenings"
+    "firstscreening lastscreening"
+    "allscreenings allscreenings"
+    "alldates alldates";
+
+  .acf-field[data-name="visibility_based_on"] {
+    //background-color: orange;
+    grid-area: basis;
+  }
+
+  .acf-field[data-name="display_from"] {
+    //background-color: burlywood;
+    grid-area: from;
+  }
+
+  .acf-field[data-name="display_to"] {
+    //background-color: yellow;
+    grid-area: to;
+  }
+
+  .acf-field[data-name="custom_screenings_text"] {
+    //background-color: paleturquoise;
+    grid-area: text;
+  }
+
+  .acf-field[data-name="screenings"] {
+    //background-color: darkseagreen;
+    grid-area: screenings;
+  }
+
+  .acf-field[data-name="first_screening"] {
+    grid-area: firstscreening;
+    //display: none;
+  }
+
+  .acf-field[data-name="last_screening"] {
+    grid-area: lastscreening;
+    //display: none;
+  }
+
+  .acf-field[data-name="all_screenings"] {
+    grid-area: allscreenings;
+    //display: none;
+  }
+
+  .acf-field[data-name="all_dates"] {
+    grid-area: alldates;
+    //display: none;
+  }
+}

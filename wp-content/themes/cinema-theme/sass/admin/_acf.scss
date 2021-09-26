@@ -1,0 +1,49 @@
+div.acf-postbox div.acf-fields div.acf-field {
+
+  padding: .625rem;
+
+  div.acf-label {
+    margin: 0 0 .25rem;
+
+    label {
+      font-weight: 500;
+      margin: 0;
+      padding: 0;
+    }
+  }
+}
+
+.acf-fields.inside {
+  background-color: $c--admin-fieldset-background;
+}
+
+.acf-postbox.seamless>.inside {
+  background-color: transparent;
+}
+
+.acf-table {
+  border-color: $c--admin-field-border;
+}
+
+div.acf-relationship {
+  border-color: $c--admin-field-border;
+}
+
+div.acf-relationship .filters {
+  border-color: $c--admin-field-border;
+}
+
+div.acf-relationship .selection .choices .list {
+  border-color: $c--admin-field-border;
+}
+
+div.acf-fields>div.acf-field {
+  border-color: $c--admin-field-border;
+}
+
+body.wp-admin.post-type-film {
+
+  #wp-content-media-buttons {
+    display: none;
+  }
+}

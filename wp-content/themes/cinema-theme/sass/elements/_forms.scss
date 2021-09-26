@@ -1,0 +1,43 @@
+.newsletter-form-wrapper {
+  width: min-content;
+
+  form {
+    margin-bottom: .5rem;
+    display: grid;
+    grid-template-areas:
+    "title title"
+    "input submit";
+
+    > label {
+      grid-area: title;
+    }
+
+    > input {
+      grid-area: input;
+      background-color: $c--white;
+      border: 2px solid $c--white;
+      border-right: none;
+      font-size: $font-size--md;
+      line-height: 1;
+      padding: .5rem 1rem;
+    }
+
+    > div.clear {
+      grid-area: submit;
+      width: max-content;
+      display: flex;
+      border: 2px solid $c--white;
+
+      input {
+        height: 100%;
+        background-color: transparent;
+        border: none;
+        color: $c--white;
+        text-transform: uppercase;
+        font-size: $font-size--md;
+        line-height: 1;
+        padding: .5rem 1rem;
+      }
+    }
+  }
+}

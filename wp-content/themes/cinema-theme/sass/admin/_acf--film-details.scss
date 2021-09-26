@@ -1,0 +1,43 @@
+#acf-group_5bfe5b155c062:not(.closed) .inside.acf-fields.-top {
+  // background-color: pink;
+
+  display: grid;
+  grid-template-areas:
+    "time year"
+    "country format"
+    "director director";
+
+  .acf-field[data-name="film_length"] {
+    // background-color: orange;
+    grid-area: time;
+  }
+
+  .acf-field[data-name="film_year"] {
+    // background-color: burlywood;
+    grid-area: year;
+    border-top: none;
+  }
+
+  .acf-field[data-name="country"] {
+    // background-color: yellow;
+    grid-area: country;
+  }
+
+  .acf-field[data-name="format"] {
+    // background-color: paleturquoise;
+    grid-area: format;
+  }
+
+  .acf-field[data-name="film_director"] {
+    // background-color: darkseagreen;
+    grid-area: director;
+  }
+}
+
+.acf-field[data-name="custom_screenings_text"] {
+
+  textarea {
+    height: 7em !important;
+    resize: none;
+  }
+}

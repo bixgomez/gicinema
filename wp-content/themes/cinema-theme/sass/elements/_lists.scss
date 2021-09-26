@@ -1,0 +1,29 @@
+ul, ol {
+  margin: 1.25em 0;
+  padding: 0 0 0 1.25em;
+
+	li {
+		margin: .75em 0;
+	}
+}
+
+ul {
+	list-style: disc;
+}
+
+ol {
+	list-style: decimal;
+}
+
+li > ul,
+li > ol {
+	margin: 0 0 1.25em 0;
+}
+
+dt {
+	font-weight: bold;
+}
+
+dd {
+	margin: 0 1.5em 1.5em;
+}

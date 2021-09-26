@@ -1,0 +1,15 @@
+a.trailer-link {
+  display: inline-block;
+  border: 1px solid $c--link-hover;
+  padding: .5em .75em;
+  background-color: $c--link;
+  color: $c--white;
+  font-weight: bold;
+  text-decoration: none;
+  line-height: 1.2;
+
+  &:hover {
+    background-color: $c--link-hover;
+    color: $c--white;
+  }
+}

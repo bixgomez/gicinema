@@ -1,0 +1,75 @@
+.section-outer--site-header {
+  background-image: url("images/header-background.png");
+  background-position: center;
+
+  &:after {
+    display: block;
+    content: '';
+    height: 16px;
+    width: 100%;
+    background-image: url(images/header-squiggle.png);
+    background-position: top center;
+    background-repeat: repeat-x;
+  }
+}
+
+.section-inner--site-header {
+  padding: 1.25em 0;
+  margin: 0 3vw;
+  font-size: 1em;
+}
+
+.menu-area {
+  padding-bottom: 1em;
+  display: flex;
+  justify-content: center;
+}
+
+.main-navigation {
+  display: block;
+  width: 40em;
+}
+
+.social-media-area {
+  position: absolute;
+  top: 1em;
+  left: 0;
+  font-size: .9em;
+
+  @include breakpoint($md) {
+    font-size: 1em;
+  }
+}
+
+.donate-area {
+  font-size: 1.75vw;
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  @include breakpoint($md) {
+    font-size: .8em;
+    right: 0;
+  }
+
+  @include breakpoint($lg) {
+    font-size: .9em;
+    right: 0;
+  }
+}
+
+a.donate-button {
+  background-image: url("images/donate-button.png");
+  display: block;
+  text-indent: -9999px;
+  height: 6.8em;
+  width: 11.26em;
+  background-size: contain;
+  background-position: top right;
+  background-repeat: no-repeat;
+  opacity: .9;
+
+  &:hover {
+    opacity: 1;
+  }
+}

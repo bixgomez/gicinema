@@ -1,0 +1,39 @@
+.single-book {
+
+}
+
+.content-layout {
+
+}
+
+.content-layout.right-sidebar {
+  display: block;
+}
+
+.content-layout.right-sidebar {
+  display: flex;
+
+  .main {
+    flex: 3;
+    padding-right: 20px;
+  }
+
+  .sidebar-right {
+    flex: 1;
+    padding-left: 20px;
+  }
+}
+
+.main {
+
+}
+
+.sidebar {
+
+}
+
+.sidebar-right {
+
+}
+
+

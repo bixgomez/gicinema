@@ -1,0 +1,132 @@
+.section-outer--site-footer {
+  min-height: 100px;
+  background-color: $c--red;
+  display: flex;
+  flex-direction: column;
+
+  color: $c--white;
+
+  p {
+    color: $c--white;
+  }
+
+  a {
+    color: $c--white;
+    font-weight: $font-weight--bold;
+  }
+
+  h4 {
+    color: $c--red--darkest;
+  }
+
+  &:before {
+    display: block;
+    content: '';
+    height: 16px;
+    width: 100%;
+    background-image: url(images/footer-squiggle.png);
+    background-position: top center;
+    background-repeat: repeat-x;
+    margin-top: -12px;
+  }
+}
+
+.section--site-footer {
+  max-width: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+
+  .location, .email, .mail {
+    text-transform: uppercase;
+  }
+}
+
+.section-inner--site-footer {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.region__footer-first {
+  width: 100%;
+  padding: 1.5rem 0;
+  margin: 0;
+  border-bottom: 1px solid $c--red--dark;
+
+  .columns {
+    justify-content: center;
+  }
+}
+
+.region__footer-second {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border-bottom: 1px solid $c--red--dark;
+}
+
+.region__footer-second .columns {
+  flex-direction: column;
+  text-align: center;
+
+  @include breakpoint($lg) {
+    flex-direction: row;
+    text-align: left;
+  }
+}
+
+.region__footer-second .column--first {
+  padding: 1.5rem 0 0 0;
+  min-width: max-content;
+  flex: 1;
+
+  @include breakpoint($lg) {
+    padding-bottom: 1.5rem;
+    padding-right: 2rem;
+  }
+}
+
+.region__footer-second .column--second {
+  padding: 0;
+  min-width: max-content;
+  flex: 1;
+
+  @include breakpoint($lg) {
+    padding: 1.5rem 2rem 1.5rem 0;
+    border-right: 1px solid $c--red--dark;
+  }
+}
+
+.region__footer-second .column--third {
+  padding: 0;
+  flex: none;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  @include breakpoint($lg) {
+    padding: 1.5rem 0 1.5rem 2rem;
+    width: min-content;
+    justify-content: left;
+  }
+}
+
+.region__footer-third {
+  width: 100%;
+  padding: 1rem 0 2.5rem;
+  margin: 0;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.region-inner {
+  padding: 0 3vw;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.columns {
+  display: flex;
+}
+

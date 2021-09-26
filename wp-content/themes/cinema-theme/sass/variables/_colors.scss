@@ -1,0 +1,56 @@
+$c--white: #fff;
+$c--black: #000;
+
+$c--red: #f43939;
+$c--red--dark: #e61b1b;
+$c--red--darker: darken($c--red--dark, 10%);
+$c--red--darkest: darken($c--red--dark, 20%);
+
+$c--primary: #aa4f08;
+$c--primary--light: lighten($c--primary, 10%);
+$c--primary--lighter: lighten($c--primary, 15%);
+$c--primary--lightest: lighten($c--primary, 20%);
+$c--primary--dark: darken($c--primary, 10%);
+$c--primary--darker: darken($c--primary, 15%);
+$c--primary--darkest: darken($c--primary, 20%);
+
+$c--background-body: #f4f3f3;
+$c--background-screen: #f1f1f1;
+$c--background-hr: #ccc;
+$c--background-button: #e6e6e6;
+$c--foreground-button: #000;
+$c--background-pre: #eee;
+$c--background-ins: #fff9c0;
+
+$c--text-screen: #21759b;
+$c--text-input: #666;
+$c--text-input-focus: #111;
+
+$c--link: $c--primary;
+$c--link-visited: $c--primary--dark;
+$c--link-hover: $c--primary--light;
+
+$c--text-main: rgba($c--black, .8);
+$c--text-heading: rgba($c--black, .75);
+
+$c--text-main--light: rgba($c--white, .8);
+$c--text-heading--light: darken($c--white, 10%);
+
+$c--border-button: #ccc #ccc #bbb;
+$c--border-button-hover: #ccc #bbb #aaa;
+$c--border-button-focus: #aaa #bbb #bbb;
+$c--border-input: #ccc;
+$c--border-abbr: #666;
+
+$c--admin-color: desaturate($c--primary--darkest, 50%);
+$c--admin-heading: rgba($c--black, .75);
+
+$c--admin-background: mix($c--admin-color, $c--white, 25%);
+$c--admin-field-border: mix($c--admin-color, $c--white, 50%);
+$c--admin-heading-background: mix($c--admin-color, $c--white, 50%);
+$c--admin-fieldset-background: mix($c--admin-background, $c--white, 50%);
+
+$c--admin-button: saturate($c--admin-color, 50%);
+$c--admin-button-border: darken($c--admin-button, 20%);
+$c--admin-button--hover: lighten($c--admin-button, 20%);
+$c--admin-button-border--hover: lighten($c--admin-button-border, 20%);
