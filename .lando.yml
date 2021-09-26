@@ -1,0 +1,13 @@
+name: grandillusioncinema
+recipe: wordpress
+config:
+  webroot: .
+  php: '7.4'
+  via: apache
+  database: mysql
+  xdebug: true
+services:
+  appserver:
+    run_as_root:
+      - ln -snf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
+      - echo "America/Los_Angeles" > /etc/timezone
