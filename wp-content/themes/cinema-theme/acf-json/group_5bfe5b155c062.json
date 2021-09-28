@@ -44,7 +44,7 @@
             "key": "field_5e97f438fdc0f",
             "label": "Country\/ies",
             "name": "country",
-            "type": "relationship",
+            "type": "text",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -53,24 +53,17 @@
                 "class": "",
                 "id": ""
             },
-            "post_type": [
-                "country"
-            ],
-            "taxonomy": "",
-            "filters": [
-                "search"
-            ],
-            "elements": "",
-            "min": "",
-            "max": "",
-            "return_format": "object",
-            "acf_relationship_create": 1
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
         },
         {
             "key": "field_5bff8cd994094",
             "label": "Format(s)",
             "name": "format",
-            "type": "relationship",
+            "type": "text",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -79,23 +72,17 @@
                 "class": "",
                 "id": ""
             },
-            "post_type": [
-                "format"
-            ],
-            "taxonomy": "",
-            "filters": [
-                "search"
-            ],
-            "elements": "",
-            "min": "",
-            "max": "",
-            "return_format": "object"
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
         },
         {
             "key": "field_5bff368e81a4f",
             "label": "Director(s)",
             "name": "film_director",
-            "type": "relationship",
+            "type": "text",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -104,18 +91,11 @@
                 "class": "",
                 "id": ""
             },
-            "post_type": [
-                "director"
-            ],
-            "taxonomy": "",
-            "filters": [
-                "search"
-            ],
-            "elements": "",
-            "min": "",
-            "max": "",
-            "return_format": "object",
-            "acf_relationship_create": 1
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
         }
     ],
     "location": [
@@ -133,7 +113,7 @@
     "label_placement": "top",
     "instruction_placement": "label",
     "hide_on_screen": "",
-    "active": 1,
+    "active": true,
     "description": "",
-    "modified": 1596911510
+    "modified": 1632808719
 }
