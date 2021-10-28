@@ -76,7 +76,7 @@ function film_teasers_function($atts = [], $content = null, $tag = '') {
   // Debug output.
   $debug_output .= '$last_friday (timestamp) = ' . $last_friday . '<br>';
   $debug_output .= '$one_week_out (timestamp) = ' . $one_week_out . '<br>';
-  $debug_output .= '$two_weeks_out (timestamp) = ' . $two_weeks_out . '<hr>';
+  $debug_output .= '$two_weeks_out (timestamp) = ' . $two_weeks_out . ' (' . date("m/d/Y H:i", substr($two_weeks_out, 0, 10)) . ') ' . '<hr>';
 
   // If the "from" date is not 0, convert it to a timestamp.
   // If it is 0, set it to last Friday.
@@ -95,16 +95,24 @@ function film_teasers_function($atts = [], $content = null, $tag = '') {
   endif;
 
   // If the "from" timestamp is larger than the "to" timestamp, set from & to dates to last Friday and two Thursdays out.
+  $debug_output .= 'Is the from date later than the to date?<br>';
   if ( $from_date > $to_date) :
     $from_date = $last_friday;
     $to_date = $two_weeks_out;
+
+    // Debug output.
+    $debug_output .= 'Yes!<br>';
+    $debug_output .= '$from_date = ' . $from_date . '<br>';
+    $debug_output .= '$to_date = ' . $to_date . '<br><hr>';
+  else :
+    $debug_output .= 'Nope, all is well!<br><hr>';
   endif;
 
   $date_span = $to_date - $from_date;
 
   // Debug output.
-  $debug_output .= '$from_date (timestamp) = ' . $from_date . '<br>';
-  $debug_output .= '$to_date (timestamp) = ' . $to_date . '<br>';
+  $debug_output .= '$from_date (timestamp) = ' . $from_date  . ' (' . date("m/d/Y H:i", substr($from_date, 0, 10)) . ')<br>';
+  $debug_output .= '$to_date (timestamp) = ' . $to_date . ' (' . date("m/d/Y H:i", substr($to_date, 0, 10)) . ')<br>';
   $debug_output .= '$date_span (timestamp) = ' . $date_span . '<hr>';
 
   $debug_output .= '<h3>Building the query</h3>';
@@ -122,7 +130,7 @@ function film_teasers_function($atts = [], $content = null, $tag = '') {
       AND ( ";
 
   while ($this_date <= $to_date) :
-    $debug_output .= 'This date: ' . $this_date . '<br>';
+    $debug_output .= 'This date: ' . $this_date . ' (' . date("m/d/Y H:i", substr($this_date, 0, 10)) . ')<br>';
 
     $querystr .= "FIND_IN_SET(". $this_date .", meta_value) ";
 
@@ -178,6 +186,9 @@ function film_teasers_function($atts = [], $content = null, $tag = '') {
     $output .= '</div>';
 
   endif;
+
+  // TODO: Make debug work here.
+  $debug = 0;
 
   if ($debug) {
     echo '<div class="debug">';
