@@ -7,7 +7,7 @@ function film_length_function($atts = [], $tag = '') {
   $length = get_field('film_length', $post_id);
 
   if ($length) {
-    $output = '<span class="film-length">' . $length . '</span>';
+    $output = '<span class="film-length">' . $length . 'min</span>';
   }
 
   return $output;
