@@ -98,6 +98,44 @@
             "maxlength": ""
         },
         {
+            "key": "field_617b575d576aa",
+            "label": "Film Poster URL",
+            "name": "poster_url",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_617b57b6bd992",
+            "label": "Trailer URL",
+            "name": "trailer_url",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
             "key": "field_617b2f8e4b8c4",
             "label": "Screenings",
             "name": "screenings",
@@ -153,7 +191,7 @@
         },
         {
             "key": "field_617b5577d628c",
-            "label": "Screenings",
+            "label": "Screenings (as paragraph)",
             "name": "film_screenings",
             "type": "textarea",
             "instructions": "",
@@ -171,10 +209,10 @@
             "new_lines": ""
         },
         {
-            "key": "field_617b575d576aa",
-            "label": "Film Poster URL",
-            "name": "poster_url",
-            "type": "text",
+            "key": "field_617cc0dc7ebdb",
+            "label": "First Screening",
+            "name": "screening_first",
+            "type": "date_time_picker",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -183,17 +221,15 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": "",
-            "maxlength": ""
+            "display_format": "m\/d\/Y g:i a",
+            "return_format": "m\/d\/Y g:i a",
+            "first_day": 0
         },
         {
-            "key": "field_617b57b6bd992",
-            "label": "Trailer URL",
-            "name": "trailer_url",
-            "type": "text",
+            "key": "field_617cc10b7ebdc",
+            "label": "Last Screening",
+            "name": "screening_last",
+            "type": "date_time_picker",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -202,11 +238,9 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": "",
-            "maxlength": ""
+            "display_format": "m\/d\/Y g:i a",
+            "return_format": "m\/d\/Y g:i a",
+            "first_day": 0
         }
     ],
     "location": [
@@ -226,5 +260,5 @@
     "hide_on_screen": "",
     "active": true,
     "description": "",
-    "modified": 1635473353
+    "modified": 1635566382
 }
