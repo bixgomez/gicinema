@@ -10,7 +10,7 @@ function showtimes_function($atts = [], $tag = '') {
   $screenings = get_field('film_screenings', $post_id);
 
   if ($screenings) {
-    $output .= '<div class="screenings">' . $screenings . '</table>';
+    $output .= '<div class="screenings">' . $screenings . '</div>';
   }
 
   else {

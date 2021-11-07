@@ -1,6 +1,6 @@
 {
     "key": "group_5bfe57b1e3102",
-    "title": "Screenings",
+    "title": "Screenings (deprecated)",
     "fields": [
         {
             "key": "field_5f386e81c7a50",
@@ -245,7 +245,7 @@
     "label_placement": "top",
     "instruction_placement": "label",
     "hide_on_screen": "",
-    "active": true,
+    "active": false,
     "description": "",
-    "modified": 1602475829
+    "modified": 1636253184
 }

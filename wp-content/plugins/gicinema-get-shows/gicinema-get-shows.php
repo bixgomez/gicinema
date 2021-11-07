@@ -37,6 +37,7 @@ function external_data_callback() {
     echo '<b>Name:</b> ' . $show->Name . '<br>';
     echo '<b>Duration:</b> ' . $show->Duration . '<br>';
     echo '<b>Short Description:</b> ' . $show->ShortDescription . '<br>';
+    echo '<b>Info Link:</b> ' . $show->InfoLink . '<br>';
 
     foreach( $show->AdditionalMedia as $addlMedia ) {
       if ( $addlMedia->Type == 'Image' ) {
@@ -66,6 +67,10 @@ function external_data_callback() {
         echo '<b>Country:</b> ' . $customProp->Value . '<br>';
         $country = $customProp->Value;
       }
+      if ( $customProp->Name == 'Format' ) {
+        echo '<b>Format:</b> ' . $customProp->Value . '<br>';
+        $format = $customProp->Value;
+      }
     }
 
     $screening_first = '';
@@ -74,8 +79,8 @@ function external_data_callback() {
     $screeningsParagraph = '<p>';
     foreach( $show->CurrentShowings as $showing ) {
       $showDateTime = $showing->StartDate;
-      $showDate = date('D, M j', strtotime($showDateTime));
-      $showTime = date('H:i:s', strtotime($showDateTime));
+      $showDate = date('l, M j', strtotime($showDateTime));
+      $showTime = date('g:i a', strtotime($showDateTime));
       $showDateTime = date('Y-m-d H:i:s', strtotime($showDateTime));
       if ($screeningsParagraph == '<p>') {
         $screeningsParagraph .= $showDate . ': ' . $showTime;
@@ -111,10 +116,12 @@ function external_data_callback() {
       $newMovieID = wp_insert_post($newMovie);
       add_post_meta($newMovieID, 'description', $show->ShortDescription, true);
       add_post_meta($newMovieID, 'film_length', $show->Duration, true);
+      add_post_meta($newMovieID, 'ticket_purchase_link', $show->InfoLink, true);
       add_post_meta($newMovieID, 'film_year', $film_year, true);
       add_post_meta($newMovieID, 'format', $format, true);
       add_post_meta($newMovieID, 'film_director', $film_director, true);
       add_post_meta($newMovieID, 'country', $country, true);
+      add_post_meta($newMovieID, 'format', $format, true);
       add_post_meta($newMovieID, 'film_screenings', $screeningsParagraph, true);
       add_post_meta($newMovieID, 'poster_url', $poster_url, true);
       add_post_meta($newMovieID, 'trailer_url', $trailer_url, true);
@@ -128,10 +135,12 @@ function external_data_callback() {
         echo '<b><i>Updating existing film ('.$existingFilmID.')</i></b><br>';
         update_post_meta($existingFilmID, 'description', $show->ShortDescription);
         update_post_meta($existingFilmID, 'film_length', $show->Duration);
+        update_post_meta($existingFilmID, 'ticket_purchase_link', $show->InfoLink);
         update_post_meta($existingFilmID, 'film_year', $film_year);
         update_post_meta($existingFilmID, 'format', $format);
         update_post_meta($existingFilmID, 'film_director', $film_director);
         update_post_meta($existingFilmID, 'country', $country);
+        update_post_meta($existingFilmID, 'format', $format);
         update_post_meta($existingFilmID, 'film_screenings', $screeningsParagraph);
         update_post_meta($existingFilmID, 'poster_url', $poster_url);
         update_post_meta($existingFilmID, 'trailer_url', $trailer_url);

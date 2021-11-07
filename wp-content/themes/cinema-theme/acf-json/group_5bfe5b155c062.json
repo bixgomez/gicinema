@@ -118,7 +118,7 @@
         },
         {
             "key": "field_617b57b6bd992",
-            "label": "Trailer URL",
+            "label": "Trailer YouTube ID",
             "name": "trailer_url",
             "type": "text",
             "instructions": "",
@@ -134,6 +134,22 @@
             "prepend": "",
             "append": "",
             "maxlength": ""
+        },
+        {
+            "key": "field_618740c12c215",
+            "label": "Ticket Purchase Link",
+            "name": "ticket_purchase_link",
+            "type": "url",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": ""
         },
         {
             "key": "field_617b2f8e4b8c4",
@@ -260,5 +276,5 @@
     "hide_on_screen": "",
     "active": true,
     "description": "",
-    "modified": 1635566382
+    "modified": 1636253933
 }

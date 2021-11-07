@@ -39,8 +39,6 @@ function film_teasers_function($atts = [], $content = null, $tag = '') {
   $debug_output .= '$list_only = '.$list_only.'<br>';
   $debug_output .= '$debug = '.$debug.'<hr>';
 
-
-
   // Building the big query
   $querystr = "
     SELECT p.ID, p.post_title, m.meta_value 

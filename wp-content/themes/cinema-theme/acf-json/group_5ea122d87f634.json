@@ -1,6 +1,6 @@
 {
     "key": "group_5ea122d87f634",
-    "title": "Schedule",
+    "title": "Alert Schedule",
     "fields": [
         {
             "key": "field_5ea122e35f4df",
@@ -52,7 +52,7 @@
     "label_placement": "top",
     "instruction_placement": "label",
     "hide_on_screen": "",
-    "active": 1,
+    "active": true,
     "description": "",
-    "modified": 1587618894
+    "modified": 1636245272
 }

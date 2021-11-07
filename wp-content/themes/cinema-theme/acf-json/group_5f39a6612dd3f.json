@@ -1,11 +1,11 @@
 {
     "key": "group_5f39a6612dd3f",
-    "title": "Description",
+    "title": "Additional Film Info",
     "fields": [
         {
             "key": "field_5f39a66eea224",
-            "label": "Description",
-            "name": "description",
+            "label": "Additional Info",
+            "name": "additional_info",
             "type": "wysiwyg",
             "instructions": "",
             "required": 0,
@@ -40,7 +40,7 @@
         "the_content",
         "excerpt"
     ],
-    "active": 1,
+    "active": true,
     "description": "",
-    "modified": 1597613768
+    "modified": 1636245382
 }
