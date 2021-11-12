@@ -32,13 +32,36 @@ function external_data_callback() {
 
   foreach( $results->ArrayOfShows as $show ) {
 
-    echo '<div style="background-color: white; padding: 10px; font-size: 11px; margin-bottom: 20px">';
-    echo '<b>ID:</b> ' . $show->ID . '<br>';
-    echo '<b>Name:</b> ' . $show->Name . '<br>';
-    echo '<b>Duration:</b> ' . $show->Duration . '<br>';
-    echo '<b>Short Description:</b> ' . $show->ShortDescription . '<br>';
-    echo '<b>Info Link:</b> ' . $show->InfoLink . '<br>';
+    // Declare variables with initial default values.
+    $short_description = '';
+    $duration = '';
+    $info_link = '';
+    $film_year = '';
+    $format = '';
+    $film_director = '';
+    $country = '';
+    $format = '';
+    $screeningsParagraph = '';
+    $poster_url = '';
+    $trailer_url = '';
+    $screening_first = '';
+    $screening_last = '';
 
+    // Set initial (simple) values.
+    $film_id = $show->ID;
+    $film_title = $show->Name;
+    $duration = $show->Duration;
+    $short_description = $show->ShortDescription;
+    $info_link = $show->InfoLink;
+
+    echo '<div style="background-color: white; padding: 10px; font-size: 11px; margin-bottom: 20px">';
+    echo '<b>ID:</b> ' . $film_id . '<br>';
+    echo '<b>Name:</b> ' . $film_title . '<br>';
+    echo '<b>Duration:</b> ' . $duration . '<br>';
+    echo '<b>Short Description:</b> ' . $short_description . '<br>';
+    echo '<b>Info Link:</b> ' . $info_link . '<br>';
+
+    // Set values for media variables.
     foreach( $show->AdditionalMedia as $addlMedia ) {
       if ( $addlMedia->Type == 'Image' ) {
         echo '<b>Image:</b> ' . $addlMedia->Value . '<br>';
@@ -59,17 +82,19 @@ function external_data_callback() {
         echo '<b>Format:</b> ' . $customProp->Value . '<br>';
         $format = $customProp->Value;
       }
-      if ( $customProp->Name == 'Director' ) {
-        echo '<b>Director:</b> ' . $customProp->Value . '<br>';
-        $film_director = $customProp->Value;
-      }
-      if ( $customProp->Name == 'Production Country' ) {
-        echo '<b>Country:</b> ' . $customProp->Value . '<br>';
-        $country = $customProp->Value;
-      }
       if ( $customProp->Name == 'Format' ) {
         echo '<b>Format:</b> ' . $customProp->Value . '<br>';
         $format = $customProp->Value;
+      }
+      if ( $customProp->Name == 'Director' ) {
+        echo '<b>Director:</b> ' . $customProp->Value . '<br>';
+        if ( $film_director != '' ) { $film_director .= ', '; }
+        $film_director .= $customProp->Value;
+      }
+      if ( $customProp->Name == 'Production Country' ) {
+        if ( $country != '' ) { $country .= ', '; }
+        echo '<b>Country:</b> ' . $customProp->Value . '<br>';
+        $country .= $customProp->Value;
       }
     }
 
@@ -101,7 +126,7 @@ function external_data_callback() {
 
     $existingFilms = get_posts([
       'post_type'  => 'film',
-      'title' => $show->Name,
+      'title' => $film_title,
     ]);
 
     if ( empty($existingFilms) ) {
@@ -109,14 +134,14 @@ function external_data_callback() {
       // Create post object
       $newMovie = array(
         'post_type'     => 'film',
-        'post_title'    => wp_strip_all_tags( $show->Name ),
+        'post_title'    => wp_strip_all_tags( $film_title ),
         'post_status'   => 'publish'
       );
       // Insert the post into the database
       $newMovieID = wp_insert_post($newMovie);
-      add_post_meta($newMovieID, 'description', $show->ShortDescription, true);
-      add_post_meta($newMovieID, 'film_length', $show->Duration, true);
-      add_post_meta($newMovieID, 'ticket_purchase_link', $show->InfoLink, true);
+      add_post_meta($newMovieID, 'description', $short_description, true);
+      add_post_meta($newMovieID, 'film_length', $duration, true);
+      add_post_meta($newMovieID, 'ticket_purchase_link', $info_link, true);
       add_post_meta($newMovieID, 'film_year', $film_year, true);
       add_post_meta($newMovieID, 'format', $format, true);
       add_post_meta($newMovieID, 'film_director', $film_director, true);
@@ -133,9 +158,9 @@ function external_data_callback() {
         $existingFilm = get_post( $existingFilm );
         $existingFilmID = $existingFilm->ID;
         echo '<b><i>Updating existing film ('.$existingFilmID.')</i></b><br>';
-        update_post_meta($existingFilmID, 'description', $show->ShortDescription);
-        update_post_meta($existingFilmID, 'film_length', $show->Duration);
-        update_post_meta($existingFilmID, 'ticket_purchase_link', $show->InfoLink);
+        update_post_meta($existingFilmID, 'description', $short_description);
+        update_post_meta($existingFilmID, 'film_length', $duration);
+        update_post_meta($existingFilmID, 'ticket_purchase_link', $info_link);
         update_post_meta($existingFilmID, 'film_year', $film_year);
         update_post_meta($existingFilmID, 'format', $format);
         update_post_meta($existingFilmID, 'film_director', $film_director);
