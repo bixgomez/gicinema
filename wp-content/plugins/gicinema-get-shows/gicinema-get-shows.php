@@ -49,51 +49,40 @@ function external_data_callback() {
 
     // Set initial (simple) values.
     $film_id = $show->ID;
-    $film_title = $show->Name;
+    $film_title = wp_strip_all_tags( $show->Name );
     $duration = $show->Duration;
     $short_description = $show->ShortDescription;
     $info_link = $show->InfoLink;
 
     echo '<div style="background-color: white; padding: 10px; font-size: 11px; margin-bottom: 20px">';
-    echo '<b>ID:</b> ' . $film_id . '<br>';
-    echo '<b>Name:</b> ' . $film_title . '<br>';
-    echo '<b>Duration:</b> ' . $duration . '<br>';
-    echo '<b>Short Description:</b> ' . $short_description . '<br>';
-    echo '<b>Info Link:</b> ' . $info_link . '<br>';
 
     // Set values for media variables.
     foreach( $show->AdditionalMedia as $addlMedia ) {
       if ( $addlMedia->Type == 'Image' ) {
-        echo '<b>Image:</b> ' . $addlMedia->Value . '<br>';
         $poster_url = $addlMedia->Value;
       }
       if ( $addlMedia->Type == 'YouTube' ) {
-        echo '<b>YouTube:</b> ' . $addlMedia->Value . '<br>';
         $trailer_url = $addlMedia->Value;
       }
     }
 
+    // Set values for custom properties.
     foreach( $show->CustomProperties as $customProp ) {
       if ( $customProp->Name == 'Release Year' ) {
-        echo '<b>Year:</b> ' . $customProp->Value . '<br>';
         $film_year = $customProp->Value;
       }
       if ( $customProp->Name == 'Format' ) {
-        echo '<b>Format:</b> ' . $customProp->Value . '<br>';
         $format = $customProp->Value;
       }
       if ( $customProp->Name == 'Format' ) {
-        echo '<b>Format:</b> ' . $customProp->Value . '<br>';
         $format = $customProp->Value;
       }
       if ( $customProp->Name == 'Director' ) {
-        echo '<b>Director:</b> ' . $customProp->Value . '<br>';
         if ( $film_director != '' ) { $film_director .= ', '; }
         $film_director .= $customProp->Value;
       }
       if ( $customProp->Name == 'Production Country' ) {
         if ( $country != '' ) { $country .= ', '; }
-        echo '<b>Country:</b> ' . $customProp->Value . '<br>';
         $country .= $customProp->Value;
       }
     }
@@ -117,24 +106,38 @@ function external_data_callback() {
       else {
         $screeningsParagraph .= '<br>' . $showDate . ': ' . $showTime;
       }
-      echo $showDate . ' ' . $showTime;
-      echo '<br>';
     }
     $screeningsParagraph .= '</p>';
     $screening_last = $showDateTime;
-    echo '<hr>' . $screeningsParagraph . '<hr>';
 
     $existingFilms = get_posts([
       'post_type'  => 'film',
       'title' => $film_title,
     ]);
 
+    // Display all the values.
+    echo '$film_id = ' . $film_id . '<br>';
+    echo '$film_title = ' . $film_title . '<hr>';
+    echo '$short_description = ' . $short_description . '<hr>';
+    echo '$duration = ' .  $duration . '<br>';
+    echo '$info_link = ' .  $info_link . '<br>';
+    echo '$film_year = ' .  $film_year . '<br>';
+    echo '$format = ' .  $format . '<br>';
+    echo '$film_director = ' .  $film_director . '<br>';
+    echo '$country = ' .  $country . '<br>';
+    echo '$format = ' .  $format . '<br>';
+    echo '$poster_url = ' .  $poster_url . '<br>';
+    echo '$trailer_url = ' .  $trailer_url . '<br>';
+    echo '$screening_first = ' .  $screening_first . '<br>';
+    echo '$screening_last = ' .  $screening_last . '<hr>';
+    echo '$screeningsParagraph = ' .  $screeningsParagraph . '<hr>';
+
     if ( empty($existingFilms) ) {
       echo '<b><i>Creating new film...</i></b><br>';
       // Create post object
       $newMovie = array(
         'post_type'     => 'film',
-        'post_title'    => wp_strip_all_tags( $film_title ),
+        'post_title'    => $film_title,
         'post_status'   => 'publish'
       );
       // Insert the post into the database

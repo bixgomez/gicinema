@@ -28,8 +28,8 @@ function film_teaser_function($atts = [], $content = null, $tag = '') {
 
       $this_link = get_permalink($post_id);
 
-      $first_screening = get_field('first_screening', $post_id);
-      $last_screening = get_field('last_screening', $post_id);
+      $first_screening = get_field('screening_first', $post_id);
+      $last_screening = get_field('screening_last', $post_id);
 
       $ticket_purchase_link = get_field('ticket_purchase_link', $post_id);
 
@@ -69,24 +69,6 @@ function film_teaser_function($atts = [], $content = null, $tag = '') {
 
           $output .= '<h2 class="film-teaser--title"><a href="' . $this_link . '">' . get_the_title() . '</a></h2>';
 
-          $playing_from = '';
-          $playing_until =  '';
-
-          if ( is_numeric($first_screening) ) {
-            $first_screening_disp = date_format(date_create('@'. $first_screening)->setTimezone(new DateTimeZone('America/Los_Angeles')), 'M j');
-            $last_screening_disp = date_format(date_create('@'. $last_screening)->setTimezone(new DateTimeZone('America/Los_Angeles')), 'M j');
-
-            // $output .= '<pre>' . 'First screening: ' . $first_screening . ' ' . date('r', $first_screening) . '</pre>';
-            // $playing_from = gmdate("M j", $first_screening);
-            $playing_from = $first_screening_disp;
-          }
-
-          if ( is_numeric($last_screening) ) {
-            // $output .= '<pre>Last screening: ' . $last_screening . '</pre>';
-            // $playing_until = gmdate("M j", $last_screening);
-            $playing_until = $last_screening_disp;
-          }
-
           $output .= '<div class="film-teaser--film-info">';
 
             $output .= '<div class="film-teaser--director">';
@@ -103,11 +85,11 @@ function film_teaser_function($atts = [], $content = null, $tag = '') {
               $output .= $this_format;
             $output .= '</div><!-- /.film-teaser--format -->';
 
-            if ( is_numeric($first_screening) && is_numeric($last_screening) ) {
-              $output .= '<div class="film-teaser--screening-range">';
-                $output .= 'Playing ' . $playing_from . ' through ' . $playing_until;
-              $output .= '</div><!-- /.film-teaser--screening-range -->';
-            }
+          $output .= '<div class="film-teaser--screening-range">';
+            $first_screening_disp = $first_screening;
+            $last_screening_disp = $last_screening;
+            $output .= 'Playing ' . $first_screening_disp . ' through ' . $last_screening_disp;
+          $output .= '</div><!-- /.film-teaser--screening-range -->';
 
           $output .= '</div><!-- /.film-teaser--film-info -->';
 
