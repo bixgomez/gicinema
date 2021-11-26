@@ -85,10 +85,15 @@ function film_teaser_function($atts = [], $content = null, $tag = '') {
               $output .= $this_format;
             $output .= '</div><!-- /.film-teaser--format -->';
 
-          $output .= '<div class="film-teaser--screening-range">';
-            $first_screening_disp = $first_screening;
-            $last_screening_disp = $last_screening;
-            $output .= 'Playing ' . $first_screening_disp . ' through ' . $last_screening_disp;
+            $output .= '<div class="film-teaser--screening-range">';
+              $first_screening_disp = date('M j', strtotime($first_screening));
+              $last_screening_disp = date('M j', strtotime($last_screening));
+            $output .= 'Playing ' . $first_screening_disp;
+
+            if ( $last_screening_disp != $first_screening_disp ) {
+              $output .= ' through ' . $last_screening_disp;
+            }
+
           $output .= '</div><!-- /.film-teaser--screening-range -->';
 
           $output .= '</div><!-- /.film-teaser--film-info -->';
