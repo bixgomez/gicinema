@@ -66,7 +66,7 @@
                 <div class="mail">
                   <h4>Mail</h4>
                   <p>
-                    4739 University Way NE #1330<br>
+                    4730 University Way NE #1330<br>
                     Seattle, WA 98105
                   </p>
                 </div>
