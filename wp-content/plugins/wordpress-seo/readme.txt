@@ -4,8 +4,8 @@ Donate link: https://yoa.st/1up
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 Tags: SEO, XML sitemap, Content analysis, Readability, Schema
-Tested up to: 5.9
-Stable tag: 18.1
+Tested up to: 6.0
+Stable tag: 19.2
 Requires PHP: 5.6.20
 
 Improve your WordPress SEO: Write better content and have a fully optimized WordPress site using the Yoast SEO plugin.
@@ -36,6 +36,8 @@ Yoast SEO is packed full of features, designed to help visitors and search engin
 * **Faster loading times** for your whole website, due to an innovative way of managing data in WordPress.
 * **[Premium]** E-mail support for our [Yoast SEO Premium](https://yoa.st/1v8) users.
 * **[Premium]** The possibility to expand Yoast SEO with the [News SEO](https://yoa.st/1uv), [Video SEO](https://yoa.st/1uw), [Local SEO](https://yoa.st/1uu) and [WooCommerce SEO](https://yoa.st/3rh) extensions.
+* **[Premium]** **New!** Yoast SEO Premium comes with wide-ranging crawl settings that help you improve how search engines crawl your site.
+* **[Premium]** **New!** Yoast SEO Premium comes with an IndexNow integration to ping search engines like Microsoft Bing whenever you publish or update content.
 
 #### WRITE KILLER CONTENT WITH YOAST SEO
 We know content is king, that's why Yoast SEO is famous for its **state-of-the-art content and SEO analysis**. Yoast SEO gives you:
@@ -110,6 +112,7 @@ Yoast SEO integrates seamlessly into a range of themes and plugins. We work part
 * The [Elementor](https://wordpress.org/plugins/elementor/) website builder.
 * [Zapier](https://zapier.com/apps/yoast-seo/integrations), which helps you automate your publishing flow.
 * [Algolia](https://wordpress.org/plugins/wp-search-with-algolia/) integration to improve the quality of your site search.
+* [WordProof](https://wordproof.com/), which helps you prove ownership by adding timestamps.
 
 ### BUG REPORTS
 
@@ -126,7 +129,7 @@ Want more information on search engine optimization and Yoast SEO? Have a look a
 * Also follow Yoast on [Facebook](https://facebook.com/yoast), [Instagram](https://www.instagram.com/yoast/) & [Twitter](https://twitter.com/yoast).
 
 == Installation ==
-Starting with Yoast SEO consists of just two steps: installing and setting up the plugin. Yoast SEO is designed to work with your site’s specific needs, so don’t forget to go through the Yoast SEO configuration workout as explained in the ‘after activation’ step!
+Starting with Yoast SEO consists of just two steps: installing and setting up the plugin. Yoast SEO is designed to work with your site’s specific needs, so don’t forget to go through the Yoast SEO first-time configuration as explained in the ‘after activation’ step!
 
 ### INSTALL YOAST SEO FROM WITHIN WORDPRESS
 
@@ -143,8 +146,8 @@ Starting with Yoast SEO consists of just two steps: installing and setting up th
 
 ### AFTER ACTIVATION
 
-1. You should see (a notice to start) the Yoast SEO configuration workout;
-1. Go through the configuration workout and set up the plugin for your site;
+1. You should see (a notice to start) the Yoast SEO first-time configuration;
+1. Go through this configuration and set up the plugin for your site;
 1. You’re done!
 
 == Frequently Asked Questions ==
@@ -236,51 +239,62 @@ Your question has most likely been answered on our help center: [yoast.com/help/
 
 == Changelog ==
 
-= 18.1 =
-Release Date: February 8th, 2022
+= 19.2 =
+Release Date: June 28th, 2022
 
-Yoast SEO 18.1 is out today! This new release brings another round of bug fixes, plus a new way for us to handle the translations in our plugin — leading to a smaller plugin size for you to install. Read more about what's new in Yoast SEO 18.1 in [our release post in English](https://yoa.st/release-8-2-22) or [our release post in Spanish](https://yoa.st/release-8-2-22-spanish)!
-
-Enhancements:
-
-* Changes the overall SEO score color on the post type overview pages to red when no keyphrase is set.
-
-Bugfixes:
-
-* Fixes a bug where images inserted into our FAQ or HowTo blocks would be rendered wider then their respective container when using a Block Theme.
-* Fixes a bug where plugins that would initialize after our plugin would be unable to register certain plugin information or utilize certain hooks.
-* Fixes a bug where capitalized keyphrases would show up twice in the Wincher SEO performance tracking modal. 
-
-Other:
-
-* Switches from packaged script translations to those from wordpress.org in order to reduce ZIP size and disk usage.
-
-= 18.0 =
-Release Date: January 25th, 2022
-
-Yoast SEO 18.0 is out now! This release contains a number of bug fixes and a couple of enhancements. We've enhanced schema presentation for non-alphanumeric languages and made several improvements in both the SEO and readability analysis of the Japanese language. Read more about what's new in Yoast SEO 18.0 in [our release post in English](https://yoa.st/release-18-0) or [our release post in Spanish](https://yoa.st/release-18-0-spanish)!
+Yoast SEO 19.2 is out today! In this release, we've rolled out some improvements to the content and SEO analyses and we've added an integration with WordProof to timestamp privacy pages on the blockchain. Read more about what's new in Yoast SEO 19.2 in [our release post in English](https://yoa.st/release-28-6-22) or [our release post in Spanish](https://yoa.st/release-28-6-22-spanish)!
 
 Enhancements:
 
-* Limits a potentially slow query to certain routes, which makes it so it gets called fewer times.
-* Enhances schema presentation for languages that are not alphanumeric. Props to [sous-studio](https://github.com/sous-studio).
+* NEW: Adds an integration with WordProof, which allows for improving the trustworthiness of the privacy policy and terms and conditions pages by adding a timestamp.
+* Adds support for `webp` images for OpenGraph output.
+* Adds a notice that displays when Yoast SEO Premium is installed but not activated prompting the user to activate it.
+* Adds a new filter `wpseo_change_home_url` that allows changing the URL checked by the Ryte integration, to support more versatile hosting setups.
+* Adds a `meta author` tag to ensure that LinkedIn picks up the name of a post author properly.
+* Adds the name of the article author to the `author` section of the `Article` schema piece, to ensure that Pinterest picks up the name of a post author properly.
+* Enables sorting on the SEO and readability score columns on the post overview page.
+* Ensures the Bing XML sitemap ping is only sent if IndexNow is disabled.
+* Prevents XML sitemap pings for blogs that aren't public.
+* Improves the content analysis by excluding blockquote HTML elements.
+* Improves the sentence recognition by disregarding abbreviations and initials as potential sentence boundaries.
+* Improves the text analysis by not splitting sentences on semicolon ;.
+* Improves the text analysis by supporting sentence detection for declarative sentences in quotation marks.
+* Improves the text analysis in Elementor by not always splitting on ellipsis &#8230; regardless of whether the next sentence has a valid beginning or not.
 
 Bugfixes:
 
-* Fixes a bug where removing an image from our Facebook Preview and Twitter Preview modals could lead to a confusing experience due to focus loss.
-* Fixes a bug where clicking outside of a Yoast modal in the block editor would not close the modal.
-* Fixes a bug where Japanese keyphrase enclosed in double quotes failed to be recognized in Keyword in meta description, Keyword density, Keyphrase distribution, Keyphrase in introduction, Keyphrase in image text and in Keyphrase in subheading assessments.
-* Fixes a bug where synonyms enclosed in double quotes in the Link keyphrase assessment failed to be recognized even when there were exact matches in the anchor text.  
-* Fixes a bug where incorrect assessments were shown for keyphrases only consisting of function words in Japanese.
-* Fixes a bug where a fatal error would be thrown if the link count of a corrupt indexable item would get updated.
-* Fixes a bug where the title tag would not be correct in Full Site Editing themes.
-* Fixes a bug where the text length assessment would count URLs from videos loaded in the article in the total amount of the copy characters in Japanese.
-* Fixes a bug where Japanese full stops in a text would be counted as three characters instead of one.
+* Fixes a bug that would cause the First-time configuration to crash when completing indexation with the Yoast admin bar menu hidden.
+* Fixes a bug where filtering the OpenGraph and Twitter image to a URL containing ampersands would lead to encoding issues.
+* Fixes a bug where HTML tags in the `og:description` meta tag would be displayed encoded instead of being removed completely.
+* Fixes a bug where the sitemap `image:loc` URLs containing ampersands would lead to encoding issues.
+* Fixes a bug where notices would show an abnormally large heading in Yoast SEO Premium page.
 
 Other:
 
-* Sets the WordPress tested up to version to 5.9.
-* Sets WooCommerce tested up to version to 6.1.
+* Renames the 'Keyphrase in title' SEO assessment to 'Keyphrase in SEO title'.
+
+= 19.1 =
+Release Date: June 14th, 2022
+
+Yoast SEO 19.1 is out today! In this release, we've rolled out some improvements that make the content and SEO analyses more flexible. We've also expanded our range of crawl settings in Premium. Read more about what's new in Yoast SEO 19.1 in [our release post in English](https://yoa.st/release-14-6-22) or [our release post in Spanish](https://yoa.st/release-14-6-22-spanish)!
+
+Enhancements:
+
+* Improves text analysis by splitting text on full-stop only when the next sentence is preceded by a whitespace.
+* Prompts users to set up their site in order to take advantage of all SEO features.
+
+Bugfixes:
+
+* Fixes a bug where the "Check links to this URL" option on admin bar menu would lead to an error page on setups with home URL different from the site URL. Props to @suascat.
+* Fixes a bug where the network setting for the crawl cleanup feature would default to `Disable` when the super admin saved settings before upgrading/installing Premium.
+* Fixes a bug which caused the Spanish transition word `para ilustrar` to not be recognized by the transition words assessment.
+
+Other:
+
+* Adds an informative error message to the steps of the First-time configuration should an error occur.
+* Adds dismissable weekly webinar promo banners to Yoast settings pages & block/Elementor editor sidebars.
+* Adds new disabled toggles to the Crawl settings tab in the General page.
+* Improves handling of OAuth errors in the Wincher integration and clears refresh tokens that seem to be invalid.
 
 = Earlier versions =
 For the changelog of earlier versions, please refer to [the changelog on yoast.com](https://yoa.st/yoast-seo-changelog).
