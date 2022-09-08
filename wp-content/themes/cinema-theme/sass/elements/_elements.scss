@@ -34,9 +34,8 @@ figure {
   background-color: rgba(black, .05);
   margin: 1em 0 2em;
 
-  p {
-    &:last-child {
-      margin-bottom: 0;
-    }
+  p,
+  > * {
+    &:last-child { margin-bottom: 0; }
   }
 }

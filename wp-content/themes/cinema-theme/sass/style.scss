@@ -72,4 +72,10 @@ Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
 
 @import "components/**/*.scss";
 
+// Sass specific to offcanvas nav.
+@import 'hc-offcanvas-nav/core';
+@import 'hc-offcanvas-nav/toggle';
+@import 'hc-offcanvas-nav/theme-default';
+@import 'hc-offcanvas-nav/custom';
+
 @import "admin/**/*.scss";

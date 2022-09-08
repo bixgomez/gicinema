@@ -1,0 +1,16 @@
+.hc-nav-trigger {
+  position: relative;
+  top: auto;
+  width: 12vw;
+  margin: 4vw 0 0;
+  height: 12vw;
+  background: red;
+}
+
+nav.hc-offcanvas-nav.hc-nav-1 > div.nav-container {
+  width: 90vw;
+}
+
+nav.hc-offcanvas-nav.hc-nav-1.nav-position-right > div.nav-container {
+  transform: translate3d(90vw, 0, 0);
+}

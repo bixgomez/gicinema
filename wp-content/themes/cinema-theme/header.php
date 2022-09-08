@@ -41,6 +41,7 @@
                 <span class="line-2">running movie theater</span>
               </h2>
               <a href="/" class="home-link">The Grand Illusion: <?php bloginfo( 'description' ); ?></a>
+              <a class="toggle" href="#" role="button"><span></span></a>
             </div>
 
             <div class="menu-area">

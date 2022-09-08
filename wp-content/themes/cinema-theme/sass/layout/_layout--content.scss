@@ -3,6 +3,11 @@
 }
 
 .section-inner--site-content {
-  padding-top: 2.25em;
-  padding-bottom: 2.25em;
+  padding-top: 4vw;
+  padding-bottom: 4vw;
+
+  @include breakpoint($md) {
+    padding-top: 2.25em;
+    padding-bottom: 2.25em;
+  }
 }

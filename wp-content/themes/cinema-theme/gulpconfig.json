@@ -1,6 +1,6 @@
 {
   "browserSyncOptions" : {
-    "proxy": "https://gicinema.test/",
+    "proxy": "https://grandillusioncinema.lndo.site/",
     "notify": false
   },
   "browserSyncWatchFiles" : [
