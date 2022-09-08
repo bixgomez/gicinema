@@ -6,7 +6,10 @@ $c--red--dark: #e61b1b;
 $c--red--darker: darken($c--red--dark, 10%);
 $c--red--darkest: darken($c--red--dark, 20%);
 
-$c--primary: #aa4f08;
+$c--rust: #aa4f08;
+
+// $c--primary: #aa4f08;
+$c--primary: mix($c--red--darkest, $c--rust, 70%);
 $c--primary--light: lighten($c--primary, 10%);
 $c--primary--lighter: lighten($c--primary, 15%);
 $c--primary--lightest: lighten($c--primary, 20%);

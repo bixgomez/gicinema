@@ -10,10 +10,10 @@ input,
 select,
 optgroup,
 textarea {
-	color: rgba($c--black, .75);
-	font-family: $font__main;
-	font-size: 1em;
-	line-height: 1.6;
+  color: rgba($c--black, .75);
+  font-family: $font__main;
+  font-size: 1em;
+  line-height: 1.6;
 
   em, i {
     font-family: $font__main__italic;
@@ -21,7 +21,7 @@ textarea {
 }
 
 b, strong {
-  font-weight: 500;
+  font-weight: $font-weight--semibold;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -32,12 +32,20 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 // Shared styles for h1-h3.
-h1, h2, h3 {
+h1, h2 {
   font-family: $font__heading;
   font-weight: 500;
   letter-spacing: .025em;
   line-height: 1;
   margin-top: 1.125em;
+  margin-bottom: .25em;
+}
+
+h3, h4, h5, h6 {
+  font-family: $font__subheading;
+  font-weight: $font-weight--bold;
+  line-height: 1.25;
+  margin-top: 0;
   margin-bottom: .25em;
 }
 
@@ -62,32 +70,13 @@ h2 {
   }
 }
 
-h3 {
-  font-size: $font-size--lg;
-}
+h3 { font-size: $font-size--lg; }
 
-// Shared styles for h5-h6.
-h3, h4, h5, h6 {
-  font-family: $font__subheading;
-  font-weight: $font-weight--bold;
-  font-size: $font-size--md;
-  line-height: 1.25;
-  text-transform: uppercase;
-  margin-top: 0;
-  margin-bottom: .25em;
-}
+h4 { font-size: $font-size--md; }
 
-h4 {
-  font-size: $font-size--md;
-}
+h5 { font-size: $font-size--sm; }
 
-h5 {
-  font-size: $font-size--sm;
-}
-
-h6 {
-  font-size: $font-size--xs;
-}
+h6 { font-size: $font-size--xs; }
 
 p {
   margin: .625em 0 1.25em;
