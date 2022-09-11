@@ -1,17 +1,19 @@
 .title-area {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 2vw;
+  justify-content: flex-start;
+  align-items: flex-start;
+  font-size: 1.875vw;
   color: $c--text-heading--light;
   position: relative;
   width: max-content;
-  margin: 7vw auto 3vw;
+  margin: 7vw 0 0;
 
   @include breakpoint($md) {
     font-size: .89em;
     margin: 3em auto 2em;
+    justify-content: space-between;
+    align-items: center;
   }
 
   &--footer {
@@ -49,8 +51,8 @@ h1.site-title {
   margin: 0 0 .1em;
   line-height: 1.2;
   font-size: 5em;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
   font-weight: bold;
   letter-spacing: .05em;
   margin-right: -.05em;
@@ -62,6 +64,11 @@ h1.site-title {
     margin-right: -.75em;
     margin-bottom: -.4em;
   }
+
+  @include breakpoint($md) {
+    justify-content: center;
+    align-items: center;
+  }
 }
 
 h2.site-subtitle {
@@ -71,10 +78,11 @@ h2.site-subtitle {
   letter-spacing: .2em;
   color: inherit;
   width: 27em;
-  text-align: center;
+  text-align: left;
   font-weight: bold;
 
   @include breakpoint($md) {
+    text-align: center;
     display: block;
     font-size: .75em;
     line-height: 1.2;

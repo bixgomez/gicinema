@@ -1,13 +1,22 @@
 a.hc-nav-trigger {
-  position: relative;
-  top: auto;
-  width: max-content;
+  position: absolute;
+  top: 1.8vw;
+  right: -13vw;
+  height: 7vw;
+  width: 7vw;
+  background: $c--white;
+  overflow: hidden;
   margin: 4vw 0 0;
-  height: auto;
-  background: transparent;
   min-height: 0;
   cursor: pointer;
   border: none !important;
+  color: $c--white;
+  text-decoration: none;
+
+  mask-image: url("images/menu-icon.svg");
+  mask-position: center;
+  mask-size: contain;
+  mask-repeat: no-repeat;
 
   span {
     width: max-content;
@@ -20,7 +29,7 @@ a.hc-nav-trigger {
     text-decoration: none;
     font-size: 2.5em;
     font-weight: $font-weight--bold;
-    color: $c--white;
+    color: inherit;
     border: none;
     opacity: .8;
 
@@ -73,16 +82,33 @@ nav.hc-offcanvas-nav.nav-open[class*='hc-nav-'] div.nav-container {
 }
 
 // "Back" button text
-.hc-offcanvas-nav .nav-content > h2 {
-  font-size: 22px;
-  font-weight: normal;
-  margin-bottom: 0;
-  padding: 20px 17px;
-  color: inherit; // Picks up the color specified above
+.hc-offcanvas-nav .nav-content {
 
-  &:hover {
-    color: $c--white;
-    background: rgba(black, .25);
+  > h2 {
+    display: none;
+  }
+
+  > .nav-close {
+    position: relative;
+    z-index: 2;
+
+    > a.nav-close-button {
+      position: absolute;
+      width: 35px;
+      height: 35px;
+      top: 15px;
+      right: 16px;
+      background-color: $c--white;
+
+      mask-image: url("images/menu-close.svg");
+      mask-position: center;
+      mask-size: contain;
+      mask-repeat: no-repeat;
+
+      > span {
+        display: none;
+      }
+    }
   }
 }
 
