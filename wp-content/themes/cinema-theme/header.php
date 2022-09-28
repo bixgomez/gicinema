@@ -41,10 +41,10 @@
                 <span class="line-2">running movie theater</span>
               </h2>
               <a href="/" class="home-link">The Grand Illusion: <?php bloginfo( 'description' ); ?></a>
-              <a class="toggle" href="#" role="button"><span>MENU</span></a>
             </div>
 
             <div class="menu-area">
+              <a class="toggle" href="#" role="button"><span>MENU</span></a>
               <nav class="main-navigation">
                 <?php
                 wp_nav_menu( array(

@@ -1,10 +1,9 @@
-.title-area {
+.title-area-X {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
   font-size: 1.875vw;
-  color: $c--text-heading--light;
   position: relative;
   width: auto;
   margin: 7vw 0 0;
@@ -46,10 +45,48 @@
   }
 }
 
+
+
+
+.title-area {
+  font-size: 1em;
+  display: block;
+  border: 1px dotted yellow;
+  position: relative;
+
+  .site-title {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .site-subtitle {
+  }
+
+  .home-link {
+    background-color: transparent;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    text-indent: -9999em;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
 h1.site-title {
   display: flex;
   flex-direction: column;
-  margin: 0 0 .1em;
   line-height: 1.2;
   font-size: 5em;
   justify-content: flex-start;
@@ -57,7 +94,7 @@ h1.site-title {
   font-weight: bold;
   letter-spacing: .05em;
   margin-right: -.05em;
-  color: inherit;
+  color: $c--white;
 
   .article {
     font-size: .45em;
@@ -75,9 +112,9 @@ h1.site-title {
 h2.site-subtitle {
   margin: 0;
   line-height: 1.625;
-  font-size: 1.5em;
+  font-size: 1.3em;
   letter-spacing: .2em;
-  color: inherit;
+  color: $c--white;
   width: 27em;
   text-align: left;
   font-weight: bold;
@@ -88,7 +125,6 @@ h2.site-subtitle {
     font-size: .75em;
     line-height: 1.2;
     letter-spacing: .44em;
-    color: inherit;
     width: auto;
   }
 
@@ -109,3 +145,20 @@ h2.site-subtitle {
   }
 }
 
+
+
+
+
+.title-area--footer {
+  background-image: url("images/footer-graphic.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin: 0;
+  padding: 5.5em 0;
+  font-size: 2vw;
+
+  @include breakpoint($sm) {
+    font-size: .75em;
+  }
+}

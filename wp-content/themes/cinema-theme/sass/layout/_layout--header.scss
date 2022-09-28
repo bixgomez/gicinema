@@ -15,12 +15,49 @@
 
 .section-inner--site-header {
   @include site-margin;
+  font-size: 1.75vw;
   padding: 1.25em 0;
-  font-size: 1em;
+
+  @include breakpoint($md) {
+    font-size: 1rem;
+  }
+}
+
+.content-layout--header {
+  display: grid;
+  grid-template-columns: 1fr 1fr min-content;
+  grid-template-rows: min-content auto;
+  grid-template-areas:
+    'social donate donate'
+    'title title menu';
+
+  @include breakpoint($md) {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: min-content auto auto;
+    grid-template-areas:
+    'social donate'
+    'title title'
+    'menu menu';
+  }
+
+  .social-media-area {
+    grid-area: social;
+  }
+
+  .title-area {
+    grid-area: title;
+  }
+
+  .donate-area {
+    grid-area: donate;
+  }
+
+  .menu-area {
+    grid-area: menu;
+  }
 }
 
 .menu-area {
-  display: none;
   padding-bottom: 1em;
   justify-content: center;
 
@@ -30,14 +67,17 @@
 }
 
 .main-navigation {
-  width: 40em;
+  display: none;
+
+  @include breakpoint($md) {
+    display: block;
+    width: 40em;
+  }
 }
 
 .social-media-area {
-  position: absolute;
-  top: 1em;
-  left: 0;
-  font-size: .9em;
+  font-size: 1.25em;
+  margin: 0 0 ;
 
   @include breakpoint($md) {
     font-size: 1em;
