@@ -3,6 +3,8 @@
 }
 
 .section-inner--site-content {
+  @include site-padding;
+
   padding-top: 4vw;
   padding-bottom: 4vw;
 

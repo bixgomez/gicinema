@@ -1,0 +1,19 @@
+@mixin site-margin {
+  margin-left: 4vw;
+  margin-right: 4vw;
+
+  @include breakpoint($md) {
+    margin-left: 32px;
+    margin-right: 32px;
+  }
+}
+
+@mixin site-padding {
+  padding-left: 4vw;
+  padding-right: 4vw;
+
+  @include breakpoint($md) {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}

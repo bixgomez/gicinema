@@ -42,40 +42,18 @@ Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
 	## Captions
 	## Galleries
 --------------------------------------------------------------*/
-@import "config/**/*.scss";
-@import "variables/**/*.scss";
-@import "mixins/**/*.scss";
+@import "config/config";
 
 @import "normalize";
 
 @import "typography/**/*.scss";
 
-@import "forms/forms";
+@import "layout/layout";
 
-@import "navigation/**/*.scss";
-
-@import "modules/accessibility";
-
-@import "modules/alignments";
-
-@import "modules/clearings";
-
-@import "site/secondary/widgets";
-
-@import "site/site";
-
-// @import "modules/infinite-scroll";
-
-@import "media/media";
+@import "navigation/navigation";
 
 @import "elements/**/*.scss";
 
 @import "components/**/*.scss";
-
-// Sass specific to offcanvas nav.
-@import 'hc-offcanvas-nav/core';
-@import 'hc-offcanvas-nav/toggle';
-@import 'hc-offcanvas-nav/theme-default';
-@import 'hc-offcanvas-nav/custom';
 
 @import "admin/**/*.scss";

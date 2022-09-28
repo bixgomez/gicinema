@@ -6,8 +6,9 @@
   font-size: 1.875vw;
   color: $c--text-heading--light;
   position: relative;
-  width: max-content;
+  width: auto;
   margin: 7vw 0 0;
+  // background-color: orange;
 
   @include breakpoint($md) {
     font-size: .89em;

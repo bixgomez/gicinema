@@ -1,7 +1,7 @@
 a.hc-nav-trigger {
   position: absolute;
   top: 1.8vw;
-  right: -13vw;
+  right: 0;
   height: 7vw;
   width: 7vw;
   background: $c--white;
@@ -12,6 +12,7 @@ a.hc-nav-trigger {
   border: none !important;
   color: $c--white;
   text-decoration: none;
+  overflow: hidden;
 
   mask-image: url("images/menu-icon.svg");
   mask-position: center;
@@ -27,7 +28,7 @@ a.hc-nav-trigger {
     left: auto;
     transform: none;
     text-decoration: none;
-    font-size: 2.5em;
+    font-size: 1.125em;
     font-weight: $font-weight--bold;
     color: inherit;
     border: none;
