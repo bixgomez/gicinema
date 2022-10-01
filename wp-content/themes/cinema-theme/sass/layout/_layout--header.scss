@@ -14,8 +14,9 @@
 }
 
 .section-inner--site-header {
-  @include site-margin;
   font-size: 1.75vw;
+  margin-left: 2em;
+  margin-right: 2em;
   padding: 1.25em 0;
 
   @include breakpoint($md) {
