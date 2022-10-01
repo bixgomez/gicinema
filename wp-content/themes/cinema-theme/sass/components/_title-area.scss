@@ -92,12 +92,11 @@ h1.site-title {
   display: flex;
   flex-direction: column;
   line-height: 1.2;
-  font-size: 5em;
+  font-size: 4.75em;
   justify-content: flex-start;
   align-items: flex-start;
   font-weight: bold;
   letter-spacing: .05em;
-  margin-right: -.05em;
   color: $c--white;
 
   .article {
@@ -108,6 +107,7 @@ h1.site-title {
   }
 
   @include breakpoint($md) {
+    margin-right: -.05em;
     justify-content: center;
     align-items: center;
   }
