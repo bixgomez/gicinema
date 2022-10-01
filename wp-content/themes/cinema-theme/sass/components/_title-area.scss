@@ -49,10 +49,14 @@
 
 
 .title-area {
-  font-size: 1em;
+  font-size: 1.075em;
   display: block;
-  border: 1px dotted yellow;
+  // border: 1px dotted yellow;
   position: relative;
+
+  @include breakpoint($md) {
+    font-size: 1em;
+  }
 
   .site-title {
     display: flex;

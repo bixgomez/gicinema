@@ -23,9 +23,13 @@
   }
 }
 
+.content-layout--header * {
+  // transition: font-size .05s linear;
+}
+
 .content-layout--header {
   display: grid;
-  grid-template-columns: 1fr 1fr min-content;
+  grid-template-columns: 1fr 1fr 4em;
   grid-template-rows: min-content auto;
   grid-template-areas:
     'social donate donate'
@@ -58,11 +62,13 @@
 }
 
 .menu-area {
-  padding-bottom: 1em;
-  justify-content: center;
+  margin: 0;
+  padding: 0;
 
   @include breakpoint($md) {
+    justify-content: center;
     display: flex;
+    padding-bottom: 1em;
   }
 }
 
@@ -76,8 +82,12 @@
 }
 
 .social-media-area {
-  font-size: 1.25em;
-  margin: 0 0 ;
+  font-size: 1.5em;
+  margin: 0 0 .75em;
+
+  @include breakpoint($sm) {
+    font-size: .9em;
+  }
 
   @include breakpoint($md) {
     font-size: 1em;
