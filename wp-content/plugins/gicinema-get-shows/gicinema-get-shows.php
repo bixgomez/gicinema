@@ -54,7 +54,7 @@ function external_data_callback() {
     $short_description = $show->ShortDescription;
     $info_link = $show->InfoLink;
 
-    echo '<div style="background-color: white; padding: 10px; font-size: 11px; margin-bottom: 20px">';
+    echo '<div style="background-color: white; padding: 12px; font-size: 12px; margin: 10px 0 20px;">';
 
     // Set values for media variables.
     foreach( $show->AdditionalMedia as $addlMedia ) {
@@ -116,8 +116,9 @@ function external_data_callback() {
     ]);
 
     // Display all the values.
-    echo '$film_id = ' . $film_id . '<br>';
-    echo '$film_title = ' . $film_title . '<hr>';
+    echo '<h4>' . $film_title . '</h4><hr>';
+    echo '$film_title = ' . $film_title . '<br>';
+    echo '$film_id = ' . $film_id . '<hr>';
     echo '$short_description = ' . $short_description . '<hr>';
     echo '$duration = ' .  $duration . '<br>';
     echo '$info_link = ' .  $info_link . '<br>';
@@ -160,7 +161,7 @@ function external_data_callback() {
       foreach ( $existingFilms as $existingFilm ) {
         $existingFilm = get_post( $existingFilm );
         $existingFilmID = $existingFilm->ID;
-        echo '<b><i>Updating existing film ('.$existingFilmID.')</i></b><br>';
+        echo '<h5 style="margin-bottom: 0;"><i>Updating existing film ('.$existingFilmID.')</i></h5>';
         update_post_meta($existingFilmID, 'description', $short_description);
         update_post_meta($existingFilmID, 'film_length', $duration);
         update_post_meta($existingFilmID, 'ticket_purchase_link', $info_link);
@@ -180,3 +181,6 @@ function external_data_callback() {
     echo '</div>';
   }
 }
+
+// Simply call the function if this file is accessed directly.
+external_data_callback();

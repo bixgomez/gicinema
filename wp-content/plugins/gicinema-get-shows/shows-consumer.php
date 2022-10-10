@@ -1,6 +1,9 @@
 <?php /* Shows consumer. */ ?>
 
 <?php
+
+/*
+
 require_once($_SERVER['DOCUMENT_ROOT'].'/wp-load.php');
 
 function shows_consumer() {
@@ -76,3 +79,5 @@ function shows_consumer() {
 }
 
 shows_consumer();
+
+/*
