@@ -183,4 +183,4 @@ function external_data_callback() {
 }
 
 // Simply call the function if this file is accessed directly.
-external_data_callback();
+// external_data_callback();
