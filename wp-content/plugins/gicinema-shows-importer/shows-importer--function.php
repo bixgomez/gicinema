@@ -166,8 +166,9 @@ function shows_importer() {
             $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
             wp_update_attachment_metadata( $attach_id, $attach_data );
             // And finally assign featured image to post
-            $thumbnail = set_post_thumbnail($insert_id, $attach_id);
-
+            echo 'Attempting to insert image '.$attach_id.' into film '.$insert_id.'...';
+            set_post_thumbnail($insert_id, $attach_id);
+            update_field( 'film_poster', $attach_id, $insert_id );
         }
         else {
             foreach ( $existingFilms as $existingFilm ) {

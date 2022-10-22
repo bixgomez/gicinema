@@ -44,7 +44,7 @@ function film_cpt() {
     'label'                 => __( 'Film', 'text_domain' ),
     'description'           => __( 'Any film that you will screen at your cinema.', 'text_domain' ),
     'labels'                => $labels,
-    'supports'              => array( 'title', 'editor', 'custom-fields' ),
+    'supports'              => array( 'title', 'editor', 'thumbnail', 'custom-fields' ),
     'hierarchical'          => false,
     'public'                => true,
     'show_ui'               => true,
