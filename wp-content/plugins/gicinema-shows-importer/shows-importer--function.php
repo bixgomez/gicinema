@@ -140,6 +140,34 @@ function shows_importer() {
             add_post_meta($newMovieID, 'trailer_url', $trailer_url, true);
             add_post_meta($newMovieID, 'screening_first', $screening_first, true);
             add_post_meta($newMovieID, 'screening_last', $screening_last, true);
+
+            // https://wordpress.stackexchange.com/questions/256830/programmatically-adding-images-to-media-library
+            $insert_id = $newMovieID;
+            $image_url = $poster_url;
+            $upload_dir = wp_upload_dir();
+            $image_data = file_get_contents( $image_url );
+            $filename = basename( $image_url );
+            if ( wp_mkdir_p( $upload_dir['path'] ) ) {
+                $file = $upload_dir['path'] . '/' . $filename;
+            }
+            else {
+                $file = $upload_dir['basedir'] . '/' . $filename;
+            }
+            file_put_contents( $file, $image_data );
+            $wp_filetype = wp_check_filetype( $filename, null );
+            $attachment = array(
+                'post_mime_type' => $wp_filetype['type'],
+                'post_title' => sanitize_file_name( $filename ),
+                'post_content' => '',
+                'post_status' => 'inherit'
+            );
+            $attach_id = wp_insert_attachment( $attachment, $file );
+            require_once( ABSPATH . 'wp-admin/includes/image.php' );
+            $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
+            wp_update_attachment_metadata( $attach_id, $attach_data );
+            // And finally assign featured image to post
+            $thumbnail = set_post_thumbnail($insert_id, $attach_id);
+
         }
         else {
             foreach ( $existingFilms as $existingFilm ) {
