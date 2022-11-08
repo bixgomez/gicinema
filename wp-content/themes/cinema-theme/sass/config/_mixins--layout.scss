@@ -9,8 +9,8 @@
 }
 
 @mixin site-padding {
-  padding-left: 4vw;
-  padding-right: 4vw;
+  padding-left: 10px;
+  padding-right: 10px;
 
   @include breakpoint($md) {
     padding-left: 32px;
