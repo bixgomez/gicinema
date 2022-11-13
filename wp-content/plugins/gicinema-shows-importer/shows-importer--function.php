@@ -2,6 +2,8 @@
 
 function shows_importer() {
 
+    global $wpdb;
+
     // $url = 'https://prod5.agileticketing.net/websales/feed.ashx?guid=52c1280f-be14-4579-8ddf-4b3dadbf96c7&showslist=true&withmedia=true&format=json';
     $url = 'https://prod5.agileticketing.net/websales/feed.ashx?guid=52c1280f-be14-4579-8ddf-4b3dadbf96c7&showslist=true&withmedia=true&format=json&v=latest';
     $args = array( 'method' => 'GET' );
@@ -74,12 +76,35 @@ function shows_importer() {
         $screening_first = '';
         $screening_last = '';
 
+        echo '<b>Initiating array_screenings for film '.$film_id.' </b>';
+        $array_screenings = array_fill_keys(
+            array('film_id', 'screening'), '');
+
         $screeningsParagraph = '<p>';
         foreach( $show->CurrentShowings as $showing ) {
             $showDateTime = $showing->StartDate;
             $showDate = date('l, M j', strtotime($showDateTime));
             $showTime = date('g:i a', strtotime($showDateTime));
             $showDateTime = date('Y-m-d H:i:s', strtotime($showDateTime));
+
+            // $array_screenings = array("film_id" => $film_id, "screening" => $showDateTime);
+
+            array_push($array_screenings, array("film_id" => $film_id, "screening" => $showDateTime) );
+
+            $screenings_table_name = $wpdb->prefix . 'gi_screenings';
+
+            $result = $wpdb->get_results( "SELECT * FROM $screenings_table_name WHERE film_id = $film_id AND screening = '$showDateTime'");
+
+            if ( !count($result) ) {
+                $wpdb->insert(
+                    $screenings_table_name,
+                    array(
+                        'film_id' => $film_id,
+                        'screening' => $showDateTime,
+                    )
+                );
+            }
+
             if ($screeningsParagraph == '<p>') {
                 $screeningsParagraph .= $showDate . ': ' . $showTime;
                 $screening_first = $showDateTime;
@@ -93,6 +118,10 @@ function shows_importer() {
         }
         $screeningsParagraph .= '</p>';
         $screening_last = $showDateTime;
+
+        echo '<pre style="font-size: .75em">';
+        print_r($array_screenings);
+        echo '</pre>';
 
         $existingFilms = get_posts([
             'post_type'  => 'film',

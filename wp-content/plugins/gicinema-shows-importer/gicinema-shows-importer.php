@@ -18,8 +18,6 @@ add_shortcode( 'import_shows', 'shows_importer' );
 
 add_action( 'shows_importer_hook', 'shows_importer' );
 
-// wp_next_scheduled( 'shows_importer_hook' );
-
 if ( ! wp_next_scheduled( 'shows_importer_hook' ) ) {
     wp_schedule_event( time(), 'half_hourly', 'shows_importer_hook' );
 }
@@ -33,3 +31,18 @@ function shows_importer_hook_interval( $schedules ) {
     );
     return $schedules;
 }
+
+function gicinema_shows_importer_create_db() {
+    global $wpdb;
+    $charset_collate = $wpdb->get_charset_collate();
+    $table_name = $wpdb->prefix . 'gi_screenings';
+    $sql = "CREATE TABLE $table_name (
+     screening_id INTEGER NOT NULL AUTO_INCREMENT,
+     film_id INTEGER,
+     screening TEXT,
+     PRIMARY KEY  (screening_id)
+    ) $charset_collate;";
+    require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+    dbDelta( $sql );
+}
+register_activation_hook( __FILE__, 'gicinema_shows_importer_create_db' );
