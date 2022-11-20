@@ -30,9 +30,10 @@
           "poster info"
           "poster description"
           "links description"
+          "links screenings"
           "links screenings";
     grid-template-columns: 1fr 3fr;
-    grid-template-rows: min-content min-content min-content 1fr;
+    grid-template-rows: min-content min-content min-content min-content min-content min-content;
   }
 }
 
@@ -79,7 +80,7 @@
   grid-area: links;
 }
 
-.film-teaser--content {
+.film-teaser--description {
   grid-area: description;
   padding: 0;
   margin: 0;
