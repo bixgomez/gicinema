@@ -57,57 +57,53 @@ function film_teaser_function($atts = [], $content = null, $tag = '') {
       // open box
       $output .= '<div class="film-teaser">';
 
-        $output .= '<div class="film-teaser--sidebar">';
+        $output .= '<div class="film-teaser--poster">';
           $output .= do_shortcode('[film_poster]');
-          $output .= do_shortcode('[film_trailer]');
+        $output .= '</div><!-- /.film-teaser--poster -->';
+
+        $output .= '<div class="film-teaser--links">';
+          $output .= '<div class="film-teaser--trailer">';
+            $output .= do_shortcode('[film_trailer]');
+          $output .= '</div><!-- /.film-teaser--trailer -->';
+
           $output .= '<div class="film-teaser--buy-tickets">';
             $output .= '<a class="film-trailer" href="' . $ticket_purchase_link . '">Buy Tickets</a>';
           $output .= '</div><!-- /.film-teaser--buy-tickets -->';
-        $output .= '</div><!-- /.film-teaser--sidebar -->';
+        $output .= '</div><!-- /.film-teaser--links -->';
 
-        $output .= '<div class="film-teaser--main">';
+        $output .= '<h2 class="film-teaser--title"><a href="' . $this_link . '">' . get_the_title() . '</a></h2>';
 
-          $output .= '<h2 class="film-teaser--title"><a href="' . $this_link . '">' . get_the_title() . '</a></h2>';
-
-          $output .= '<div class="film-teaser--film-info">';
-
-            $output .= '<div class="film-teaser--director">';
-              $output .= $this_director;
-              if ($this_director && $this_year) { $output .= ' · '; }
-              $output .= $this_year;
-              if ($this_country) { $output .= ' · '; }
-              $output .= $this_country;
-            $output .= '</div><!-- /.film-teaser--director -->';
-
-            $output .= '<div class="film-teaser--format">';
-              $output .= $this_length;
-              if ($this_length && $this_format) {  $output .= ' · '; }
-              $output .= $this_format;
-            $output .= '</div><!-- /.film-teaser--format -->';
-
-            $output .= '<div class="film-teaser--screening-range">';
-              $first_screening_disp = date('M j', strtotime($first_screening));
-              $last_screening_disp = date('M j', strtotime($last_screening));
+        $output .= '<div class="film-teaser--film-info">';
+          $output .= '<div class="film-teaser--director">';
+            $output .= $this_director;
+            if ($this_director && $this_year) { $output .= ' · '; }
+            $output .= $this_year;
+            if ($this_country) { $output .= ' · '; }
+            $output .= $this_country;
+          $output .= '</div><!-- /.film-teaser--director -->';
+          $output .= '<div class="film-teaser--format">';
+            $output .= $this_length;
+            if ($this_length && $this_format) {  $output .= ' · '; }
+            $output .= $this_format;
+          $output .= '</div><!-- /.film-teaser--format -->';
+          $output .= '<div class="film-teaser--screening-range">';
+            $first_screening_disp = date('M j', strtotime($first_screening));
+            $last_screening_disp = date('M j', strtotime($last_screening));
             $output .= 'Playing ' . $first_screening_disp;
-
             if ( $last_screening_disp != $first_screening_disp ) {
               $output .= ' through ' . $last_screening_disp;
             }
-
           $output .= '</div><!-- /.film-teaser--screening-range -->';
+        $output .= '</div><!-- /.film-teaser--film-info -->';
 
-          $output .= '</div><!-- /.film-teaser--film-info -->';
+        $output .= '<div class="film-teaser--content">';
+          $output .= $this_description;
+          $output .= $this_addl_info;
+        $output .= '</div><!-- /.film-teaser--content -->';
 
-          $output .= '<div class="film-teaser--content">';
-            $output .= $this_description;
-            $output .= $this_addl_info;
-          $output .= '</div><!-- /.film-teaser--content -->';
-
-          $output .= '<div class="film-teaser--screenings">';
-            $output .= do_shortcode('[film_showtimes]');
-          $output .= '</div><!-- /.film-teaser--screenings -->';
-
-        $output .= '</div><!-- /.film-teaser--main -->';
+        $output .= '<div class="film-teaser--screenings">';
+          $output .= do_shortcode('[film_showtimes]');
+        $output .= '</div><!-- /.film-teaser--screenings -->';
 
       // close box
       $output .= '</div><!-- /.film-teaser -->';
