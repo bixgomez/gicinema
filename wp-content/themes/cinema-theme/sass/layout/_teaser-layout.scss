@@ -14,8 +14,8 @@
           "screenings screenings";
   grid-template-columns: 1fr 1.5fr;
   grid-template-rows: min-content min-content 1fr min-content min-content;
-  column-gap: 10px;
-  row-gap: 10px;
+  column-gap: 1em;
+  row-gap: 1.25em;
   margin: 1em 0;
   padding: 0;
 
@@ -25,15 +25,25 @@
 
   @include breakpoint($md) {
     column-gap: 1.5em;
+    row-gap: 1em;
     grid-template-areas:
-          "poster title"
-          "poster info"
-          "poster description"
-          "links description"
-          "links screenings"
-          "links screenings";
+          "sidebar title"
+          "sidebar info"
+          "sidebar description"
+          "sidebar screenings";
     grid-template-columns: 1fr 3fr;
-    grid-template-rows: min-content min-content min-content min-content min-content min-content;
+    grid-template-rows: min-content min-content min-content min-content;
+  }
+}
+
+.film-teaser--sidebar {
+  display: contents;
+
+  @include breakpoint($md) {
+    grid-area: sidebar;
+    display: flex;
+    flex-direction: column;
+    grid-gap: 1em;
   }
 }
 
@@ -71,9 +81,13 @@
 .film-teaser--film-info {
   grid-area: info;
   padding: 0;
-  margin: 0;
-  font-size: .9em;
+  margin: -.75em 0 0;
+  font-size: 1em;
   font-weight: $font-weight--bold;
+
+  @include breakpoint($md) {
+    font-size: .9em;
+  }
 }
 
 .film-teaser--links {

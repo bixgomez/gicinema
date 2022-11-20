@@ -54,25 +54,34 @@ function film_teaser_function($atts = [], $content = null, $tag = '')
             $this_addl_info = get_field('additional_info', $post_id);
             $this_addl_info = wpautop($this_addl_info, false);
 
-            // open box
+            // Open "teaser" div.
             $output .= '<div class="film-teaser">';
 
+            // Open "sidebar" div.
+            $output .= '<div class="film-teaser--sidebar">';
+
+            // "poster"
             $output .= '<div class="film-teaser--poster">';
             $output .= do_shortcode('[film_poster]');
             $output .= '</div><!-- /.film-teaser--poster -->';
 
+            // "links"
             $output .= '<div class="film-teaser--links">';
             $output .= '<div class="film-teaser--trailer">';
             $output .= do_shortcode('[film_trailer]');
             $output .= '</div><!-- /.film-teaser--trailer -->';
-
             $output .= '<div class="film-teaser--buy-tickets">';
             $output .= '<a class="film-trailer" href="' . $ticket_purchase_link . '">Buy Tickets</a>';
             $output .= '</div><!-- /.film-teaser--buy-tickets -->';
             $output .= '</div><!-- /.film-teaser--links -->';
 
+            // Close "sidebar" div.
+            $output .= '</div><!-- /.film-teaser--sidebar -->';
+
+            // "Title"
             $output .= '<h2 class="film-teaser--title"><a href="' . $this_link . '">' . get_the_title() . '</a></h2>';
 
+            // "Info"
             $output .= '<div class="film-teaser--film-info">';
             $output .= '<div class="film-teaser--director">';
             $output .= $this_director;
@@ -102,16 +111,18 @@ function film_teaser_function($atts = [], $content = null, $tag = '')
             $output .= '</div><!-- /.film-teaser--screening-range -->';
             $output .= '</div><!-- /.film-teaser--film-info -->';
 
+            // "Description"
             $output .= '<div class="film-teaser--description">';
             $output .= $this_description;
             $output .= $this_addl_info;
             $output .= '</div><!-- /.film-teaser--description -->';
 
+            // "Screenings"
             $output .= '<div class="film-teaser--screenings">';
             $output .= do_shortcode('[film_showtimes]');
             $output .= '</div><!-- /.film-teaser--screenings -->';
 
-            // close box
+            // Close "Teaser" div.
             $output .= '</div><!-- /.film-teaser -->';
 
         } /* end while */
