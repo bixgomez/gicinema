@@ -43,7 +43,7 @@
 					<?php echo wp_kses_post( __( 'List of files that can be optimized:', 'webp-converter-for-media' ) ); ?>
 				</p>
 				<div class="webpcTree__output" data-tree>
-					<p class="webpcContent__loader">
+					<p class="webpcContent__loader" data-tree-loader>
 						<?php echo wp_kses_post( sprintf( __( 'Loading, please wait', 'webp-converter-for-media' ) ) ); ?>
 					</p>
 					<div class="webpcTree__error" data-api-stats-error hidden></div>
@@ -98,7 +98,8 @@
 									);
 									?>
 								</div>
-								<div class="webpcLoader__columnOverlayDesc webpcLoader__columnOverlayDesc--loading">
+								<div class="webpcLoader__columnOverlayDesc webpcLoader__columnOverlayDesc--loading"
+									data-counter-loader>
 									<?php
 									echo sprintf(
 									/* translators: %s: break line tag */
