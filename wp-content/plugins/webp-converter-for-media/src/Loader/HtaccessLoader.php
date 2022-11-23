@@ -159,6 +159,8 @@ class HtaccessLoader extends LoaderAbstract {
 			return $content;
 		}
 
+		$inheritance_active = ! ( in_array( ExtraFeaturesOption::OPTION_VALUE_REWRITE_INHERIT, $settings[ ExtraFeaturesOption::OPTION_NAME ] ) );
+
 		$document_root = PathsGenerator::get_rewrite_root();
 		$root_suffix   = PathsGenerator::get_rewrite_path();
 		$output_path   = apply_filters( 'webpc_dir_name', '', 'webp' );
@@ -169,7 +171,7 @@ class HtaccessLoader extends LoaderAbstract {
 		foreach ( $this->format_factory->get_mime_types() as $format => $mime_type ) {
 			$content .= '<IfModule mod_rewrite.c>' . PHP_EOL;
 			$content .= '  RewriteEngine On' . PHP_EOL;
-			if ( apply_filters( 'webpc_htaccess_mod_rewrite_inherit', true ) === true ) {
+			if ( apply_filters( 'webpc_htaccess_mod_rewrite_inherit', $inheritance_active ) === true ) {
 				$content .= '  RewriteOptions Inherit' . PHP_EOL;
 			}
 

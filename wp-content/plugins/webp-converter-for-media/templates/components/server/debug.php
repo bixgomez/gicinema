@@ -14,6 +14,10 @@
  * @package Converter for Media
  */
 
+use WebpConverter\Error\Notice\AccessTokenInvalidNotice;
+use WebpConverter\Service\OptionsAccessManager;
+use WebpConverter\Service\TokenValidator;
+
 ?>
 <h4>Errors debug</h4>
 <table>
@@ -66,5 +70,13 @@
 			<?php echo esc_html( json_encode( $errors_codes ) ?: '-' ); ?>
 		</td>
 	</tr>
+	<?php if ( in_array( AccessTokenInvalidNotice::ERROR_KEY, $errors_codes ) ) : ?>
+		<tr>
+			<td class="e">Token validation request</td>
+			<td class="v">
+				<?php echo esc_html( json_encode( OptionsAccessManager::get_option( TokenValidator::REQUEST_INFO_OPTION ) ) ?: '-' ); ?>
+			</td>
+		</tr>
+	<?php endif; ?>
 	</tbody>
 </table>

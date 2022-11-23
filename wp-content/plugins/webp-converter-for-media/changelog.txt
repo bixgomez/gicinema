@@ -1,5 +1,12 @@
 == Changelog ==
 
+= 5.5.0 (2022-11-22) =
+* `[Removed]` Error logging to debug.log file
+* `[Changed]` Content of welcome notice after plugin installation
+* `[Added]` Exclusion of directories from converting images in plugin settings
+* `[Added]` Instruction in "Conversion strategy" field in plugin settings
+* `[Added]` Possibility to disable rewrite inheritance in .htaccess files in plugin settings
+
 = 5.4.2 (2022-11-14) =
 * `[Added]` Possibility to re-convert files that have not been successfully converted (service mode must be active)
 
