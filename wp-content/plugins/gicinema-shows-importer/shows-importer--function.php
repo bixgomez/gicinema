@@ -83,17 +83,19 @@ function shows_importer() {
         $screeningsParagraph = '<p>';
         foreach( $show->CurrentShowings as $showing ) {
             $showDateTime = $showing->StartDate;
-            $showDate = date('l, M j', strtotime($showDateTime));
-            $showTime = date('g:i a', strtotime($showDateTime));
-            $showDateTime = date('Y-m-d H:i:s', strtotime($showDateTime));
 
-            // $array_screenings = array("film_id" => $film_id, "screening" => $showDateTime);
+            $showDate =    date('l, M j', strtotime($showDateTime));
+            $showDate_db = date('Y-m-d', strtotime($showDateTime));
+            $showTime =    date('g:i a', strtotime($showDateTime));
+            $showTime_db = date('H:i:s', strtotime($showDateTime));
+
+            $showDateTime = date('Y-m-d H:i:s', strtotime($showDateTime));
 
             array_push($array_screenings, array("film_id" => $film_id, "screening" => $showDateTime) );
 
             $screenings_table_name = $wpdb->prefix . 'gi_screenings';
 
-            $result = $wpdb->get_results( "SELECT * FROM $screenings_table_name WHERE film_id = $film_id AND screening = '$showDateTime'");
+            $result = $wpdb->get_results("SELECT * FROM $screenings_table_name WHERE film_id = $film_id AND screening = '$showDateTime'");
 
             if ( !count($result) ) {
                 $wpdb->insert(
@@ -101,6 +103,8 @@ function shows_importer() {
                     array(
                         'film_id' => $film_id,
                         'screening' => $showDateTime,
+                        'screening_date' => $showDate_db,
+                        'screening_time' => $showTime_db,
                     )
                 );
             }
@@ -146,6 +150,7 @@ function shows_importer() {
         echo '$screening_last = ' .  $screening_last . '<hr>';
         echo '$screeningsParagraph = ' .  $screeningsParagraph . '<hr>';
 
+        // If no existing films were found, create a new film.
         if ( empty($existingFilms) ) {
             echo '<b><i>Creating new film...</i></b><br>';
             // Create post object
@@ -156,6 +161,7 @@ function shows_importer() {
             );
             // Insert the post into the database
             $newMovieID = wp_insert_post($newMovie);
+            add_post_meta($newMovieID, 'agile_film_id', $film_id, true);
             add_post_meta($newMovieID, 'description', $short_description, true);
             add_post_meta($newMovieID, 'film_length', $duration, true);
             add_post_meta($newMovieID, 'ticket_purchase_link', $info_link, true);
@@ -204,6 +210,7 @@ function shows_importer() {
                 $existingFilm = get_post( $existingFilm );
                 $existingFilmID = $existingFilm->ID;
                 echo '<h5 style="margin-bottom: 0;"><i>Updating existing film ('.$existingFilmID.')</i></h5>';
+                update_post_meta($existingFilmID, 'agile_film_id', $film_id);
                 update_post_meta($existingFilmID, 'description', $short_description);
                 update_post_meta($existingFilmID, 'film_length', $duration);
                 update_post_meta($existingFilmID, 'ticket_purchase_link', $info_link);

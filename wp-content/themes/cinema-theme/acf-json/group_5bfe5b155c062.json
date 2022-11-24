@@ -6,6 +6,7 @@
             "key": "field_5bff7a79ae6c4",
             "label": "Running Time",
             "name": "film_length",
+            "aria-label": "",
             "type": "text",
             "instructions": "",
             "required": 0,
@@ -25,6 +26,7 @@
             "key": "field_5bfe5b1dea1e4",
             "label": "Year(s)",
             "name": "film_year",
+            "aria-label": "",
             "type": "text",
             "instructions": "",
             "required": 0,
@@ -44,6 +46,7 @@
             "key": "field_5e97f438fdc0f",
             "label": "Country\/ies",
             "name": "country",
+            "aria-label": "",
             "type": "text",
             "instructions": "",
             "required": 0,
@@ -63,6 +66,7 @@
             "key": "field_5bff8cd994094",
             "label": "Format(s)",
             "name": "format",
+            "aria-label": "",
             "type": "text",
             "instructions": "",
             "required": 0,
@@ -82,6 +86,7 @@
             "key": "field_5bff368e81a4f",
             "label": "Director(s)",
             "name": "film_director",
+            "aria-label": "",
             "type": "text",
             "instructions": "",
             "required": 0,
@@ -101,6 +106,7 @@
             "key": "field_617b575d576aa",
             "label": "Film Poster URL",
             "name": "poster_url",
+            "aria-label": "",
             "type": "text",
             "instructions": "",
             "required": 0,
@@ -120,6 +126,7 @@
             "key": "field_617b57b6bd992",
             "label": "Trailer YouTube ID",
             "name": "trailer_url",
+            "aria-label": "",
             "type": "text",
             "instructions": "",
             "required": 0,
@@ -139,6 +146,7 @@
             "key": "field_618740c12c215",
             "label": "Ticket Purchase Link",
             "name": "ticket_purchase_link",
+            "aria-label": "",
             "type": "url",
             "instructions": "",
             "required": 0,
@@ -155,6 +163,7 @@
             "key": "field_617b2f8e4b8c4",
             "label": "Screenings",
             "name": "screenings",
+            "aria-label": "",
             "type": "repeater",
             "instructions": "",
             "required": 0,
@@ -168,12 +177,14 @@
             "min": 0,
             "max": 0,
             "layout": "table",
-            "button_label": "",
+            "button_label": "Add Row",
+            "rows_per_page": 20,
             "sub_fields": [
                 {
                     "key": "field_617b2fba4b8c5",
                     "label": "Screening",
                     "name": "screening",
+                    "aria-label": "",
                     "type": "date_time_picker",
                     "instructions": "",
                     "required": 0,
@@ -185,12 +196,14 @@
                     },
                     "display_format": "m\/d\/Y g:i a",
                     "return_format": "m\/d\/Y g:i a",
-                    "first_day": 0
+                    "first_day": 0,
+                    "parent_repeater": "field_617b2f8e4b8c4"
                 },
                 {
                     "key": "field_617b30274b8c6",
                     "label": "Streening Ticket Link",
                     "name": "screening_ticket_link",
+                    "aria-label": "",
                     "type": "url",
                     "instructions": "",
                     "required": 0,
@@ -201,7 +214,8 @@
                         "id": ""
                     },
                     "default_value": "",
-                    "placeholder": ""
+                    "placeholder": "",
+                    "parent_repeater": "field_617b2f8e4b8c4"
                 }
             ]
         },
@@ -209,6 +223,7 @@
             "key": "field_617b5577d628c",
             "label": "Screenings (as paragraph)",
             "name": "film_screenings",
+            "aria-label": "",
             "type": "textarea",
             "instructions": "",
             "required": 0,
@@ -228,6 +243,7 @@
             "key": "field_617cc0dc7ebdb",
             "label": "First Screening",
             "name": "screening_first",
+            "aria-label": "",
             "type": "date_time_picker",
             "instructions": "",
             "required": 0,
@@ -245,6 +261,7 @@
             "key": "field_617cc10b7ebdc",
             "label": "Last Screening",
             "name": "screening_last",
+            "aria-label": "",
             "type": "date_time_picker",
             "instructions": "",
             "required": 0,
@@ -257,6 +274,26 @@
             "display_format": "m\/d\/Y g:i a",
             "return_format": "m\/d\/Y g:i a",
             "first_day": 0
+        },
+        {
+            "key": "field_637ef5f46e748",
+            "label": "Agile Film ID",
+            "name": "agile_film_id",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
         }
     ],
     "location": [
@@ -276,5 +313,6 @@
     "hide_on_screen": "",
     "active": true,
     "description": "",
-    "modified": 1636253933
+    "show_in_rest": 0,
+    "modified": 1669266074
 }

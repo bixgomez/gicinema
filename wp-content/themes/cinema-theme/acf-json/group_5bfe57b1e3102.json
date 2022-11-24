@@ -6,6 +6,7 @@
             "key": "field_5f386e81c7a50",
             "label": "Visibility based on",
             "name": "visibility_based_on",
+            "aria-label": "",
             "type": "radio",
             "instructions": "",
             "required": 1,
@@ -30,6 +31,7 @@
             "key": "field_5f386dc1fb988",
             "label": "Display From",
             "name": "display_from",
+            "aria-label": "",
             "type": "date_picker",
             "instructions": "When set, this film will appear on the home page starting on this date.  Overrides default visibility derived from screening dates.",
             "required": 0,
@@ -55,6 +57,7 @@
             "key": "field_5f386e45fb989",
             "label": "Display To",
             "name": "display_to",
+            "aria-label": "",
             "type": "date_picker",
             "instructions": "When set, this film will appear on the home page until (and including) this date.  Overrides default visibility derived from screening dates.",
             "required": 0,
@@ -80,6 +83,7 @@
             "key": "field_5bfe57b670f0e",
             "label": "Screenings",
             "name": "screenings",
+            "aria-label": "",
             "type": "repeater",
             "instructions": "",
             "required": 0,
@@ -93,12 +97,14 @@
             "min": 0,
             "max": 0,
             "layout": "table",
-            "button_label": "",
+            "button_label": "Add Row",
+            "rows_per_page": 20,
             "sub_fields": [
                 {
                     "key": "field_5bfe57c470f0f",
                     "label": "Screening Date",
                     "name": "screening_date",
+                    "aria-label": "",
                     "type": "date_picker",
                     "instructions": "",
                     "required": 1,
@@ -110,12 +116,14 @@
                     },
                     "display_format": "m\/j\/Y",
                     "return_format": "m\/j\/Y",
-                    "first_day": 0
+                    "first_day": 0,
+                    "parent_repeater": "field_5bfe57b670f0e"
                 },
                 {
                     "key": "field_5bfe580c70f10",
                     "label": "Screening Time",
                     "name": "screening_time",
+                    "aria-label": "",
                     "type": "time_picker",
                     "instructions": "",
                     "required": 0,
@@ -126,7 +134,8 @@
                         "id": ""
                     },
                     "display_format": "g:i a",
-                    "return_format": "g:i a"
+                    "return_format": "g:i a",
+                    "parent_repeater": "field_5bfe57b670f0e"
                 }
             ]
         },
@@ -134,6 +143,7 @@
             "key": "field_5f2e18bd4c526",
             "label": "Custom Screenings Text",
             "name": "custom_screenings_text",
+            "aria-label": "",
             "type": "textarea",
             "instructions": "This text will appear above the showtimes.",
             "required": 0,
@@ -153,6 +163,7 @@
             "key": "field_5c2591a32e6c7",
             "label": "First Screening",
             "name": "first_screening",
+            "aria-label": "",
             "type": "number",
             "instructions": "",
             "required": 0,
@@ -174,6 +185,7 @@
             "key": "field_5c2591b12e6c8",
             "label": "Last Screening",
             "name": "last_screening",
+            "aria-label": "",
             "type": "number",
             "instructions": "",
             "required": 0,
@@ -195,6 +207,7 @@
             "key": "field_5c28667b48455",
             "label": "All Screenings",
             "name": "all_screenings",
+            "aria-label": "",
             "type": "textarea",
             "instructions": "",
             "required": 0,
@@ -214,6 +227,7 @@
             "key": "field_5f83d6073a2cf",
             "label": "All Dates",
             "name": "all_dates",
+            "aria-label": "",
             "type": "textarea",
             "instructions": "",
             "required": 0,
@@ -247,5 +261,6 @@
     "hide_on_screen": "",
     "active": false,
     "description": "",
-    "modified": 1636253184
+    "show_in_rest": false,
+    "modified": 1669266078
 }

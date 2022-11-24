@@ -6,6 +6,7 @@
             "key": "field_5ea12b817832a",
             "label": "Sidebar Content",
             "name": "sidebar_content",
+            "aria-label": "",
             "type": "wysiwyg",
             "instructions": "",
             "required": 0,
@@ -37,7 +38,8 @@
     "label_placement": "top",
     "instruction_placement": "label",
     "hide_on_screen": "",
-    "active": 1,
+    "active": true,
     "description": "",
-    "modified": 1587625498
+    "show_in_rest": false,
+    "modified": 1669266068
 }

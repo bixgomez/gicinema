@@ -6,6 +6,7 @@
             "key": "field_5ea122e35f4df",
             "label": "Start Date (optional)",
             "name": "start_date",
+            "aria-label": "",
             "type": "date_picker",
             "instructions": "Date on which this alert should start.",
             "required": 0,
@@ -23,6 +24,7 @@
             "key": "field_5ea123e35f4e0",
             "label": "End Date (optional)",
             "name": "end_date",
+            "aria-label": "",
             "type": "date_picker",
             "instructions": "Date on which this alert should end.",
             "required": 0,
@@ -54,5 +56,6 @@
     "hide_on_screen": "",
     "active": true,
     "description": "",
-    "modified": 1636245272
+    "show_in_rest": false,
+    "modified": 1669266068
 }

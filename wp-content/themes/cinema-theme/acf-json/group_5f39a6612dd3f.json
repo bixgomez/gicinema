@@ -6,6 +6,7 @@
             "key": "field_5f39a66eea224",
             "label": "Additional Info",
             "name": "additional_info",
+            "aria-label": "",
             "type": "wysiwyg",
             "instructions": "",
             "required": 0,
@@ -42,5 +43,6 @@
     ],
     "active": true,
     "description": "",
-    "modified": 1636245382
+    "show_in_rest": false,
+    "modified": 1669266067
 }
