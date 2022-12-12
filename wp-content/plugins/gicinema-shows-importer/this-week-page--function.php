@@ -14,20 +14,26 @@ function this_week_page_updater() {
     $week_start = rangeWeek($todays_date)['start'];
     $week_end = rangeWeek($todays_date)['end'];
     $this_week_dates = getDatesFromRange($week_start, $week_end);
+
     echo "<pre>";
     print_r($this_week_dates);
     echo "</pre>";
 
     $this_week_page_content .= '<ul class="list list--week">';
+
     foreach ($this_week_dates as $this_week_date) {
         $result = $wpdb->get_results("SELECT * FROM $screenings_table_name WHERE screening_date = '$this_week_date' ORDER BY screening_time");
+
+        $screening_date_display = strtotime($this_week_date);
+        $screening_date_display = date("l, F j, Y", $screening_date_display);
+
         if ($result) {
             // echo '<h5>Adding date to page</h5>';
 
             echo '<hr>';
             echo 'Date: ' . $this_week_date . '<br>';
 
-            $this_week_page_content .= '<li>' . $this_week_date . '<ul>';
+            $this_week_page_content .= '<li>' . $screening_date_display . '<ul>';
             foreach ($result as $row) {
                 echo 'Film ID: ' . $row->film_id . ', ';
                 echo $row->screening_date . ', ';
@@ -43,7 +49,9 @@ function this_week_page_updater() {
                 if ($getFilmInfo) {
                     // echo '<h5>Adding films to date</h5>';
                     echo $getFilmInfo[0]->post_title;
-                    $this_week_page_content .= '<li>'. $row->screening_time . ': ' . $getFilmInfo[0]->post_title . '</li>';
+                    $screening_time_display = strtotime($row->screening_time);
+                    $screening_time_display = date("g:i a", $screening_time_display);
+                    $this_week_page_content .= '<li>'. $screening_time_display . ': ' . $getFilmInfo[0]->post_title . '</li>';
                     echo '<pre>';
                     print_r($getFilmInfo);
                     echo '</pre>';
