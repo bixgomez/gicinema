@@ -4,7 +4,7 @@ Contributors: johnbillion, scompt
 Tags: cron, wp-cron, crontrol, debug  
 Requires at least: 4.2  
 Tested up to: 6.1  
-Stable tag: 1.15.0  
+Stable tag: 1.15.1  
 Requires PHP: 5.6  
 Donate link: https://github.com/sponsors/johnbillion
 
@@ -39,7 +39,7 @@ I maintain several other plugins for developers. Check them out:
 
 ### Does this plugin work with PHP 8?
 
-Yes, it's actively tested and working up to PHP 8.1.
+Yes, it's actively tested and working up to PHP 8.2.
 
 ### I get the error "There was a problem spawning a call to the WP-Cron system on your site". How do I fix this?
 
@@ -168,6 +168,11 @@ The photo was taken by <a href="https://www.flickr.com/photos/michaelpardo/21453
 3. New cron schedules can be added, giving plugin developers more options when scheduling events<br>![](.wordpress-org/screenshot-3.png)
 
 ## Changelog ##
+
+### 1.15.1 ###
+
+* Confirms the plugin is compatible with PHP 8.2
+* Increases compatibility with other plugins that include very old Composer autoloader implementations
 
 ### 1.15.0 ###
 
@@ -343,10 +348,4 @@ The photo was taken by <a href="https://www.flickr.com/photos/michaelpardo/21453
 
 - Tweaks to i18n and date and args formatting
 - Properly escape the `crontrol_message` query var (props Julio Potier)
-
-
-### 1.2.2 ###
-
-- Added `wp crontrol run-event` and `wp crontrol delete-event` WP-CLI commands
-- Clarify language regarding hooks/entries/events
 
