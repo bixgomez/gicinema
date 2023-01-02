@@ -1,7 +1,6 @@
 <?php
 
-function film_teaser_function($atts = [], $content = null, $tag = '')
-{
+function film_teaser_function($atts = [], $content = null, $tag = '') {
 
     // normalize attribute keys, lowercase
     $atts = array_change_key_case((array)$atts, CASE_LOWER);
@@ -26,12 +25,12 @@ function film_teaser_function($atts = [], $content = null, $tag = '')
 
             $query->the_post();
 
-            $this_link = get_permalink($post_id);
+            $this_link = get_permalink();
 
-            $first_screening = get_field('screening_first', $post_id);
-            $last_screening = get_field('screening_last', $post_id);
+            $first_screening = get_field('screening_first');
+            $last_screening = get_field('screening_last');
 
-            $ticket_purchase_link = get_field('ticket_purchase_link', $post_id);
+            $ticket_purchase_link = get_field('ticket_purchase_link');
 
             $this_director = do_shortcode('[film_director]');
             $this_director = (string)$this_director;
@@ -48,10 +47,10 @@ function film_teaser_function($atts = [], $content = null, $tag = '')
             $this_format = do_shortcode('[film_format]');
             $this_format = (string)$this_format;
 
-            $this_description = get_field('description', $post_id);
+            $this_description = get_field('description');
             $this_description = wpautop($this_description, false);
 
-            $this_addl_info = get_field('additional_info', $post_id);
+            $this_addl_info = get_field('additional_info');
             $this_addl_info = wpautop($this_addl_info, false);
 
             // Open "teaser" div.
@@ -131,8 +130,7 @@ function film_teaser_function($atts = [], $content = null, $tag = '')
     return $output;
 }
 
-function film_teaser_init()
-{
+function film_teaser_init() {
     add_shortcode('film_teaser', 'film_teaser_function');
 }
 
