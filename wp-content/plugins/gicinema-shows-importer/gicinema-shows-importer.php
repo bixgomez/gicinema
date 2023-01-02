@@ -12,11 +12,6 @@
 // If this file is called directly, abort!
 defined('ABSPATH') or die('Unauthorized Access');
 
-
-
-
-
-
 require_once "shows-importer--function.php";
 add_shortcode('import_shows', 'shows_importer');
 add_action('shows_importer_hook', 'shows_importer');
@@ -24,27 +19,12 @@ if (!wp_next_scheduled('shows_importer_hook')) {
     wp_schedule_event(time(), 'half_hourly', 'shows_importer_hook');
 }
 
-
-
-
-
-
-
-
-
 require_once "this-week-page--function.php";
 add_shortcode('update_this_week_page', 'this_week_page_updater');
 add_action('this_week_page_updater_hook', 'this_week_page_updater');
 if (!wp_next_scheduled('this_week_page_updater_hook')) {
     wp_schedule_event(time(), 'half_hourly', 'this_week_page_updater_hook');
 }
-
-
-
-
-
-
-
 
 // Custom interval
 add_filter('cron_schedules', 'shows_importer_hook_interval');

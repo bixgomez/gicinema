@@ -4,6 +4,8 @@ function shows_importer() {
 
     global $wpdb;
 
+    $screenings_table_name = $wpdb->prefix . 'gi_screenings';
+
     // $url = 'https://prod5.agileticketing.net/websales/feed.ashx?guid=52c1280f-be14-4579-8ddf-4b3dadbf96c7&showslist=true&withmedia=true&format=json';
     $url = 'https://prod5.agileticketing.net/websales/feed.ashx?guid=52c1280f-be14-4579-8ddf-4b3dadbf96c7&showslist=true&withmedia=true&format=json&v=latest';
     $args = array( 'method' => 'GET' );
@@ -76,9 +78,13 @@ function shows_importer() {
         $screening_first = '';
         $screening_last = '';
 
-        echo '<b>Initiating array_screenings for film '.$film_id.' </b>';
+        echo '<b>Initiating array_screenings for film '.$film_id.' </b><br>';
         $array_screenings = array_fill_keys(
-            array('film_id', 'screening'), '');
+            array('film_id', 'screening'), ''
+        );
+
+        echo '<i>First, delete all screenings for this film.</i><br>';
+        $result = $wpdb->get_results("DELETE FROM $screenings_table_name WHERE film_id = $film_id");
 
         $screeningsParagraph = '<p>';
         foreach( $show->CurrentShowings as $showing ) {
@@ -93,8 +99,6 @@ function shows_importer() {
 
             array_push($array_screenings, array("film_id" => $film_id, "screening" => $showDateTime) );
 
-            $screenings_table_name = $wpdb->prefix . 'gi_screenings';
-
             $result = $wpdb->get_results("SELECT * FROM $screenings_table_name WHERE film_id = $film_id AND screening = '$showDateTime'");
 
             if ( !count($result) ) {
@@ -108,7 +112,6 @@ function shows_importer() {
                     )
                 );
             }
-
             if ($screeningsParagraph == '<p>') {
                 $screeningsParagraph .= $showDate . ': ' . $showTime;
                 $screening_first = $showDateTime;
@@ -123,7 +126,8 @@ function shows_importer() {
         $screeningsParagraph .= '</p>';
         $screening_last = $showDateTime;
 
-        echo '<pre style="font-size: .75em">';
+        echo '<h5 style="margin: .75em 0 .25em;">The Screenings Array:</h5>';
+        echo '<pre style="padding: 1em; margin-top: 0; background: #333; color: #FFF; font-size: 1em; font-weight: normal;">';
         print_r($array_screenings);
         echo '</pre>';
 
