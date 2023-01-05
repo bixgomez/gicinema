@@ -25,3 +25,4 @@ wp-config.php
 *sql.gz
 debug.log
 uploads-webpc
+/local-xdebuginfo.php
