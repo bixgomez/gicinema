@@ -424,3 +424,8 @@ add_filter( 'redirect_canonical', 'remove_redirect_guess_404_permalink' );
  * Another 404 fix: Prevent WP from redirecting explicitly deleted stuff to nearest matching URL.
  */
 remove_action( 'template_redirect', 'wp_old_slug_redirect' );
+
+add_action( 'init', 'register_acf_blocks' );
+function register_acf_blocks() {
+	register_block_type( __DIR__ . '/blocks/film' );
+}

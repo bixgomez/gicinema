@@ -86,11 +86,3 @@ function gicinema_shows_importer_page_creator() {
     }
 }
 register_activation_hook(__FILE__, 'gicinema_shows_importer_page_creator');
-
-/**
- * Load Blocks
- */
-function gicinema_load_blocks() {
-	register_block_type( get_template_directory_uri() . '/blocks/film_teaser/block.json' );
-}
-add_action( 'init', 'gicinema_load_blocks' );
