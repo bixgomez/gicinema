@@ -425,7 +425,7 @@ add_filter( 'redirect_canonical', 'remove_redirect_guess_404_permalink' );
  */
 remove_action( 'template_redirect', 'wp_old_slug_redirect' );
 
-add_action( 'init', 'register_acf_blocks' );
-function register_acf_blocks() {
-	register_block_type( __DIR__ . '/blocks/film' );
-}
+/**
+ * Register ACF Blocks
+ */
+require get_template_directory() . '/blocks/register-blocks.php';

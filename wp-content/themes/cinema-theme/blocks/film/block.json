@@ -1,14 +1,15 @@
 {
-  "name": "acf/film",
+  "name": "film",
   "title": "Film",
-  "description": "A custom film block.",
-  "style": ["file:./film.css"],
-  "category": "formatting",
+  "description": "Displays a film card/teaser.",
+  "category": "theme",
+  "apiVersion": 2,
   "icon": "admin-comments",
-  "keywords": ["film", "quote"],
   "acf": {
-    "mode": "preview",
-    "renderTemplate": "film.php"
+    "mode": "edit",
+    "renderTemplate": "blocks/film/block.php"
   },
-  "align": "full"
+  "supports": {
+    "anchor": true
+  }
 }
