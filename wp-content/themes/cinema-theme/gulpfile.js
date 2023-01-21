@@ -4,7 +4,7 @@
 // $ npm install --global gulp-cli
 // $ npm install
 
-const PROJECT_URL   = 'https://grandillusioncinema.lndo.site';
+const PROJECT_URL   = 'https://gicinema.local';
 const ROOT          = './';
 const STYLES_MAIN   = './sass/style.scss';
 const STYLES_ADMIN  = './sass/admin.scss';

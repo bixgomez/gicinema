@@ -1,6 +1,6 @@
 {
   "browserSyncOptions" : {
-    "proxy": "https://gicinema.local/",
+    "proxy": "https://gicinema.local",
     "notify": false
   },
   "browserSyncWatchFiles" : [

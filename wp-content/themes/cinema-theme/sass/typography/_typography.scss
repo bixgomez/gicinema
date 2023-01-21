@@ -37,16 +37,14 @@ h1, h2 {
   font-weight: 500;
   letter-spacing: .025em;
   line-height: 1;
-  margin-top: 1.125em;
-  margin-bottom: .25em;
+  margin: 1.125em 0 .25em;
 }
 
 h3, h4, h5, h6 {
   font-family: $font__subheading;
   font-weight: $font-weight--bold;
   line-height: 1.25;
-  margin-top: 0;
-  margin-bottom: .25em;
+  margin: 0 0 .25em;
 }
 
 h1 {
@@ -79,7 +77,7 @@ h5 { font-size: $font-size--sm; }
 h6 { font-size: $font-size--xs; }
 
 p {
-  margin: .625em 0 1.25em;
+  margin: 0 0 1em;
   line-height: 1.5;
   font-weight: 400;
   color: $c--text-main;

@@ -5,6 +5,7 @@
 
 // The grid for the teaser
 .film-teaser {
+  font-size: 1em;
   display: grid;
   grid-template-areas:
           "poster title"
@@ -16,7 +17,7 @@
   grid-template-rows: min-content min-content 1fr min-content min-content;
   column-gap: 1em;
   row-gap: 1.25em;
-  margin: 1em 0;
+  margin: 2em 0 4em;
   padding: 0;
 
   @include breakpoint($sm) {
@@ -134,10 +135,6 @@
     padding: 0;
     margin: 0;
   }
-}
-
-.film-teaser {
-  font-size: 1em;
 }
 
 a.film-trailer,
