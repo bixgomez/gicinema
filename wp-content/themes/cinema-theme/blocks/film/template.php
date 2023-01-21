@@ -9,6 +9,8 @@
  * https://joeyfarruggio.com/wordress/register-acf-blocks/
  */
 
+require_once get_theme_file_path( 'inc/cinema-functions/function--screenings.php' );
+
 // The block attributes
 $block = $args['block'];
 
@@ -45,6 +47,7 @@ $film_query = new WP_Query($film_args);
 
     <?php
     $this_link = get_permalink($film_id);
+    $this_agile_film_id = get_field('agile_film_id', $film_id);
     $this_country = get_field('country', $film_id);
     $this_description = get_field('description', $film_id);
     $this_additional_info = get_field('additional_info', $film_id);
@@ -61,10 +64,8 @@ $film_query = new WP_Query($film_args);
     $this_length = get_field('film_length', $film_id);
     $this_format = get_field('format', $film_id);
     $this_trailer = get_field('trailer_url', $film_id);
-    if( $this_trailer ) {
-        $this_trailer_link = '<a class="film-trailer" href="https://youtu.be/' . $this_trailer . '" target="_blank">View Trailer</a>';
-    }
     $this_poster = get_the_post_thumbnail($film_id);
+    $screenings = get_field('film_screenings', $film_id);
     ?>
 
     <div id="<?php echo $block_id; ?>" class="<?php echo $class_name; ?>">
@@ -74,7 +75,11 @@ $film_query = new WP_Query($film_args);
             </div>
             <div class="film-teaser--links">
                 <div class="film-teaser--trailer">
-                    <?php echo $this_trailer_link; ?>
+                    <?php
+                    if( $this_trailer ) {
+                        echo '<a class="film-trailer" href="https://youtu.be/' . $this_trailer . '" target="_blank">View Trailer</a>';
+                    }
+                    ?>
                 </div>
                 <div class="film-teaser--buy-tickets">
                     <a class="film-trailer" href="<?php echo $ticket_purchase_link; ?>">Buy Tickets</a>
@@ -117,7 +122,15 @@ $film_query = new WP_Query($film_args);
             <?php echo $this_addl_info; ?>
         </div>
         <div class="film-teaser--screenings">
-            <?php do_shortcode('[film_showtimes]'); ?>
+            <?php
+            // echo get_screenings($this_agile_film_id);
+            if ($screenings) {
+                echo '<div class="screenings">' . $screenings . '</div>';
+            }
+            else {
+                echo '<p>TBA</p>';
+            }
+            ?>
         </div>
     </div>
 
