@@ -1,6 +1,6 @@
 {
   "browserSyncOptions" : {
-    "proxy": "https://grandillusioncinema.lndo.site/",
+    "proxy": "https://gicinema.local/",
     "notify": false
   },
   "browserSyncWatchFiles" : [
@@ -12,7 +12,7 @@
     "js": "./js",
     "css": "./css",
     "img": "./img",
-		"imgsrc": "./src/img",
+	"imgsrc": "./src/img",
     "sass": "./sass",
     "node": "./node_modules/",
     "bower": "./bower_components/",
