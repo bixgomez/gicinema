@@ -1,0 +1,5 @@
+.block--text-block {
+  background: pink;
+  min-height: 40px;
+  min-width: 160px;
+}

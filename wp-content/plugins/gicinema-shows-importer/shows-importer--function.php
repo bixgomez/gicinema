@@ -84,7 +84,12 @@ function shows_importer() {
         );
 
         echo '<i>First, delete all screenings for this film.</i><br>';
-        $result = $wpdb->get_results("DELETE FROM $screenings_table_name WHERE film_id = $film_id");
+        date_default_timezone_set('America/Los_Angeles');
+        $rightnow = date('Y-m-d H:i:s', time());
+        echo '<pre>' . $rightnow . '</pre>';
+        $query = "DELETE FROM $screenings_table_name WHERE film_id = $film_id AND screening >= '$rightnow'";
+        $result = $wpdb->get_results($query);
+        echo '<pre>' . $query . '</pre>';
 
         $screeningsParagraph = '<p>';
         foreach( $show->CurrentShowings as $showing ) {
