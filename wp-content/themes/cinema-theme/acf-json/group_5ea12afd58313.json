@@ -1,6 +1,6 @@
 {
     "key": "group_5ea12afd58313",
-    "title": "Basic Page Content Areas",
+    "title": "Page: Content Areas",
     "fields": [
         {
             "key": "field_5ea12b817832a",
@@ -40,6 +40,6 @@
     "hide_on_screen": "",
     "active": true,
     "description": "",
-    "show_in_rest": false,
-    "modified": 1669266068
+    "show_in_rest": 0,
+    "modified": 1674618345
 }

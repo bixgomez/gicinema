@@ -13,7 +13,7 @@ get_header();
 $container   = get_theme_mod( 'understrap_container_type' );
 ?>
 
-<!-- single-film -->
+<!-- single-film.php -->
 
 <div class="wrapper" id="single-wrapper">
 

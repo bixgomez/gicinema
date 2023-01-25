@@ -73,7 +73,7 @@
           </div>
         </div>
       </div>
-    </header><!-- #masthead -->
+    </header>
 
     <section class="section-outer section-outer--site-content">
       <div class="section section--site-content">

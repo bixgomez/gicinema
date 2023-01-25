@@ -1,0 +1,44 @@
+.series-header {
+  display: flex;
+  grid-gap: 2em;
+  font-size: .75em;
+  border-bottom: .1em solid rgba($c--red--darkest, .5);
+  padding-bottom: 1em;
+
+  @include breakpoint($md) {
+    font-size: .825rem;
+  }
+
+  @include breakpoint($lg) {
+    font-size: 1.125rem;
+  }
+}
+
+.series-header-image {
+
+  img {
+    width: 8em;
+  }
+}
+
+.series-header-info {
+  padding: .75em 0 0;
+  display: flex;
+  flex-direction: column;
+  grid-gap: .25em;
+}
+
+h1.series-title {
+  margin: 0;
+  font-size: 3em;
+}
+
+h2.series-dates {
+  margin: 0;
+  font-size: 1.75em;
+}
+
+h3.series-subtitle {
+  margin: 0;
+  font-size: 1.25em;
+}

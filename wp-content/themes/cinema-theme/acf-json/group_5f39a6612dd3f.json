@@ -1,6 +1,6 @@
 {
     "key": "group_5f39a6612dd3f",
-    "title": "Additional Film Info",
+    "title": "Film: Additional Info",
     "fields": [
         {
             "key": "field_5f39a66eea224",
@@ -43,6 +43,6 @@
     ],
     "active": true,
     "description": "",
-    "show_in_rest": false,
-    "modified": 1669266067
+    "show_in_rest": 0,
+    "modified": 1674618305
 }

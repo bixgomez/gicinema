@@ -1,6 +1,6 @@
 {
     "key": "group_5bff35529e9f0",
-    "title": "Director Specifics",
+    "title": "Director: Specifics",
     "fields": [
         {
             "key": "field_5bff355c7e7eb",
@@ -91,6 +91,6 @@
     ],
     "active": true,
     "description": "",
-    "show_in_rest": false,
-    "modified": 1669266070
+    "show_in_rest": 0,
+    "modified": 1674618320
 }
