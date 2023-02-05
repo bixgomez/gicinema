@@ -1,10 +1,10 @@
 {
-    "key": "group_63cb8826a2b2a",
+    "key": "group_63cb838a2a9d3",
     "title": "Block: Text Block",
     "fields": [
         {
-            "key": "field_63cb8839128d7",
-            "label": "Additional classes",
+            "key": "field_63cb838ac48e2",
+            "label": "Additional class(es)",
             "name": "additional_classes",
             "aria-label": "",
             "type": "text",
@@ -16,14 +16,14 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "alert",
             "maxlength": "",
             "placeholder": "",
             "prepend": "",
             "append": ""
         },
         {
-            "key": "field_63cb884a128d8",
+            "key": "field_63cb83b216cc6",
             "label": "Body Text",
             "name": "body",
             "aria-label": "",
@@ -61,5 +61,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1674283815
+    "modified": 1674327713
 }
