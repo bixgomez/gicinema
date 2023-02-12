@@ -4,7 +4,7 @@ Tags: migrate, push pull, clone, import site, export site, transfer, restore, ba
 Requires at least: 5.2
 Tested up to: 6.1.1
 Requires PHP: 5.6
-Stable tag: 2.6.0
+Stable tag: 2.6.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -74,9 +74,9 @@ The pro features in WP Migrate fit perfectly into any WordPress developer’s to
 * Targeted WordPress database migration. Select which tables to migrate and exclude post types from migrations.
 * And that’s just the tip of the iceberg. We’re always working on adding value to WP Migrate!
 
-https://deliciousbrains.wistia.com/medias/5co63n4jqq
-
 All of these features and more are yours when you [upgrade to WP Migrate Pro](https://deliciousbrains.com/wp-migrate-db-pro/upgrade/?utm_source=wordpress.org&utm_medium=referral&utm_campaign=wp-migrate-readme&utm_content=upgrade-to-pro).
+
+https://deliciousbrains.wistia.com/medias/5co63n4jqq
 
 == Frequently Asked Questions  ==
 
@@ -116,6 +116,13 @@ Yes, WP Migrate Lite includes `export` and `find-replace` commands. Qualifying l
 10. Saved migration profiles
 
 == Changelog ==
+
+= WP Migrate 2.6.1 - 2023-02-01 =
+* Improvement: Duplicator is now more compatible as a result of skipping references in the `duplicator_packages` table
+* Improvement: Windows servers and WAMP are now more compatible due to consistent handling of file paths
+* Bug Fix: Export file downloads no longer cause PHP warnings and notices
+* Bug Fix: Non-alphanumeric characters no longer break exported file downloads
+* Bug Fix: Media uploads date picker styles are no longer broken
 
 = WP Migrate 2.6.0 - 2023-01-19 =
 * New: Full-site exports including the database and files are now available to all users
