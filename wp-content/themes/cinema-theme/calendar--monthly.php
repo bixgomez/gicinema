@@ -4,7 +4,7 @@
  *
  * This is the template that displays the calendar.
  * Please note that this is the WordPress construct of pages
- * and that other 'pages' on your WordPress site may use a
+ * and that other 'pages' on this WordPress site may use a
  * different template.
  *
  * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
@@ -16,66 +16,80 @@ get_header();
 ?>
 
 <?php
-$first_day_of_month = date('Y-m-01');
-$last_day_of_month = date('Y-m-t');
-$first_day_of_week = date('Y-m-d',strtotime('last sunday'));
+
+$this_month = date( "Y-m" );
+
+if ( isset( $_GET['month'] ) ) {
+	$the_month = $_GET['month'];
+} else {
+	$the_month = date( 'Y-m' );
+}
+
+$the_month_time = strtotime( $the_month );
+
+$first_day_of_month = date( 'Y-m-01', strtotime( $the_month ) );
+$first_of_month_day = date( 'w', strtotime( $first_day_of_month ) );
+$days_in_month      = date( 't', strtotime( $first_day_of_month ) );
+$last_day_of_month  = date( 'Y-m-t' );
+
+$prev_month = date( "Y-m", strtotime( "-1 months", $the_month_time ) );
+$this_month = date( "Y-m", strtotime( $this_month ) );
+$next_month = date( "Y-m", strtotime( "+1 months", $the_month_time ) );
+
+$this_month_display = date( 'F Y', strtotime( $the_month ) );
+
+//$first_day_of_week = date('Y-m-d',strtotime('last sunday'));
+//$first_day_of_movie_week = date('Y-m-d',strtotime('last friday'));
 ?>
 
-<!-- calendar -->
-<div class="content-layout">
+    <!-- calendar -->
+    <div class="content-layout">
+        <main class="site-main" id="main">
+            <h1 class="entry-title"><?php echo $this_month_display; ?></h1>
 
-  <main class="site-main">
-      <h1 class="entry-title">Finally, a Calendar!</h1>
+            <div class="debug">
+				<?php echo "The first day of this month is: " . $first_day_of_month ?> <br>
+				<?php echo "The first of this month was a: " . $first_of_month_day ?> <br>
+				<?php echo "There are " . $days_in_month . " days in this month." ?> <br>
+				<?php echo "The last day of this month is: " . $last_day_of_month ?>
+            </div>
 
-      <div class="debug">
-	      <?php echo $first_day_of_month ?> <br>
-	      <?php echo $first_day_of_week ?> <br>
-	      <?php echo $last_day_of_month ?>
-      </div>
+            <div class="calendar-header">
+                <div class="month-choice">
+                    <a href="/calendar/?month=<?php echo $prev_month ?>#content"><?php echo $prev_month ?></a>
+                </div>
+                <div class="month-choice">
+					<?php if ( $the_month != $this_month ) : ?>
+                        <a href="/calendar/?month=<?php echo $this_month ?>#content">This month</a>
+					<?php endif ?>
+                </div>
+                <div class="month-choice">
+                    <a href="/calendar/?month=<?php echo $next_month ?>#content"><?php echo $next_month ?></a>
+                </div>
+            </div>
 
-      <ul class="calendar calendar--monthly">
-          <li class="day heading">Sunday</li>
-          <li class="day heading">Monday</li>
-          <li class="day heading">Tuesday</li>
-          <li class="day heading">Wednesday</li>
-          <li class="day heading">Thursday</li>
-          <li class="day heading">Friday</li>
-          <li class="day heading">Saturday</li>
-          <li class="day empty"></li>
-          <li class="day empty"></li>
-          <li class="day empty"></li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-          <li class="day">0</li>
-      </ul>
-  </main>
+            <ul class="calendar calendar--monthly">
+                <li class="day heading">Sunday</li>
+                <li class="day heading">Monday</li>
+                <li class="day heading">Tuesday</li>
+                <li class="day heading">Wednesday</li>
+                <li class="day heading">Thursday</li>
+                <li class="day heading">Friday</li>
+                <li class="day heading">Saturday</li>
 
-</div>
+				<?php
+				for ( $k = 0; $k < $first_of_month_day; $k ++ ) {
+					echo '<li class="day empty"></li>';
+				}
+
+				for ( $k = 1; $k <= $days_in_month; $k ++ ) {
+					echo '<li class="day empty">' . $k . '</li>';
+				}
+				?>
+
+            </ul>
+        </main>
+    </div>
 
 <?php
 get_footer();
