@@ -12,6 +12,8 @@
  * @package Cinema_Theme
  */
 
+require get_template_directory() . '/inc/cinema-functions/films-by-date.php';
+
 get_header();
 ?>
 
@@ -35,6 +37,9 @@ $last_day_of_month  = date( 'Y-m-t' );
 $prev_month = date( "Y-m", strtotime( "-1 months", $the_month_time ) );
 $this_month = date( "Y-m", strtotime( $this_month ) );
 $next_month = date( "Y-m", strtotime( "+1 months", $the_month_time ) );
+
+$curr_year = date( "Y", strtotime( $this_month ) );
+$curr_month = date( "m", strtotime( $this_month ) );
 
 $this_month_display = date( 'F Y', strtotime( $the_month ) );
 
@@ -83,7 +88,11 @@ $this_month_display = date( 'F Y', strtotime( $the_month ) );
 				}
 
 				for ( $k = 1; $k <= $days_in_month; $k ++ ) {
-					echo '<li class="day empty">' . $k . '</li>';
+                    $n = $k < 10 ? '0'.$k : $k;
+					echo '<li class="day empty">';
+                    $curr_date = $curr_year . '-' . $curr_month . '-' . $n;
+                    echo filmsByDate($curr_date);
+                    echo '</li>';
 				}
 				?>
 
