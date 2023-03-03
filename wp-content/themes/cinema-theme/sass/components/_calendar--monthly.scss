@@ -5,7 +5,7 @@
 .calendar--monthly {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-gap: .25em;
+  grid-gap: 0.25em;
   list-style: none;
   padding: 0;
   margin: 0;
@@ -18,18 +18,18 @@
     min-width: 2em;
 
     &.heading {
-      background-color: rgba(#000, .075);
+      background-color: rgba(#000, 0.075);
       display: flex;
       align-items: center;
       justify-content: center;
       line-height: 1;
-      padding-top: .25em;
-      padding-bottom: .25em;
+      padding-top: 0.25em;
+      padding-bottom: 0.25em;
       font-weight: bold;
     }
 
     &.empty {
-      background-color: rgba(#000, .125);
+      background-color: rgba(#000, 0.125);
     }
   }
 }

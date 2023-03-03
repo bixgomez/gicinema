@@ -38,8 +38,11 @@ $prev_month = date( "Y-m", strtotime( "-1 months", $the_month_time ) );
 $this_month = date( "Y-m", strtotime( $this_month ) );
 $next_month = date( "Y-m", strtotime( "+1 months", $the_month_time ) );
 
-$curr_year = date( "Y", strtotime( $this_month ) );
-$curr_month = date( "m", strtotime( $this_month ) );
+$curr_year = date( "Y", strtotime( $the_month ) );
+$curr_month = date( "m", strtotime( $the_month ) );
+
+$this_year = date( "Y", strtotime( $this_month ) );
+$this_month = date( "m", strtotime( $this_month ) );
 
 $this_month_display = date( 'F Y', strtotime( $the_month ) );
 
@@ -47,12 +50,15 @@ $this_month_display = date( 'F Y', strtotime( $the_month ) );
 //$first_day_of_movie_week = date('Y-m-d',strtotime('last friday'));
 ?>
 
+<div class="box"></div>
+
     <!-- calendar -->
     <div class="content-layout">
         <main class="site-main" id="main">
             <h1 class="entry-title"><?php echo $this_month_display; ?></h1>
 
             <div class="debug">
+				<?php echo "The month we're on is: " . $the_month ?> <br>
 				<?php echo "The first day of this month is: " . $first_day_of_month ?> <br>
 				<?php echo "The first of this month was a: " . $first_of_month_day ?> <br>
 				<?php echo "There are " . $days_in_month . " days in this month." ?> <br>
@@ -64,7 +70,7 @@ $this_month_display = date( 'F Y', strtotime( $the_month ) );
                     <a href="/calendar/?month=<?php echo $prev_month ?>#content"><?php echo $prev_month ?></a>
                 </div>
                 <div class="month-choice">
-					<?php if ( $the_month != $this_month ) : ?>
+					<?php if ( $the_month != $this_month OR 1 == 1 ) : ?>
                         <a href="/calendar/?month=<?php echo $this_month ?>#content">This month</a>
 					<?php endif ?>
                 </div>
@@ -91,6 +97,7 @@ $this_month_display = date( 'F Y', strtotime( $the_month ) );
                     $n = $k < 10 ? '0'.$k : $k;
 					echo '<li class="day empty">';
                     $curr_date = $curr_year . '-' . $curr_month . '-' . $n;
+                    // echo $curr_date . '<br/>';
                     echo filmsByDate($curr_date);
                     echo '</li>';
 				}

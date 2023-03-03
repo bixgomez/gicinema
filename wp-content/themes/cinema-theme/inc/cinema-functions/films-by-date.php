@@ -1,9 +1,11 @@
 <?php
+require get_template_directory() . '/inc/cinema-functions/get-film.php';
 
 function filmsByDate($date) {
 	if ($date) :
 		if (validateDate($date)) :
-			echo getFilmsforDate($date);
+			echo $date . '<br/>';
+			echo getFilmsforDate($date) . '<br/>';
 		else : return null; endif;
 	else : return null; endif;
 }
@@ -11,15 +13,18 @@ function filmsByDate($date) {
 function getFilmsforDate($date) {
 	global $wpdb;
 	$screenings_table_name = $wpdb->prefix . 'gi_screenings';
-	$result = $wpdb->get_results("SELECT film_id FROM $screenings_table_name WHERE screening_date = '$date' ORDER BY screening_time");
+
+	// echo $screenings_table_name . '<br/>';
+	// echo $date . '<br/>';
+
+	$result = $wpdb->get_results("SELECT film_id, screening_date FROM $screenings_table_name WHERE screening_date = '$date' ORDER BY screening_time");
 	if ($result) :
 		foreach ($result as $row) :
-			return 'Film ID: ' . $row->film_id . ', ';
+			getFilm($row->film_id);
 		endforeach;
 	else:
 		return null;
 	endif;
-	return $date;
 }
 
 function validateDate($date, $format = 'Y-m-d') {
