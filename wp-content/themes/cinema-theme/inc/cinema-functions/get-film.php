@@ -16,11 +16,14 @@ function getFilm(
   $get_film_post = new WP_Query( $args );
 
   if ($get_film_post->have_posts())  {
+
     echo '<div class="film">';
     while ($get_film_post->have_posts()) {
       $get_film_post->the_post();
       $this_link = get_permalink();
-      echo '<a class="film-title" href="' . $this_link . '">' . get_the_title() . '</a>';
+      $shortName = get_field('short_name');
+      $displayName = strlen($shortName) ? $shortName : get_the_title();
+      echo '<a class="film-title" href="' . $this_link . '">' . $displayName . '</a>';
       if (validateDate($date)) :
         global $wpdb;
         $scrs_table_name = $wpdb->prefix . 'gi_screenings';
