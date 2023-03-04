@@ -42,12 +42,8 @@ $curr_year = date( "Y", strtotime( $the_month ) );
 $curr_month = date( "m", strtotime( $the_month ) );
 
 $this_year = date( "Y", strtotime( $this_month ) );
-$this_month = date( "m", strtotime( $this_month ) );
 
 $this_month_display = date( 'F Y', strtotime( $the_month ) );
-
-//$first_day_of_week = date('Y-m-d',strtotime('last sunday'));
-//$first_day_of_movie_week = date('Y-m-d',strtotime('last friday'));
 ?>
 
 <div class="box"></div>
@@ -56,15 +52,13 @@ $this_month_display = date( 'F Y', strtotime( $the_month ) );
     <div class="content-layout">
         <main class="site-main" id="main">
             <h1 class="entry-title"><?php echo $this_month_display; ?></h1>
-
-            <div class="debug">
+            <!-- <div class="debug">
 				<?php echo "The month we're on is: " . $the_month ?> <br>
 				<?php echo "The first day of this month is: " . $first_day_of_month ?> <br>
 				<?php echo "The first of this month was a: " . $first_of_month_day ?> <br>
 				<?php echo "There are " . $days_in_month . " days in this month." ?> <br>
 				<?php echo "The last day of this month is: " . $last_day_of_month ?>
-            </div>
-
+            </div> -->
             <div class="calendar-header">
                 <div class="month-choice">
                     <a href="/calendar/?month=<?php echo $prev_month ?>#content"><?php echo $prev_month ?></a>
@@ -78,7 +72,6 @@ $this_month_display = date( 'F Y', strtotime( $the_month ) );
                     <a href="/calendar/?month=<?php echo $next_month ?>#content"><?php echo $next_month ?></a>
                 </div>
             </div>
-
             <ul class="calendar calendar--monthly">
                 <li class="day heading">Sunday</li>
                 <li class="day heading">Monday</li>
@@ -87,22 +80,25 @@ $this_month_display = date( 'F Y', strtotime( $the_month ) );
                 <li class="day heading">Thursday</li>
                 <li class="day heading">Friday</li>
                 <li class="day heading">Saturday</li>
-
 				<?php
 				for ( $k = 0; $k < $first_of_month_day; $k ++ ) {
 					echo '<li class="day empty"></li>';
 				}
-
 				for ( $k = 1; $k <= $days_in_month; $k ++ ) {
                     $n = $k < 10 ? '0'.$k : $k;
-					echo '<li class="day empty">';
-                    $curr_date = $curr_year . '-' . $curr_month . '-' . $n;
-                    // echo $curr_date . '<br/>';
-                    echo filmsByDate($curr_date);
+					echo '<li class="day">';
+                    $curr_date_a = $curr_year . '-' . $curr_month . '-' . $n;
+                    $curr_date_b = date_create_from_format("Y-m-d",$curr_date_a);
+                    $curr_date = date_format($curr_date_b,"j");
+                    echo '<div class="date-display">';
+                    echo '<span class="date-display--day">'.$curr_date.'</span>';
+                    echo '</div>';
+                    echo '<div class="films-display">';
+                    echo filmsByDate($curr_date_a);
+                    echo '</div>';
                     echo '</li>';
 				}
 				?>
-
             </ul>
         </main>
     </div>
