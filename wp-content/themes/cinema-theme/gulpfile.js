@@ -16,14 +16,14 @@ const ALL_PHP       = './**/*.php';
 
 const { src, dest, watch, series, parallel } = require('gulp');
 const browsersync = require('browser-sync').create();
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
 const autoprefixer = require('gulp-autoprefixer');
 const sourcemaps = require('gulp-sourcemaps');
 const plumber = require('gulp-plumber');
 const sasslint = require('gulp-sass-lint');
 const cache = require('gulp-cached');
 const notify = require('gulp-notify');
-const beeper = require('beeper');
+// const beeper = require('beeper');
 const sassGlob = require('gulp-sass-glob');
 
 // Compile CSS from Sass.
@@ -100,7 +100,7 @@ function plumbError() {
         title: "Gulp error in " + err.plugin,
         message:  err.formatted
       })(err);
-      beeper();
+      // beeper();
       this.emit('end');
     }
   })
