@@ -1,7 +1,27 @@
 {
     "key": "group_5f39a6612dd3f",
-    "title": "Film: Additional Info",
+    "title": "Additional Film Info",
     "fields": [
+        {
+            "key": "field_64035f944a5d7",
+            "label": "Short Name",
+            "name": "short_name",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
         {
             "key": "field_5f39a66eea224",
             "label": "Additional Info",
@@ -44,5 +64,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1674618305
+    "modified": 1677942690
 }

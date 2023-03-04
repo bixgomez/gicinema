@@ -83,7 +83,7 @@ function shows_importer() {
             array('film_id', 'screening'), ''
         );
 
-        echo '<i>First, delete all screenings for this film.</i><br>';
+        echo '<i>First, delete all <b>future</b> screenings for this film.</i><br>';
         date_default_timezone_set('America/Los_Angeles');
         $rightnow = date('Y-m-d H:i:s', time());
         echo '<pre>' . $rightnow . '</pre>';
