@@ -118,6 +118,23 @@ function cinema_theme_widgets_init() {
 add_action( 'widgets_init', 'cinema_theme_widgets_init' );
 
 /**
+ * BOOTSTRAP CSS
+ */
+// function enqueue_bootstrap_styles(){ 
+// 	wp_enqueue_style('bootstrap_css', '//cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css');
+// }
+// add_action( 'wp_enqueue_scripts', 'enqueue_bootstrap_styles' );
+
+/**
+ * BOOTSTRAP JAVASCRIPT
+ */
+function enqueue_bootstrap_scripts() {
+	wp_enqueue_script( 'bootstrap_popper', '//cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js', array(), '2.11.6', true );
+	wp_enqueue_script( 'bootstrap_javascript', '//cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js', array(), '5.2.3', true );
+}
+add_action( 'wp_enqueue_scripts', 'enqueue_bootstrap_scripts' );
+
+/**
  * Enqueue scripts and styles.
  */
 function cinema_theme_scripts() {
