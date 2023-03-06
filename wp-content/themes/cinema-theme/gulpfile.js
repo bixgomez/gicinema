@@ -26,6 +26,9 @@ const notify = require('gulp-notify');
 // const beeper = require('beeper');
 const sassGlob = require('gulp-sass-glob');
 
+// Set compiler to use dart-sass.
+sass.compiler = require('sass')
+
 // Compile CSS from Sass.
 function buildStyles() {
   return src( STYLES_MAIN, STYLES_ADMIN )
