@@ -118,32 +118,20 @@ function cinema_theme_widgets_init() {
 add_action( 'widgets_init', 'cinema_theme_widgets_init' );
 
 /**
- * BOOTSTRAP CSS
- */
-// function enqueue_bootstrap_styles(){ 
-// 	wp_enqueue_style('bootstrap_css', '//cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css');
-// }
-// add_action( 'wp_enqueue_scripts', 'enqueue_bootstrap_styles' );
-
-/**
- * BOOTSTRAP JAVASCRIPT
- */
-function enqueue_bootstrap_scripts() {
-	wp_enqueue_script( 'bootstrap_popper', '//cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js', array(), '2.11.6', true );
-	wp_enqueue_script( 'bootstrap_javascript', '//cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js', array(), '5.2.3', true );
-}
-add_action( 'wp_enqueue_scripts', 'enqueue_bootstrap_scripts' );
-
-/**
  * Enqueue scripts and styles.
  */
 function cinema_theme_scripts() {
-	// wp_enqueue_style( 'cinema_theme-style', get_stylesheet_uri() );
-    wp_enqueue_style('cinema_theme-style', get_template_directory_uri() . '/style.css', array(), filemtime(get_template_directory() . '/style.css'), false);
-    wp_enqueue_script( 'cinema_theme-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20151215', true );
-    wp_enqueue_script( 'hc-offcanvas-nav', get_template_directory_uri() .'/js/hc-offcanvas-nav.js', array('jquery'), null, true );
-    wp_enqueue_script( 'hc-offcanvas-nav--config', get_template_directory_uri() .'/js/hc-offcanvas-nav--config.js', array('jquery'), null, true );
-    wp_enqueue_script( 'cinema_theme-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20151215', true );
+	wp_enqueue_style( 'cinema_theme-style', get_template_directory_uri() . '/style.css', array(), filemtime(get_template_directory() . '/style.css' ), false);
+	wp_enqueue_script( 'cinema_theme-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20151215', true );
+	wp_enqueue_script( 'hc-offcanvas-nav', get_template_directory_uri() .'/js/hc-offcanvas-nav.js', array('jquery'), null, true );
+	wp_enqueue_script( 'hc-offcanvas-nav--config', get_template_directory_uri() .'/js/hc-offcanvas-nav--config.js', array('jquery'), null, true );
+	wp_enqueue_script( 'cinema_theme-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20151215', true );
+	
+	// wp_enqueue_script( 'cinema_theme-calendar', get_template_directory_uri() . '/js/calendar.js', array(), '20151215', true );
+	if ( is_page_template( 'calendar--monthly.php' )) {
+		wp_enqueue_script( 'cinema_theme-calendar', get_template_directory_uri() . '/js/calendar.js', array(), '20151215', true );
+  }
+
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}

@@ -1,0 +1,19 @@
+table {
+  margin: 0;
+  padding: 0;
+  border-spacing: 0;
+
+  tr {
+    margin: 0;
+    padding: 0;
+  }
+
+  td {
+    margin: 0;
+    padding: 0 0.5em 0 0;
+
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+}

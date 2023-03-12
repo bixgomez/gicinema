@@ -46,10 +46,6 @@ Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
 
 @import "normalize";
 
-@import "bootstrap_custom/variables--sass";
-@import "bootstrap523/bootstrap";
-@import "bootstrap_custom/variables--css";
-
 @import "typography/**/*.scss";
 
 @import "layout/layout";
@@ -59,5 +55,7 @@ Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
 @import "elements/**/*.scss";
 
 @import "components/**/*.scss";
+
+@import "pages/**/*.scss";
 
 @import "admin/**/*.scss";

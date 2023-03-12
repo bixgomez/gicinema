@@ -13,11 +13,9 @@
  */
 
 require get_template_directory() . '/inc/cinema-functions/films-by-date.php';
+require get_template_directory() . '/inc/cinema-functions/display-film.php';
 
 get_header();
-?>
-
-<?php
 
 $this_month = date( "Y-m" );
 
@@ -84,6 +82,9 @@ $this_month_display = date( 'F Y', strtotime( $the_month ) );
 				for ( $k = 0; $k < $first_of_month_day; $k ++ ) {
 					echo '<li class="day empty"></li>';
 				}
+
+                $moviesInMonth = array();
+
 				for ( $k = 1; $k <= $days_in_month; $k ++ ) {
                     $n = $k < 10 ? '0'.$k : $k;
 					echo '<li class="day">';
@@ -96,13 +97,28 @@ $this_month_display = date( 'F Y', strtotime( $the_month ) );
                     echo '<span class="date-display--day date-display--day__num">'.$curr_date_num.'</span>';
                     echo '</div>';
                     echo '<div class="films-display">';
-                    echo filmsByDate($curr_date_a);
+                    $filmIds = filmsByDate($curr_date_a);
+                    if ( is_array($filmIds) ) {
+                    foreach ($filmIds as $filmId) :
+                            displayFilm(
+                            $film_id = $filmId,
+                            $format = "title_showtimes",
+                            $date = $curr_date_a
+                        );
+                    endforeach;
+                    }
                     echo '</div>';
                     echo '</li>';
 				}
 				?>
             </ul>
         </main>
+    </div>
+
+    <div class="modal-outer">
+        <div class="modal-inner">
+            <button class="close-modal">Close</button>
+        </div>
     </div>
 
 <?php

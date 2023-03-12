@@ -21,7 +21,7 @@
 
   &:before {
     display: block;
-    content: '';
+    content: "";
     height: 16px;
     width: 100%;
     background-image: url(images/footer-squiggle.png);
@@ -37,7 +37,9 @@
   padding: 0;
   margin: 0;
 
-  .location, .email, .mail {
+  .location,
+  .email,
+  .mail {
     text-transform: uppercase;
   }
 }
@@ -129,4 +131,3 @@
 .columns {
   display: flex;
 }
-
