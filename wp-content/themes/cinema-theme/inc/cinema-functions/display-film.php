@@ -23,7 +23,7 @@ function displayFilm (
       $this_link = get_permalink();
       $shortName = get_field('short_name');
       $displayName = strlen($shortName) ? $shortName : get_the_title();
-      echo '<a data-filmid="' . $film_id . '" class="film-title" data-filmlink="' . $this_link . '">' . $displayName . '</a>';
+      echo '<button data-filmid="' . $film_id . '" class="film-title">' . $displayName . '</button>';
       if (validateDate($date)) :
         global $wpdb;
         $scrs_table_name = $wpdb->prefix . 'gi_screenings';

@@ -118,6 +118,7 @@ $this_month_display = date( 'F Y', strtotime( $the_month ) );
     <div class="modal-outer">
         <div class="modal-inner">
             <button class="close-modal">Close</button>
+            <div class="modal-content"></div>
         </div>
     </div>
 
