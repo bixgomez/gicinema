@@ -128,10 +128,11 @@ function cinema_theme_scripts() {
 	wp_enqueue_script( 'hc-offcanvas-nav--config', get_template_directory_uri() .'/js/hc-offcanvas-nav--config.js', array('jquery'), null, true );
 	wp_enqueue_script( 'cinema_theme-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20151215', true );
 	
-	// wp_enqueue_script( 'cinema_theme-calendar', get_template_directory_uri() . '/js/calendar.js', array(), '20151215', true );
 	if ( is_page_template( 'calendar--monthly.php' )) {
 		wp_enqueue_script( 'cinema_theme-calendar', get_template_directory_uri() . '/js/calendar.js', array(), '20151215', true );
-  }
+		$translation_array = array( 'templateUrl' => get_stylesheet_directory_uri() );
+		wp_localize_script( 'cinema_theme-calendar', 'template_url', $translation_array );
+	}
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
@@ -139,6 +140,29 @@ function cinema_theme_scripts() {
 }
 add_action( 'wp_enqueue_scripts', 'cinema_theme_scripts' );
 
+/**
+ * Ajax-specific experiments.
+ */
+function cinema_theme_ajax_call(){
+  // echo '<pre>';
+  // var_dump($_POST);
+  // echo '</pre>';
+	require get_template_directory() . '/inc/ajax--calendar.php';
+  wp_die();// this is required to terminate immediately and return a proper response
+}
+add_action('wp_ajax_cinema_theme_ajax_call', 'cinema_theme_ajax_call');
+add_action('wp_ajax_nopriv_cinema_theme_ajax_call', 'cinema_theme_ajax_call');
+
+/**
+ * Making sure we have Ajax loaded in the header.
+ * TODO: Is there a better way to do this?
+ */
+function cinema_theme_ajaxurl() {
+	echo '<script type="text/javascript">
+	var ajaxurl = "' . admin_url('admin-ajax.php') . '";
+	</script>';
+}
+add_action('wp_head', 'cinema_theme_ajaxurl');
 
 /**
  * Enqueue admin styles (under development).
