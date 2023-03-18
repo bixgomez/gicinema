@@ -18,26 +18,32 @@ document.addEventListener("DOMContentLoaded", function() {
   function handleFilmLinkClick(event) {
     const link = event.currentTarget
     const filmId = link.dataset.filmid
-    modalOuter.classList.add('open')
     // console.log(link)
     // console.log(filmId)
     ajaxText(filmId)
     // sendFilmToModal(filmId)
+    openModal();
   }
 
   function ajaxText(filmId) {
-    console.log('ajax test')
-    console.log('filmId = ' + filmId)
+    // console.log('ajax test')
+    // console.log('filmId = ' + filmId)
     const data = {
       'action': 'cinema_theme_ajax_call', // the name of our PHP function
-      'filmId': filmId,                   // a relevant value we'd like to pass
+      'filmId': filmId,                   // pass the film id to it
     };
     jQuery.post(ajaxurl, data, function(response) {
-      jQuery(modalContent).html(response);
+      modalContent.innerHTML = response;
     });
   }
 
+  function openModal() {
+    modalContent.innerHTML = '';
+    modalOuter.classList.add('open')
+  }
+
   function closeModal() {
+    modalContent.innerHTML = '';
     modalOuter.classList.remove('open')
   }
 
