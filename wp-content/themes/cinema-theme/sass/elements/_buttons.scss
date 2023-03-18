@@ -2,21 +2,42 @@ button,
 input[type="button"],
 input[type="reset"],
 input[type="submit"] {
-	border: 1px solid;
-	border-color: $c--border-button;
-	border-radius: 3px;
-	background: $c--background-button;
-	color: rgba(0, 0, 0, .8);
-	@include font-size(0.75);
-	line-height: 1;
-	padding: .6em 1em .4em;
+  border: 1px solid;
+  border-color: $c--border-button;
+  border-radius: 3px;
+  background: $c--background-button;
+  color: rgba(0, 0, 0, 0.8);
+  @include font-size(0.75);
+  line-height: 1;
+  padding: 0.6em 1em 0.4em;
 
-	&:hover {
-		border-color: $c--border-button-hover;
-	}
+  &:hover {
+    border-color: $c--border-button-hover;
+  }
 
-	&:active,
-	&:focus {
-		border-color: $c--border-button-focus;
-	}
+  &:active,
+  &:focus {
+    border-color: $c--border-button-focus;
+  }
+}
+
+a.film-trailer,
+a.film-trailer:visited {
+  display: block;
+  width: auto;
+  background: $c--primary;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 6px 8px;
+  margin: 0;
+  line-height: 1.2;
+
+  &:hover,
+  &:hover:visited {
+    color: white;
+    background: $c--primary--dark;
+  }
 }

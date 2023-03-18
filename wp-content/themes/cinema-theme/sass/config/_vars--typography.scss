@@ -1,34 +1,33 @@
 @use "sass:math";
 
+// Font choices.
 $font__main: "Work Sans", Helvetica, Arial, sans-serif;
-$font__main__italic: "Native Italic", "Work Sans", Helvetica, Arial, sans-serif;
-
 $font__heading: "Franchise Bold", Helvetica, Arial, sans-serif;
 $font__subheading: "Work Sans", Helvetica, Arial, sans-serif;
-
 $font__admin-main: "Work Sans", Helvetica, Arial, sans-serif;
 $font__admin-heading: "Libre Baskerville", Helvetica, Arial, sans-serif;
-
 $font__sitename: "Brothers Regular", "Libre Baskerville", Helvetica, Arial,
   sans-serif;
 $font__subtitle: "Prata Regular", "Libre Baskerville", Helvetica, Arial,
   sans-serif;
 $font__code: Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
 $font__pre: "Courier 10 Pitch", Courier, monospace;
+
+// Line heights.
 $font__line-height-body: 1.5;
 $font__line-height-pre: 1.6;
 
+// Font weights.
 $font-weight--base: 400;
 $font-weight--semibold: 500;
 $font-weight--bold: 700;
 
+// Font sizing.
 $font-size-factor: 1.3399;
-
 $font-size--md: 1rem;
-$font-size--lg: $font-size--md * $font-size-factor;
-$font-size--xl: $font-size--lg * $font-size-factor;
-$font-size--xxl: $font-size--xl * $font-size-factor; // Should be 2.4414rem
-
+$font-size--lg: calc($font-size--md * $font-size-factor);
+$font-size--xl: calc($font-size--lg * $font-size-factor);
+$font-size--xxl: calc($font-size--xl * $font-size-factor);
 $font-size--sm: math.div($font-size--md, $font-size-factor);
 $font-size--xs: math.div($font-size--sm, $font-size-factor);
 $font-size--xxs: math.div($font-size--xs, $font-size-factor);

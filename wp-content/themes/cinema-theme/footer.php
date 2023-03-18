@@ -109,8 +109,5 @@
 </div>
 
 <?php wp_footer(); ?>
-
-<script type="text/javascript" src="https://js.stripe.com/v3/"></script>
-<script type="text/javascript" src="https://eyrc-grandillusion.eventive.org/loader.js"></script>
 </body>
 </html>

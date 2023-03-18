@@ -1,0 +1,23 @@
+html {
+  --scrollbarBG: transparent;
+  --thumbBG: #bbb;
+}
+
+* {
+  // scrollbar-width:
+  scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+
+  &::-webkit-scrollbar {
+    width: 14px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--scrollbarBG);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--thumbBG);
+    border-radius: 0;
+    // border: 3px solid var(--scrollbarBG);
+  }
+}
