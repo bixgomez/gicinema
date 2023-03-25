@@ -117,10 +117,10 @@
 }
 
 .films-display {
-  padding: 0 0.5em 0.5em 0.5em;
+  padding: 0 0.3em 0.3em 0.3em;
   display: flex;
   flex-direction: column;
-  grid-gap: 0.5em;
+  grid-gap: 0.4em;
   justify-content: flex-start;
   align-items: flex-start;
 
@@ -135,7 +135,14 @@
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
-  grid-gap: 0.25em;
+  grid-gap: 0.125em;
+  border: 1px solid;
+  width: 100%;
+  padding: 0.25em 0.5em;
+  border-radius: 0.7em;
+
+  background-color: rgba(#ccc, 0.35);
+  border-color: rgba(#ccc, 0.5);
 
   @include breakpoint($md) {
     flex-direction: column;
@@ -143,6 +150,8 @@
 
   button.film-title {
     @include link-style;
+
+    text-transform: none;
     text-decoration: none;
     line-height: 1.3;
     display: block;

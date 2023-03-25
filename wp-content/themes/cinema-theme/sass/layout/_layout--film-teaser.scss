@@ -59,13 +59,17 @@
   grid-gap: 10px;
   justify-content: flex-end;
 
+  a {
+    max-width: 250px;
+  }
+
   @include breakpoint($md) {
     grid-gap: 12px;
     justify-content: flex-start;
-  }
 
-  a {
-    max-width: 250px;
+    a {
+      max-width: none;
+    }
   }
 }
 
