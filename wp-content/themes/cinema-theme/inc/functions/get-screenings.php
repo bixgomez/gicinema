@@ -1,9 +1,7 @@
 <?php
 
-function get_screenings($agile_film_id) {
-
+function getScreenings($agile_film_id) {
     global $wpdb;
-
     $screenings_table_name = $wpdb->prefix . 'gi_screenings';
 
     $screenings_query = "

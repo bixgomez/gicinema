@@ -1,5 +1,5 @@
 <?php
-require_once get_template_directory() . '/inc/cinema-functions/validate-date.php';
+require_once get_template_directory() . '/inc/functions/validate-date.php';
 
 function displayFilmForDate ($film_id, $date) {
 

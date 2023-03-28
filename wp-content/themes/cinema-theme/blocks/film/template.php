@@ -9,7 +9,8 @@
  * https://joeyfarruggio.com/wordress/register-acf-blocks/
  */
 
-require_once get_theme_file_path( 'inc/cinema-functions/function--screenings.php' );
+require_once get_theme_file_path( 'inc/functions/get-screenings.php' );
+require_once get_theme_file_path( 'inc/functions/film-card.php' );
 
 // The block attributes
 $block = $args['block'];
@@ -29,11 +30,11 @@ if ( $data['film']) {
 }
 
 // Set up query
-$film_args = array(
+$film_block_args = array(
     'post_type' => 'film',
     'p' => $film_id,
 );
-$film_query = new WP_Query($film_args);
+$film_block_query = new WP_Query($film_block_args);
 
 // Display query (for debugging)
 // echo '<pre>' . $film_query->request . '</pre>';
@@ -42,96 +43,13 @@ $film_query = new WP_Query($film_args);
 // echo '<br>$film_id = ' . $film_id;
 ?>
 
-<?php // If we have any results, display the film teaser card. ?>
-<?php if ($film_query->have_posts()): ?>
-
-    <?php
-    $this_link = get_permalink($film_id);
-    $this_agile_film_id = get_field('agile_film_id', $film_id);
-    $this_country = get_field('country', $film_id);
-    $this_description = get_field('description', $film_id);
-    $this_additional_info = get_field('additional_info', $film_id);
-    $first_screening = get_field('screening_first', $film_id);
-    $last_screening = get_field('screening_last', $film_id);
-    $ticket_purchase_link = get_field('ticket_purchase_link', $film_id);
-    $this_description = get_field('description', $film_id);
-    $this_description = wpautop($this_description, false);
-    $this_addl_info = get_field('additional_info', $film_id);
-    $this_addl_info = wpautop($this_addl_info, false);
-    $this_director = get_field('film_director', $film_id);
-    $this_year = get_field('film_year', $film_id);
-    $this_country = get_field('country', $film_id);
-    $this_length = get_field('film_length', $film_id) . 'min';
-    $this_format = get_field('format', $film_id);
-    $this_trailer = get_field('trailer_url', $film_id);
-    $this_poster = get_the_post_thumbnail($film_id);
-    $screenings = get_field('film_screenings', $film_id);
-    ?>
-
-    <div id="<?php echo $block_id; ?>" class="<?php echo $class_name; ?>">
-        <div class="film-teaser--sidebar">
-            <div class="film-teaser--poster">
-                <?php echo $this_poster; ?>
-            </div>
-            <div class="film-teaser--links">
-                <div class="film-teaser--trailer">
-                    <?php
-                    if( $this_trailer ) {
-                        echo '<a class="film-trailer" href="https://youtu.be/' . $this_trailer . '" target="_blank">View Trailer</a>';
-                    }
-                    ?>
-                </div>
-                <div class="film-teaser--buy-tickets">
-                    <a class="film-trailer" href="<?php echo $ticket_purchase_link; ?>">Buy Tickets</a>
-                </div>
-            </div>
-        </div>
-        <h2 class="film-teaser--title">
-            <a href="<?php echo $this_link; ?>"><?php echo get_the_title($film_id); ?></a>
-        </h2>
-        <div class="film-teaser--film-info">
-            <div class="film-teaser--director">
-                <?php
-                echo $this_director;
-                if ($this_director && $this_year) { echo ' · '; }
-                echo $this_year;
-                if ($this_country) { echo ' · '; }
-                echo $this_country;
-                ?>
-            </div>
-            <div class="film-teaser--format">
-                <?php
-                echo $this_length;
-                if ($this_length && $this_format) { echo ' · '; }
-                echo $this_format;
-                ?>
-            </div>
-            <div class="film-teaser--screening-range">
-                <?php
-                $first_screening_disp = date('M j', strtotime($first_screening));
-                $last_screening_disp = date('M j', strtotime($last_screening));
-                echo 'Playing ' . $first_screening_disp;
-                if ($last_screening_disp != $first_screening_disp) {
-                    echo ' through ' . $last_screening_disp;
-                }
-                ?>
-            </div>
-        </div>
-        <div class="film-teaser--description">
-            <?php echo $this_description; ?>
-            <?php echo $this_addl_info; ?>
-        </div>
-        <div class="film-teaser--screenings">
-            <?php
-            // echo get_screenings($this_agile_film_id);
-            if ($screenings) {
-                echo '<div class="screenings">' . $screenings . '</div>';
-            }
-            else {
-                echo '<p>TBA</p>';
-            }
-            ?>
-        </div>
-    </div>
-
-<?php endif; ?>
+<?php 
+// If we have any results, display the film teaser card. 
+if ( $film_block_query->have_posts() ) :
+    while ( $film_block_query->have_posts() ) : $film_block_query->the_post();
+        $filmPostId = get_the_ID();
+        echo $filmPostId;
+        filmCard($filmPostId);
+    endwhile;
+endif;
+?>

@@ -12,8 +12,8 @@
  * @package Cinema_Theme
  */
 
-require get_template_directory() . '/inc/cinema-functions/films-by-date.php';
-require get_template_directory() . '/inc/cinema-functions/display-film-for-date.php';
+require get_template_directory() . '/inc/functions/films-by-date.php';
+require get_template_directory() . '/inc/functions/display-film-for-date.php';
 
 get_header();
 

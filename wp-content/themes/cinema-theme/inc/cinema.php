@@ -1,28 +1,19 @@
 <?php
 
 // Custom post types.
-include('cinema-posttypes/posttype--film.php');
-include('cinema-posttypes/posttype--director.php');
-include('cinema-posttypes/posttype--format.php');
-include('cinema-posttypes/posttype--series.php');
-include('cinema-posttypes/posttype--country.php');
-include('cinema-posttypes/posttype--alerts.php');
+include('posttypes/posttype--film.php');
+include('posttypes/posttype--director.php');
+include('posttypes/posttype--format.php');
+include('posttypes/posttype--series.php');
+include('posttypes/posttype--country.php');
+include('posttypes/posttype--alerts.php');
 
 // Shortcodes.
-include('cinema-shortcodes/shortcode--film-director.php');
-include('cinema-shortcodes/shortcode--film-length.php');
-include('cinema-shortcodes/shortcode--film-year.php');
-include('cinema-shortcodes/shortcode--film-format.php');
-include('cinema-shortcodes/shortcode--film-country.php');
-include('cinema-shortcodes/shortcode--film-showtimes.php');
-include('cinema-shortcodes/shortcode--film-poster.php');
-include('cinema-shortcodes/shortcode--film-trailer.php');
-include('cinema-shortcodes/shortcode--film-teaser.php');
-include('cinema-shortcodes/shortcode--film-teasers.php');
+include('shortcodes/shortcode--film-teaser.php');
 
 // Custom functions.
-include('cinema-functions/function--max-screenings.php');
-include('cinema-functions/function--last-screening.php');
+include('functions/function--max-screenings.php');
+include('functions/function--last-screening.php');
 
 /**
  * If more than one page exists, return TRUE.

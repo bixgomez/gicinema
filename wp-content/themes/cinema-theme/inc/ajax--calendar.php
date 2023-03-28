@@ -1,5 +1,5 @@
 <?php
-require get_template_directory() . '/inc/cinema-functions/film-card.php';
+require_once get_template_directory() . '/inc/functions/film-card.php';
 
 $filmId = $_POST['filmId'];
 $filmPostId = 0;

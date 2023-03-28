@@ -128,7 +128,7 @@ function cinema_theme_scripts() {
 	wp_enqueue_script( 'hc-offcanvas-nav--config', get_template_directory_uri() .'/js/hc-offcanvas-nav--config.js', array('jquery'), null, true );
 	wp_enqueue_script( 'cinema_theme-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20151215', true );
 	
-	if ( is_page_template( 'calendar--monthly.php' )) {
+	if ( is_page_template( 'page--calendar__monthly.php' )) {
 		wp_enqueue_script( 'cinema_theme-calendar', get_template_directory_uri() . '/js/calendar.js', array(), '20151215', true );
 		$translation_array = array( 'templateUrl' => get_stylesheet_directory_uri() );
 		wp_localize_script( 'cinema_theme-calendar', 'template_url', $translation_array );

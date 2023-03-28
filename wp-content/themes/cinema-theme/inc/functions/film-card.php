@@ -1,38 +1,42 @@
 <?php
-require_once get_template_directory() . '/inc/cinema-functions/validate-date.php';
+require_once get_template_directory() . '/inc/functions/validate-date.php';
 
 function filmCard($filmPostId) {
-  $args = array(
+  $filmCardArgs = array(
     'posts_per_page' => 1,
     'post_type' => 'film',
     'p' => $filmPostId
   );
-  $getFilm = new WP_Query( $args );
-  if ($getFilm->have_posts()) :
-    while ($getFilm->have_posts()) :
-      $getFilm->the_post();
+  $filmCardQuery = new WP_Query( $filmCardArgs );
+  if ($filmCardQuery->have_posts()) :
+    while ($filmCardQuery->have_posts()) :
+      $filmCardQuery->the_post();
       $link = get_permalink($filmPostId);
-      $shortName = get_field('short_name');
+      $shortName = get_field('short_name', $filmPostId);
       $displayName = strlen($shortName) ? $shortName : get_the_title();
-      $country = get_field('country');
-      $director = get_field('film_director');
-      $format = get_field('format');
-      $length = get_field('film_length');
-      $screenings = get_field('film_screenings');
-      $trailer = get_field('trailer_url');
-      $ticketPurchaseLink = get_field('ticket_purchase_link');
-      $year = get_field('film_year');
-      $description = get_field('description');
+      $country = get_field('country', $filmPostId);
+      $director = get_field('film_director', $filmPostId);
+      $format = get_field('format', $filmPostId);
+      $length = get_field('film_length', $filmPostId);
+      $screenings = get_field('film_screenings', $filmPostId);
+      $firstScreening = get_field('screening_first', $filmPostId);
+      $lastScreening = get_field('screening_last', $filmPostId);
+      $trailer = get_field('trailer_url', $filmPostId);
+      $ticketPurchaseLink = get_field('ticket_purchase_link', $filmPostId);
+      $year = get_field('film_year', $filmPostId);
+      $description = get_field('description', $filmPostId);
       $description = wpautop($description, false);
-      ?>        
+      $addlInfo = get_field('additional_info', $filmPostId);
+      $addlInfo = wpautop($addlInfo, false);
+      ?>
       <div class="film-teaser">
         <div class="film-teaser--sidebar">
           <div class="film-teaser--poster">
             <?php
             if (has_post_thumbnail($filmPostId)) {
-              echo get_the_post_thumbnail($post_id);
+              echo get_the_post_thumbnail($filmPostId);
             } else {
-              $poster = get_field('poster_url', $post_id);
+              $poster = get_field('poster_url', $filmPostId);
               if ($poster) {
                 echo '<div class="film-poster"><img src="' . $poster . '"></div>';
               }
@@ -59,12 +63,22 @@ function filmCard($filmPostId) {
             <?php echo $length . 'min'; ?> · <?php echo $format; ?>
           </div>
           <div class="film-teaser--screening-range">
-            Playing Mar 2
+            <?php
+                $firstScreeningDisp = date('M j', strtotime($firstScreening));
+                $lastScreeningDisp = date('M j', strtotime($lastScreening));
+                echo 'Playing ' . $firstScreeningDisp;
+                if ($lastScreeningDisp != $firstScreeningDisp) {
+                    echo ' through ' . $lastScreeningDisp;
+                }
+                ?>
           </div>
         </div>
         <div class="film-teaser--description">
           <p>
-            <?php echo $description; ?>
+            <?php 
+              echo $description;
+              echo $addlInfo;
+            ?>
           </p>
         </div>
         <div class="film-teaser--screenings">
