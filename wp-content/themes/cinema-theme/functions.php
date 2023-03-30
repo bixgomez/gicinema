@@ -59,45 +59,9 @@ if ( ! function_exists( 'cinema_theme_setup' ) ) :
 			'gallery',
 			'caption',
 		) );
-
-		// Set up the WordPress core custom background feature.
-		add_theme_support( 'custom-background', apply_filters( 'cinema_theme_custom_background_args', array(
-			'default-color' => 'ffffff',
-			'default-image' => '',
-		) ) );
-
-		// Add theme support for selective refresh for widgets.
-		add_theme_support( 'customize-selective-refresh-widgets' );
-
-		/**
-		 * Add support for core custom logo.
-		 *
-		 * @link https://codex.wordpress.org/Theme_Logo
-		 */
-		add_theme_support( 'custom-logo', array(
-			'height'      => 250,
-			'width'       => 250,
-			'flex-width'  => true,
-			'flex-height' => true,
-		) );
 	}
 endif;
 add_action( 'after_setup_theme', 'cinema_theme_setup' );
-
-/**
- * Set the content width in pixels, based on the theme's design and stylesheet.
- *
- * Priority 0 to make it available to lower priority callbacks.
- *
- * @global int $content_width
- */
-function cinema_theme_content_width() {
-	// This variable is intended to be overruled from themes.
-	// Open WPCS issue: {@link https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/issues/1043}.
-	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
-	$GLOBALS['content_width'] = apply_filters( 'cinema_theme_content_width', 640 );
-}
-add_action( 'after_setup_theme', 'cinema_theme_content_width', 0 );
 
 /**
  * Register widget area.
@@ -144,9 +108,6 @@ add_action( 'wp_enqueue_scripts', 'cinema_theme_scripts' );
  * Ajax-specific experiments.
  */
 function cinema_theme_ajax_call(){
-  // echo '<pre>';
-  // var_dump($_POST);
-  // echo '</pre>';
 	require get_template_directory() . '/inc/ajax--calendar.php';
   wp_die();// this is required to terminate immediately and return a proper response
 }
@@ -165,7 +126,7 @@ function cinema_theme_ajaxurl() {
 add_action('wp_head', 'cinema_theme_ajaxurl');
 
 /**
- * Enqueue admin styles (under development).
+ * Enqueue admin styles.
  */
 function cinema_theme_admin_style() {
   wp_enqueue_style( 'cinema_theme-admin-style', get_stylesheet_uri() );
@@ -214,43 +175,13 @@ if ( defined( 'JETPACK__VERSION' ) ) {
 }
 
 /**
- * Add REST API and GraphQL support to Book post type.
- */
-add_filter( 'register_post_type_args', 'my_post_type_args', 10, 2 );
-
-function my_post_type_args( $args, $post_type ) {
-
-  if ( 'book' === $post_type ) {
-    $args['show_in_graphql'] = true;
-    $args['graphql_single_name'] = 'Book';
-    $args['graphql_plural_name'] = 'Books';
-
-    $args['show_in_rest'] = true;
-
-    // Optionally customize the rest_base or rest_controller_class
-    $args['rest_base']             = 'books';
-    $args['rest_controller_class'] = 'WP_REST_Posts_Controller';
-  }
-
-  return $args;
-}
-
-
-/**
- * OPTIONAL RESPONSIVE-RELATED STUFF:  Review, test, and use only if desired.
- */
-
-/* Remove inline width style from <figure> tags (can break responsive) */
-//  add_filter( 'img_caption_shortcode_width', '__return_false' );
-
-/**
  * Disable WP's automatically-generated srcset-style responsive images
  * USE ONLY IF you have acceptable responsive image handling in your CSS and/or site code.
  */
-//  function mysite_disable_srcset( $sources ) {
+//  function cinema_theme_disable_srcset( $sources ) {
 //     return false;
 //  }
-//  add_filter( 'wp_calculate_image_srcset', 'mysite_disable_srcset' );
+//  add_filter( 'wp_calculate_image_srcset', 'cinema_theme_disable_srcset' );
 
 /* END OPTIONAL RESPONSIVE-RELATED STUFF */
 
@@ -269,7 +200,6 @@ add_filter( 'xmlrpc_methods', function () {
  * Remove junk from the head
  */
 
-
 /* Suppress GENERATOR meta tag (important for security, too) */
 remove_action( 'wp_head', 'wp_generator' );
 
@@ -286,12 +216,11 @@ remove_action( 'wp_head', 'feed_links_extra', 3 );
 /* Remove main posts feed from head (DISABLE THIS IF THERE'S EVER A BLOG) */
 remove_action( 'wp_head', 'feed_links', 2 );
 
-
 /**
  * Remove this unnecesary style:
  * <style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style>
  */
-function mysite_remove_recent_comments_style() {
+function cinema_theme_remove_recent_comments_style() {
 	global $wp_widget_factory;
 	remove_action( 'wp_head', array(
 		$wp_widget_factory->widgets['WP_Widget_Recent_Comments'],
@@ -299,7 +228,7 @@ function mysite_remove_recent_comments_style() {
 	) );
 }
 
-add_action( 'widgets_init', 'mysite_remove_recent_comments_style' );
+add_action( 'widgets_init', 'cinema_theme_remove_recent_comments_style' );
 
 /**
  * Filter function used to remove the tinymce emoji plugin.
@@ -308,7 +237,7 @@ add_action( 'widgets_init', 'mysite_remove_recent_comments_style' );
  *
  * @return array Difference betwen the two arrays
  */
-function mysite_disable_emojis_tinymce( $plugins ) {
+function cinema_theme_disable_emojis_tinymce( $plugins ) {
 	if ( is_array( $plugins ) ) {
 		return array_diff( $plugins, array( 'wpemoji' ) );
 	} else {
@@ -317,7 +246,7 @@ function mysite_disable_emojis_tinymce( $plugins ) {
 }
 
 /* Remove emoji cruft */
-function mysite_disable_emojis() {
+function cinema_theme_disable_emojis() {
 	remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
 	remove_action( 'wp_print_styles', 'print_emoji_styles' );
 	remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
@@ -326,10 +255,10 @@ function mysite_disable_emojis() {
 	remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
 	remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
 	add_filter( 'emoji_svg_url', '__return_false' );
-	add_filter( 'tiny_mce_plugins', 'mysite_disable_emojis_tinymce' );
+	add_filter( 'tiny_mce_plugins', 'cinema_theme_disable_emojis_tinymce' );
 }
 
-add_action( 'init', 'mysite_disable_emojis' );
+add_action( 'init', 'cinema_theme_disable_emojis' );
 
 
 /**
@@ -340,7 +269,7 @@ add_action( 'init', 'mysite_disable_emojis' );
  *  Example: https://msrstagingarr.azurewebsites.net/en-us/translator/?p=102
  * We don't want that.  This code disables that.
  */
-function mysite_remove_shortlink() {
+function cinema_theme_remove_shortlink() {
 	// remove HTML meta tag
 	// <link rel='shortlink' href='http://example.com/?p=25' />
 	remove_action( 'wp_head', 'wp_shortlink_wp_head', 10 );
@@ -350,7 +279,7 @@ function mysite_remove_shortlink() {
 	remove_action( 'template_redirect', 'wp_shortlink_header', 11 );
 }
 
-add_filter( 'after_setup_theme', 'mysite_remove_shortlink' );
+add_filter( 'after_setup_theme', 'cinema_theme_remove_shortlink' );
 
 
 /**
@@ -398,7 +327,7 @@ add_action( 'init', 'disable_oEmbeds_code_init', 9999 );
 /**
  * Clean up output of <script> tags: remove unnecessary TYPE declaration.
  */
-function mysite_clean_script_tag( $input ) {
+function cinema_theme_clean_script_tag( $input ) {
 	$search = [
 		"type='text/javascript' "
 	];
@@ -409,7 +338,7 @@ function mysite_clean_script_tag( $input ) {
 	return str_replace( $search, $replace, $input );
 }
 
-add_filter( 'script_loader_tag', 'mysite_clean_script_tag' );
+add_filter( 'script_loader_tag', 'cinema_theme_clean_script_tag' );
 
 
 /**
