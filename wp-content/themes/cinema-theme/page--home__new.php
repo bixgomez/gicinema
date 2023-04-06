@@ -15,215 +15,195 @@
 get_header();
 ?>
 
-<h1>NEW HOME PAGE</h1>
+<div class="home-page-content">
 
-<hr />
+    <h1 class="debug">NEW HOME PAGE</h1>
 
-<h2>Now Playing</h2>
-<ul>
-    <li>
-        Films showing in the next 7 days, one per line.
-    </li>
+    <hr class="debug" />
 
-    <li>
-        First, get 7 dates starting with today
+    <h2>Now Playing</h2>
 
-        <?php 
-        $nowPlayingDays = [];
-        $period = new DatePeriod(
-            new DateTime(date_i18n("Y-m-d 00:00:00")), // Start date of the period
-            new DateInterval('P1D'), // Define the intervals as Periods of 1 Day
-            6 // Apply the interval 6 times on top of the starting date
-        );
-        foreach ($period as $day) {
-            $nowPlayingDays[] = '\''.$day->format('Y-m-d').'\'';
-        }
-        $nowPlayingDaysAsString = implode (',', $nowPlayingDays);
-        print '<pre>';
-        echo '<br>============================================================';
-        echo '<br>$nowPlayingDays';
-        echo '<br>------------------------------<br>';
-        print_r($nowPlayingDays);
-        echo '<br>============================================================';
-        echo '<br>$daysAsString';
-        echo '<br>------------------------------<br>';
-        print_r($nowPlayingDaysAsString);
-        echo '<br>============================================================';
-        print '</pre>';
-        ?>
-    
-    </li>
+    <!-- Films showing in the next 7 days, one per line. -->
+    <!-- First, get 7 dates starting with today -->
 
-    <li>
-        Get all the "now playing" movies that have screenings on those dates
-    
-        <?php
-        global $wpdb;
-        $screenings_table_name = $wpdb->prefix . 'gi_screenings';
-        $nowPlayingScreeningsQuery = "
-            SELECT film_id, screening
-            FROM {$screenings_table_name} 
-            WHERE screening_date IN ($nowPlayingDaysAsString)
-            ORDER BY screening
-        ";
-        echo '<pre>';
-        echo '<br>============================================================';
-        echo '<br>$nowPlayingScreeningsQuery';
-        echo '<br>------------------------------<br>';
-        echo $nowPlayingScreeningsQuery;
-        echo '<br>============================================================';
-        echo '</pre>';
-        $result = $wpdb->get_results($nowPlayingScreeningsQuery);
-        if ( count($result) ) :
-            $nowPlayingFilmIds = [];
-            foreach( $result as $key => $row) :
-                echo $row->film_id . ': ' . $row->screening . '<br>';
-                if (!in_array($row->film_id, $nowPlayingFilmIds)) :
-                    $nowPlayingFilmIds[] = $row->film_id;
-                endif;
-            endforeach;
-            print '<pre>';
-            echo '<br>============================================================';
-            echo '<br>$nowPlayingFilmIds';
-            echo '<br>------------------------------<br>';
-            print_r($nowPlayingFilmIds);
-            echo '<br>============================================================';
-            print '</pre>';
-        endif;
-        ?>
+    <?php 
+    $nowPlayingDays = [];
+    $period = new DatePeriod(
+        new DateTime(date_i18n("Y-m-d 00:00:00")), // Start date of the period
+        new DateInterval('P1D'), // Define the intervals as Periods of 1 Day
+        6 // Apply the interval 6 times on top of the starting date
+    );
+    foreach ($period as $day) {
+        $nowPlayingDays[] = '\''.$day->format('Y-m-d').'\'';
+    }
+    $nowPlayingDaysAsString = implode (',', $nowPlayingDays);
+    print '<pre class="debug">';
+    echo '<br>============================================================';
+    echo '<br>$nowPlayingDays';
+    echo '<br>------------------------------<br>';
+    print_r($nowPlayingDays);
+    echo '<br>============================================================';
+    echo '<br>$daysAsString';
+    echo '<br>------------------------------<br>';
+    print_r($nowPlayingDaysAsString);
+    echo '<br>============================================================';
+    print '</pre>';
+    ?>
 
-    </li>
+    <!-- Get all the "now playing" movies that have screenings on those dates -->
 
-    <li>
-        Display their full teasers, in "next screening" order
-
-        <?php 
-        foreach ($nowPlayingFilmIds as $nowPlayingFilmId) :
-            $args = array (
-                'post_type' => 'film',
-                'posts_per_page' => '1',
-                'meta_key' => 'agile_film_id',
-                'meta_value' => $nowPlayingFilmId
-            );
-            $getThePostId = new WP_Query( $args );
-            if ( $getThePostId->have_posts() ) :
-                while ( $getThePostId->have_posts() ) : $getThePostId->the_post();
-                    $filmPostId = get_the_ID();
-                    filmCard($filmPostId);
-                endwhile;
+    <?php
+    global $wpdb;
+    $screenings_table_name = $wpdb->prefix . 'gi_screenings';
+    $nowPlayingScreeningsQuery = "
+        SELECT film_id, screening
+        FROM {$screenings_table_name} 
+        WHERE screening_date IN ($nowPlayingDaysAsString)
+        ORDER BY screening
+    ";
+    echo '<pre class="debug">';
+    echo '<br>============================================================';
+    echo '<br>$nowPlayingScreeningsQuery';
+    echo '<br>------------------------------<br>';
+    echo $nowPlayingScreeningsQuery;
+    echo '<br>============================================================';
+    echo '</pre>';
+    $result = $wpdb->get_results($nowPlayingScreeningsQuery);
+    if ( count($result) ) :
+        $nowPlayingFilmIds = [];
+        foreach( $result as $key => $row) :
+            echo '<span class="debug">' . $row->film_id . ': ' . $row->screening . '<br></span>';
+            if (!in_array($row->film_id, $nowPlayingFilmIds)) :
+                $nowPlayingFilmIds[] = $row->film_id;
             endif;
-            wp_reset_query();
         endforeach;
-        ?>
-    </li>
-</ul>
+        print '<pre class="debug">';
+        echo '<br>============================================================';
+        echo '<br>$nowPlayingFilmIds';
+        echo '<br>------------------------------<br>';
+        print_r($nowPlayingFilmIds);
+        echo '<br>============================================================';
+        print '</pre>';
+    endif;
+    ?>
 
-<hr />
+    <!-- Display their full teasers, in "next screening" order -->
 
-<h2>Coming Soon</h2>
-    <li>Get all the movies that have upcoming screenings that are NOT in the first set</li>
-
-    <li>
-        First, get 100 dates starting with today
-
-        <?php 
-        $comingSoonDays = [];
-        $period = new DatePeriod(
-            new DateTime(date_i18n("Y-m-d 00:00:00")), // Start date of the period
-            new DateInterval('P1D'), // Define the intervals as Periods of 1 Day
-            100 // Apply the interval 100 times on top of the starting date
+    <?php 
+    foreach ($nowPlayingFilmIds as $nowPlayingFilmId) :
+        $args = array (
+            'post_type' => 'film',
+            'posts_per_page' => '1',
+            'meta_key' => 'agile_film_id',
+            'meta_value' => $nowPlayingFilmId
         );
-        foreach ($period as $day) {
-            $comingSoonDays[] = '\''.$day->format('Y-m-d').'\'';
-        }
-        $comingSoonDaysAsString = implode (',', $comingSoonDays);
-        print '<pre>';
-        echo '<br>============================================================';
-        echo '<br>$comingSoonDays';
-        echo '<br>------------------------------<br>';
-        print_r($comingSoonDays);
-        echo '<br>============================================================';
-        echo '<br>$comingSoonDaysAsString';
-        echo '<br>------------------------------<br>';
-        print_r($comingSoonDaysAsString);
-        echo '<br>============================================================';
-        print '</pre>';
-        ?>
-    </li>
-
-    <li>
-        Next, get all the "coming soon" movies that have screenings on those dates
-
-        <?php
-        global $wpdb;
-        $screenings_table_name = $wpdb->prefix . 'gi_screenings';
-        $comingSoonScreeningsQuery = "
-            SELECT film_id, screening
-            FROM {$screenings_table_name} 
-            WHERE screening_date IN ($comingSoonDaysAsString)
-            ORDER BY screening
-        ";
-        print '<pre>';
-        echo '<br>============================================================';
-        echo '<br>$comingSoonScreeningsQuery';
-        echo '<br>------------------------------<br>';
-        echo $comingSoonScreeningsQuery;
-        echo '<br>============================================================';
-        print '</pre>';
-        $result = $wpdb->get_results($comingSoonScreeningsQuery);
-        if ( count($result) ) :
-            $comingSoonFilmIds = [];
-            foreach( $result as $key => $row) :
-                echo $row->film_id . ': ' . $row->screening . '<br>';
-                if (!in_array($row->film_id, $comingSoonFilmIds)) :
-                    $comingSoonFilmIds[] = $row->film_id;
-                endif;
-            endforeach;
-            print '<pre>';
-
-            $comingSoonFilmIds = array_diff($comingSoonFilmIds, $nowPlayingFilmIds);
-
-            echo '<br>============================================================';
-            echo '<br>$comingSoonFilmIds';
-            echo '<br>------------------------------<br>';
-            print_r($comingSoonFilmIds);
-            echo '<br>============================================================<br>';          
-            print '</pre>';
+        $getThePostId = new WP_Query( $args );
+        if ( $getThePostId->have_posts() ) :
+            while ( $getThePostId->have_posts() ) : $getThePostId->the_post();
+                $filmPostId = get_the_ID();
+                filmCard($filmPostId);
+            endwhile;
         endif;
-        ?>
+        wp_reset_query();
+    endforeach;
+    ?>
 
-    </li>
+    <h2>Coming Soon</h2>
+    <!-- Get all the movies that have upcoming screenings that are NOT in the first set -->
+    <!-- First, get 100 dates starting with today -->
 
-    <li>Display their "half teasers", in "next screening" order
+    <?php 
+    $comingSoonDays = [];
+    $period = new DatePeriod(
+        new DateTime(date_i18n("Y-m-d 00:00:00")), // Start date of the period
+        new DateInterval('P1D'), // Define the intervals as Periods of 1 Day
+        100 // Apply the interval 100 times on top of the starting date
+    );
+    foreach ($period as $day) {
+        $comingSoonDays[] = '\''.$day->format('Y-m-d').'\'';
+    }
+    $comingSoonDaysAsString = implode (',', $comingSoonDays);
+    print '<pre class="debug">';
+    echo '<br>============================================================';
+    echo '<br>$comingSoonDays';
+    echo '<br>------------------------------<br>';
+    print_r($comingSoonDays);
+    echo '<br>============================================================';
+    echo '<br>$comingSoonDaysAsString';
+    echo '<br>------------------------------<br>';
+    print_r($comingSoonDaysAsString);
+    echo '<br>============================================================';
+    print '</pre>';
+    ?>
 
-        <?php 
-        foreach ($comingSoonFilmIds as $comingSoonFilmId) :
-            $args = array (
-                'post_type' => 'film',
-                'posts_per_page' => '1',
-                'meta_key' => 'agile_film_id',
-                'meta_value' => $comingSoonFilmId
-            );
-            $getThePostId = new WP_Query( $args );
-            if ( $getThePostId->have_posts() ) :
-                while ( $getThePostId->have_posts() ) : $getThePostId->the_post();
-                    $filmPostId = get_the_ID();
-                    filmCard($filmPostId);
-                endwhile;
+    <!-- Next, get all the "coming soon" movies that have screenings on those dates -->
+
+    <?php
+    global $wpdb;
+    $screenings_table_name = $wpdb->prefix . 'gi_screenings';
+    $comingSoonScreeningsQuery = "
+        SELECT film_id, screening
+        FROM {$screenings_table_name} 
+        WHERE screening_date IN ($comingSoonDaysAsString)
+        ORDER BY screening
+    ";
+    print '<pre class="debug">';
+    echo '<br>============================================================';
+    echo '<br>$comingSoonScreeningsQuery';
+    echo '<br>------------------------------<br>';
+    echo $comingSoonScreeningsQuery;
+    echo '<br>============================================================';
+    print '</pre>';
+    $result = $wpdb->get_results($comingSoonScreeningsQuery);
+    if ( count($result) ) :
+        $comingSoonFilmIds = [];
+        foreach( $result as $key => $row) :
+            echo '<span class="debug">' . $row->film_id . ': ' . $row->screening . '<br></span>';
+            if (!in_array($row->film_id, $comingSoonFilmIds)) :
+                $comingSoonFilmIds[] = $row->film_id;
             endif;
-            wp_reset_query();
         endforeach;
-        ?>
-    </li>
-<hr />
+        print '<pre class="debug">';
 
-<h2>Membership</h2>
-info & link
+        $comingSoonFilmIds = array_diff($comingSoonFilmIds, $nowPlayingFilmIds);
 
-<h2>Donation</h2> 
-info & link
+        echo '<br>============================================================';
+        echo '<br>$comingSoonFilmIds';
+        echo '<br>------------------------------<br>';
+        print_r($comingSoonFilmIds);
+        echo '<br>============================================================<br>';          
+        print '</pre>';
+    endif;
+    ?>
 
-<hr />
+    <!-- Display their "half teasers", in "next screening" order -->
+
+    <?php 
+    foreach ($comingSoonFilmIds as $comingSoonFilmId) :
+        $args = array (
+            'post_type' => 'film',
+            'posts_per_page' => '1',
+            'meta_key' => 'agile_film_id',
+            'meta_value' => $comingSoonFilmId
+        );
+        $getThePostId = new WP_Query( $args );
+        if ( $getThePostId->have_posts() ) :
+            while ( $getThePostId->have_posts() ) : $getThePostId->the_post();
+                $filmPostId = get_the_ID();
+                filmCard($filmPostId);
+            endwhile;
+        endif;
+        wp_reset_query();
+    endforeach;
+    ?>
+
+    <h2>Membership</h2>
+    info & link
+
+    <h2>Donation</h2> 
+    info & link
+
+</div>
 
 <?php
 get_footer();
