@@ -12,20 +12,20 @@ function displayFilmForDate ($film_id, $date) {
   $get_film_post = new WP_Query( $args );
 
   if ($get_film_post->have_posts())  {
-
-    echo '<div class="film">';
+    echo '<button data-filmid="' . $film_id . '" class="film">';
     while ($get_film_post->have_posts()) {
       $get_film_post->the_post();
       $this_link = get_permalink();
       $shortName = get_field('short_name');
       $displayName = strlen($shortName) ? $shortName : get_the_title();
-      echo '<button data-filmid="' . $film_id . '" class="film-title">' . $displayName . '</button>';
+      echo '<span class="film-title">' . $displayName . '</span>';
       if (validateDate($date)) :
         global $wpdb;
         $scrs_table_name = $wpdb->prefix . 'gi_screenings';
         $result = $wpdb->get_results("SELECT screening_time FROM $scrs_table_name WHERE film_id = '$film_id' AND screening_date = '$date' ORDER BY screening_time");
         if ($result) :
           $allScreenings = '';
+          $thisTime = '';
           foreach ($result as $row) :
             $scrDateTime = $date . ' ' . $row->screening_time;
             $scrDateTimeStamp = strtotime($scrDateTime);
@@ -33,17 +33,20 @@ function displayFilmForDate ($film_id, $date) {
             $scrMinute = date(':i', $scrDateTimeStamp);
             $scrTimeAmPm = date('a', $scrDateTimeStamp);
             $scrTime = $scrMinute != ':00' ? $scrHour . $scrMinute . $scrTimeAmPm : $scrHour . $scrTimeAmPm;
-            if ( strlen($allScreenings) ) :
-              $allScreenings .= '/' . $scrTime;
-            else :
-              $allScreenings .= $scrTime;
+            if ($scrTime != $thisTime) :
+              if ( strlen($allScreenings) ) :
+                $allScreenings .= '/' . $scrTime;
+              else :
+                $allScreenings .= $scrTime;
+              endif;
             endif;
+            $thisTime = $scrTime;
           endforeach;
           echo '<div class="film-times">' . $allScreenings . '</div>';
         endif;
       endif;
     }
-    echo '</div>';
+    echo '</button>';
   }
 
 }

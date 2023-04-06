@@ -129,8 +129,10 @@
   }
 }
 
-.film {
+button.film {
   display: flex;
+  text-transform: none;
+  text-align: left;
   font-size: 0.75em;
   flex-direction: row;
   justify-content: flex-start;
@@ -140,23 +142,31 @@
   width: 100%;
   padding: 0.25em 0.5em;
   border-radius: 0.7em;
+  background-color: rgba(#ccc, 0.4);
+  border-color: rgba(#aaa, 0.5);
+  cursor: pointer;
 
-  background-color: rgba(#ccc, 0.35);
-  border-color: rgba(#ccc, 0.5);
+  &:hover {
+    background-color: rgba(#fff, 0.4);
+    border-color: rgba(#aaa, 0.9);
+
+    span.film-title,
+    .film-times {
+      color: $c--red--dark;
+    }
+  }
 
   @include breakpoint($md) {
     flex-direction: column;
   }
 
-  button.film-title {
-    @include link-style;
-
+  span.film-title {
     text-transform: none;
     text-decoration: none;
     line-height: 1.3;
     display: block;
     font-weight: 600;
-    cursor: pointer;
+    color: $c--red--darkest;
 
     &:after {
       content: ": ";
@@ -172,5 +182,6 @@
     font-weight: 500;
     line-height: 1.3;
     display: block;
+    color: $c--red--darkest;
   }
 }

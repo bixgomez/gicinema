@@ -7,7 +7,7 @@
 document.addEventListener("DOMContentLoaded", function() {
 
   const templateUrl = template_url.templateUrl;
-  const filmLinks = document.querySelectorAll('.film-title')
+  const filmLinks = document.querySelectorAll('.film')
   const modalOuter = document.querySelector('.modal-outer')
   const modalInner = document.querySelector('.modal-inner')
   const modalContent = document.querySelector('.modal-content')
