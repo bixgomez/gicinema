@@ -48,7 +48,7 @@ $film_block_query = new WP_Query($film_block_args);
 if ( $film_block_query->have_posts() ) :
     while ( $film_block_query->have_posts() ) : $film_block_query->the_post();
         $filmPostId = get_the_ID();
-        filmCard($filmPostId);
+        filmCard(filmPostId:$filmPostId);
     endwhile;
 endif;
 ?>

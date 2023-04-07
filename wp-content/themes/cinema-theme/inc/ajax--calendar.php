@@ -25,7 +25,7 @@ $getThePostId = new WP_Query( $args );
 if ( $getThePostId->have_posts() ) :
   while ( $getThePostId->have_posts() ) : $getThePostId->the_post(); 
     $filmPostId = get_the_ID();
-    filmCard($filmPostId);
+    filmCard(filmPostId:$filmPostId);
   endwhile;
 else:
   // no posts found

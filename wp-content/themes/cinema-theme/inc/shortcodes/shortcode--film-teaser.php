@@ -25,7 +25,7 @@ function film_teaser_function($atts = [], $content = null, $tag = '') {
         while ($query->have_posts()) {
             $query->the_post();
             $filmPostId = get_the_ID();
-            filmCard($filmPostId);
+            filmCard(filmPostId:$filmPostId);
         }
     }
 }

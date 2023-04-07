@@ -18,7 +18,6 @@ get_header();
 <div class="home-page-content">
 
     <h1 class="debug">NEW HOME PAGE</h1>
-
     <hr class="debug" />
 
     <h2>Now Playing</h2>
@@ -37,17 +36,19 @@ get_header();
         $nowPlayingDays[] = '\''.$day->format('Y-m-d').'\'';
     }
     $nowPlayingDaysAsString = implode (',', $nowPlayingDays);
-    print '<pre class="debug">';
-    echo '<br>============================================================';
-    echo '<br>$nowPlayingDays';
-    echo '<br>------------------------------<br>';
-    print_r($nowPlayingDays);
-    echo '<br>============================================================';
-    echo '<br>$daysAsString';
-    echo '<br>------------------------------<br>';
-    print_r($nowPlayingDaysAsString);
-    echo '<br>============================================================';
-    print '</pre>';
+
+    // print '<pre class="debug">';
+    // echo '<br>============================================================';
+    // echo '<br>$nowPlayingDays';
+    // echo '<br>------------------------------<br>';
+    // print_r($nowPlayingDays);
+    // echo '<br>============================================================';
+    // echo '<br>$daysAsString';
+    // echo '<br>------------------------------<br>';
+    // print_r($nowPlayingDaysAsString);
+    // echo '<br>============================================================';
+    // print '</pre>';
+
     ?>
 
     <!-- Get all the "now playing" movies that have screenings on those dates -->
@@ -61,13 +62,15 @@ get_header();
         WHERE screening_date IN ($nowPlayingDaysAsString)
         ORDER BY screening
     ";
-    echo '<pre class="debug">';
-    echo '<br>============================================================';
-    echo '<br>$nowPlayingScreeningsQuery';
-    echo '<br>------------------------------<br>';
-    echo $nowPlayingScreeningsQuery;
-    echo '<br>============================================================';
-    echo '</pre>';
+
+    // echo '<pre class="debug">';
+    // echo '<br>============================================================';
+    // echo '<br>$nowPlayingScreeningsQuery';
+    // echo '<br>------------------------------<br>';
+    // echo $nowPlayingScreeningsQuery;
+    // echo '<br>============================================================';
+    // echo '</pre>';
+
     $result = $wpdb->get_results($nowPlayingScreeningsQuery);
     if ( count($result) ) :
         $nowPlayingFilmIds = [];
@@ -77,13 +80,15 @@ get_header();
                 $nowPlayingFilmIds[] = $row->film_id;
             endif;
         endforeach;
-        print '<pre class="debug">';
-        echo '<br>============================================================';
-        echo '<br>$nowPlayingFilmIds';
-        echo '<br>------------------------------<br>';
-        print_r($nowPlayingFilmIds);
-        echo '<br>============================================================';
-        print '</pre>';
+
+        // print '<pre class="debug">';
+        // echo '<br>============================================================';
+        // echo '<br>$nowPlayingFilmIds';
+        // echo '<br>------------------------------<br>';
+        // print_r($nowPlayingFilmIds);
+        // echo '<br>============================================================';
+        // print '</pre>';
+
     endif;
     ?>
 
@@ -99,10 +104,12 @@ get_header();
         );
         $getThePostId = new WP_Query( $args );
         if ( $getThePostId->have_posts() ) :
+            echo '<div class="films films--now-playing">';
             while ( $getThePostId->have_posts() ) : $getThePostId->the_post();
                 $filmPostId = get_the_ID();
-                filmCard($filmPostId);
+                filmCard(filmPostId:$filmPostId, classes:'now-playing');
             endwhile;
+            echo '</div>';
         endif;
         wp_reset_query();
     endforeach;
@@ -123,17 +130,19 @@ get_header();
         $comingSoonDays[] = '\''.$day->format('Y-m-d').'\'';
     }
     $comingSoonDaysAsString = implode (',', $comingSoonDays);
-    print '<pre class="debug">';
-    echo '<br>============================================================';
-    echo '<br>$comingSoonDays';
-    echo '<br>------------------------------<br>';
-    print_r($comingSoonDays);
-    echo '<br>============================================================';
-    echo '<br>$comingSoonDaysAsString';
-    echo '<br>------------------------------<br>';
-    print_r($comingSoonDaysAsString);
-    echo '<br>============================================================';
-    print '</pre>';
+
+    // print '<pre class="debug">';
+    // echo '<br>============================================================';
+    // echo '<br>$comingSoonDays';
+    // echo '<br>------------------------------<br>';
+    // print_r($comingSoonDays);
+    // echo '<br>============================================================';
+    // echo '<br>$comingSoonDaysAsString';
+    // echo '<br>------------------------------<br>';
+    // print_r($comingSoonDaysAsString);
+    // echo '<br>============================================================';
+    // print '</pre>';
+
     ?>
 
     <!-- Next, get all the "coming soon" movies that have screenings on those dates -->
@@ -147,13 +156,15 @@ get_header();
         WHERE screening_date IN ($comingSoonDaysAsString)
         ORDER BY screening
     ";
-    print '<pre class="debug">';
-    echo '<br>============================================================';
-    echo '<br>$comingSoonScreeningsQuery';
-    echo '<br>------------------------------<br>';
-    echo $comingSoonScreeningsQuery;
-    echo '<br>============================================================';
-    print '</pre>';
+
+    // print '<pre class="debug">';
+    // echo '<br>============================================================';
+    // echo '<br>$comingSoonScreeningsQuery';
+    // echo '<br>------------------------------<br>';
+    // echo $comingSoonScreeningsQuery;
+    // echo '<br>============================================================';
+    // print '</pre>';
+
     $result = $wpdb->get_results($comingSoonScreeningsQuery);
     if ( count($result) ) :
         $comingSoonFilmIds = [];
@@ -163,16 +174,16 @@ get_header();
                 $comingSoonFilmIds[] = $row->film_id;
             endif;
         endforeach;
-        print '<pre class="debug">';
-
         $comingSoonFilmIds = array_diff($comingSoonFilmIds, $nowPlayingFilmIds);
 
-        echo '<br>============================================================';
-        echo '<br>$comingSoonFilmIds';
-        echo '<br>------------------------------<br>';
-        print_r($comingSoonFilmIds);
-        echo '<br>============================================================<br>';          
-        print '</pre>';
+        // print '<pre class="debug">';
+        // echo '<br>============================================================';
+        // echo '<br>$comingSoonFilmIds';
+        // echo '<br>------------------------------<br>';
+        // print_r($comingSoonFilmIds);
+        // echo '<br>============================================================<br>';          
+        // print '</pre>';
+
     endif;
     ?>
 
@@ -188,20 +199,24 @@ get_header();
         );
         $getThePostId = new WP_Query( $args );
         if ( $getThePostId->have_posts() ) :
+            echo '<div class="films films--coming-soon">';
             while ( $getThePostId->have_posts() ) : $getThePostId->the_post();
                 $filmPostId = get_the_ID();
-                filmCard($filmPostId);
+                filmCard(filmPostId:$filmPostId, classes:'coming-soon');
             endwhile;
+            echo '</div>';
         endif;
         wp_reset_query();
     endforeach;
     ?>
 
+    <?php /*
     <h2>Membership</h2>
     info & link
 
     <h2>Donation</h2> 
     info & link
+    */ ?>
 
 </div>
 

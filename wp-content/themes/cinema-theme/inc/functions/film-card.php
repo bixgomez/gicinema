@@ -1,7 +1,7 @@
 <?php
 require_once get_template_directory() . '/inc/functions/validate-date.php';
 
-function filmCard($filmPostId) {
+function filmCard($filmPostId, $classes='film') {
   $filmCardArgs = array(
     'posts_per_page' => 1,
     'post_type' => 'film',
@@ -29,7 +29,7 @@ function filmCard($filmPostId) {
       $addlInfo = get_field('additional_info', $filmPostId);
       $addlInfo = wpautop($addlInfo, false);
       ?>
-      <div class="film-teaser">
+      <div class="film-teaser <?php echo $classes; ?>">
         <div class="film-teaser--sidebar">
           <div class="film-teaser--poster">
             <?php
