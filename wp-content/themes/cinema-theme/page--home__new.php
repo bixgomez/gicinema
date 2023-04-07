@@ -20,7 +20,9 @@ get_header();
     <h1 class="debug">NEW HOME PAGE</h1>
     <hr class="debug" />
 
-    <h2>Now Playing</h2>
+    <h2 class="section-title">Now Playing</h2>
+
+    <?php get_alerts(); ?>
 
     <!-- Films showing in the next 7 days, one per line. -->
     <!-- First, get 7 dates starting with today -->
@@ -95,7 +97,7 @@ get_header();
     <!-- Display their full teasers, in "next screening" order -->
 
     <?php 
-    echo '<div class="films films--now-playing">';
+    echo '<div class="film-cards film-cards--now-playing">';
     foreach ($nowPlayingFilmIds as $nowPlayingFilmId) :
         $args = array (
             'post_type' => 'film',
@@ -115,7 +117,7 @@ get_header();
     echo '</div>';
     ?>
 
-    <h2>Coming Soon</h2>
+    <h2 class="section-title">Coming Soon</h2>
     <!-- Get all the movies that have upcoming screenings that are NOT in the first set -->
     <!-- First, get 100 dates starting with today -->
 
@@ -190,7 +192,7 @@ get_header();
     <!-- Display their "half teasers", in "next screening" order -->
 
     <?php 
-    echo '<div class="films films--coming-soon">';
+    echo '<div class="film-cards film-cards--coming-soon">';
     foreach ($comingSoonFilmIds as $comingSoonFilmId) :
         $args = array (
             'post_type' => 'film',

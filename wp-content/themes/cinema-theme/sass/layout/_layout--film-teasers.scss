@@ -1,22 +1,30 @@
 // Teaser heading.
 .film-teasers-heading {
-  margin-bottom: 1em;
+  margin-bottom: 1rem;
 }
 
-.films {
-  border: 2px dashed orange;
+h2.section-title {
+  border-bottom: 1px solid rgba(#000, 0.25);
+  margin: 0 0 2rem;
+  padding: 0;
+  font-size: 3rem;
+}
+
+.film-cards {
+  border: 0 dashed orange;
   display: grid;
   gap: 3rem;
+  margin: 0 0 3rem;
 }
 
-.films--now-playing {
+.film-cards--now-playing {
   border-color: red;
 }
 
-.films--coming-soon {
+.film-cards--coming-soon {
   border-color: green;
 }
 
-.films > .film-teaser {
+.film-cards > .film-teaser {
   margin: 0;
 }
