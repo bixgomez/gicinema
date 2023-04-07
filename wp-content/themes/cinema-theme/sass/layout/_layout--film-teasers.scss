@@ -1,0 +1,22 @@
+// Teaser heading.
+.film-teasers-heading {
+  margin-bottom: 1em;
+}
+
+.films {
+  border: 2px dashed orange;
+  display: grid;
+  gap: 3rem;
+}
+
+.films--now-playing {
+  border-color: red;
+}
+
+.films--coming-soon {
+  border-color: green;
+}
+
+.films > .film-teaser {
+  margin: 0;
+}

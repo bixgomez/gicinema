@@ -95,6 +95,7 @@ get_header();
     <!-- Display their full teasers, in "next screening" order -->
 
     <?php 
+    echo '<div class="films films--now-playing">';
     foreach ($nowPlayingFilmIds as $nowPlayingFilmId) :
         $args = array (
             'post_type' => 'film',
@@ -104,15 +105,14 @@ get_header();
         );
         $getThePostId = new WP_Query( $args );
         if ( $getThePostId->have_posts() ) :
-            echo '<div class="films films--now-playing">';
             while ( $getThePostId->have_posts() ) : $getThePostId->the_post();
                 $filmPostId = get_the_ID();
                 filmCard(filmPostId:$filmPostId, classes:'now-playing');
             endwhile;
-            echo '</div>';
         endif;
         wp_reset_query();
     endforeach;
+    echo '</div>';
     ?>
 
     <h2>Coming Soon</h2>
@@ -190,6 +190,7 @@ get_header();
     <!-- Display their "half teasers", in "next screening" order -->
 
     <?php 
+    echo '<div class="films films--coming-soon">';
     foreach ($comingSoonFilmIds as $comingSoonFilmId) :
         $args = array (
             'post_type' => 'film',
@@ -199,15 +200,14 @@ get_header();
         );
         $getThePostId = new WP_Query( $args );
         if ( $getThePostId->have_posts() ) :
-            echo '<div class="films films--coming-soon">';
             while ( $getThePostId->have_posts() ) : $getThePostId->the_post();
                 $filmPostId = get_the_ID();
                 filmCard(filmPostId:$filmPostId, classes:'coming-soon');
             endwhile;
-            echo '</div>';
         endif;
         wp_reset_query();
     endforeach;
+    echo '</div>';
     ?>
 
     <?php /*
