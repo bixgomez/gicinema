@@ -17,12 +17,12 @@ get_header();
 
 <div class="home-page-content">
 
+    <?php get_alerts(); ?>
+
     <h1 class="debug">NEW HOME PAGE</h1>
     <hr class="debug" />
 
     <h2 class="section-title">Now Playing</h2>
-
-    <?php get_alerts(); ?>
 
     <!-- Films showing in the next 7 days, one per line. -->
     <!-- First, get 7 dates starting with today -->
