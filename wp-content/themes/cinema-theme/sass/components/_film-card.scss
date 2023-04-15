@@ -1,5 +1,5 @@
 // The grid for the teaser
-.film-teaser {
+.film-card {
   font-size: 1em;
   display: grid;
   grid-template-areas:
@@ -12,7 +12,7 @@
   grid-template-rows: min-content min-content 1fr min-content min-content;
   column-gap: 1em;
   row-gap: 1.25em;
-  margin: 2em 0 4em;
+  margin: 0;
   padding: 0;
 
   @include breakpoint($sm) {
@@ -36,7 +36,7 @@
   }
 }
 
-.film-teaser--sidebar {
+.film-card--sidebar {
   display: contents;
 
   @include breakpoint($md) {
@@ -47,7 +47,7 @@
   }
 }
 
-.film-teaser--links {
+.film-card--links {
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -68,7 +68,7 @@
   }
 }
 
-.film-teaser--title {
+.film-card--title {
   grid-area: title;
   font-size: 2.25em;
   margin: 0;
@@ -82,7 +82,7 @@
   }
 }
 
-.film-teaser--film-info {
+.film-card--film-info {
   grid-area: info;
   padding: 0;
   margin: -0.75em 0 0;
@@ -94,11 +94,11 @@
   }
 }
 
-.film-teaser--links {
+.film-card--links {
   grid-area: links;
 }
 
-.film-teaser--description {
+.film-card--description {
   grid-area: description;
   padding: 0;
   margin: 0;
@@ -113,7 +113,7 @@
   }
 }
 
-.film-teaser--screenings {
+.film-card--screenings {
   grid-area: screenings;
   padding: 0;
   font-size: 1em;
@@ -128,7 +128,7 @@
   margin-bottom: 0.5em;
 }
 
-.film-teaser--poster {
+.film-card--poster {
   grid-area: poster;
 
   img {
