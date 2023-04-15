@@ -29,9 +29,30 @@ function filmCard($filmPostId, $classes='film') {
       $addlInfo = get_field('additional_info', $filmPostId);
       $addlInfo = wpautop($addlInfo, false);
       ?>
-      <div class="film-teaser <?php echo $classes; ?>">
-        <div class="film-teaser--sidebar">
-          <div class="film-teaser--poster">
+      <div class="film-card <?php echo $classes; ?>">
+        <h2 class="film-card--title">
+          <a class="film-title" href="<?php echo $link; ?>"><?php echo $displayName; ?></a>
+        </h2>
+        <div class="film-card--film-info">
+          <div class="film-card--director">
+            <?php echo $director; ?> · <?php echo $year; ?>
+          </div>
+          <div class="film-card--format">
+            <?php echo $length . 'min'; ?> · <?php echo $format; ?>
+          </div>
+          <div class="film-card--screening-range">
+            <?php
+                $firstScreeningDisp = date('M j', strtotime($firstScreening));
+                $lastScreeningDisp = date('M j', strtotime($lastScreening));
+                echo 'Playing ' . $firstScreeningDisp;
+                if ($lastScreeningDisp != $firstScreeningDisp) {
+                    echo ' through ' . $lastScreeningDisp;
+                }
+                ?>
+          </div>
+        </div>
+        <div class="film-card--sidebar">
+          <div class="film-card--poster">
             <?php
             if (has_post_thumbnail($filmPostId)) {
               echo get_the_post_thumbnail($filmPostId);
@@ -43,48 +64,27 @@ function filmCard($filmPostId, $classes='film') {
             }
             ?>
           </div>
-          <div class="film-teaser--links">
-            <div class="film-teaser--trailer">
+          <div class="film-card--links">
+            <div class="film-card--trailer">
               <a class="film-trailer" href="https://youtu.be/<?php echo $trailer; ?>" target="_blank">View Trailer</a>
             </div>
-            <div class="film-teaser--buy-tickets">
+            <div class="film-card--buy-tickets">
               <a class="film-trailer" href="<?php echo $ticketPurchaseLink; ?>" target="_blank">Buy Tickets</a>
             </div>
           </div>
         </div>
-        <h2 class="film-teaser--title">
-          <a class="film-title" href="<?php echo $link; ?>"><?php echo $displayName; ?></a>
-        </h2>
-        <div class="film-teaser--film-info">
-          <div class="film-teaser--director">
-            <?php echo $director; ?> · <?php echo $year; ?>
-          </div>
-          <div class="film-teaser--format">
-            <?php echo $length . 'min'; ?> · <?php echo $format; ?>
-          </div>
-          <div class="film-teaser--screening-range">
-            <?php
-                $firstScreeningDisp = date('M j', strtotime($firstScreening));
-                $lastScreeningDisp = date('M j', strtotime($lastScreening));
-                echo 'Playing ' . $firstScreeningDisp;
-                if ($lastScreeningDisp != $firstScreeningDisp) {
-                    echo ' through ' . $lastScreeningDisp;
-                }
-                ?>
+        <div class="film-card--screenings">
+          <div class="screenings">
+            <p><?php echo $screenings; ?></p>
           </div>
         </div>
-        <div class="film-teaser--description">
+        <div class="film-card--description">
           <p>
             <?php 
               echo $description;
               echo $addlInfo;
             ?>
           </p>
-        </div>
-        <div class="film-teaser--screenings">
-          <div class="screenings">
-            <p><?php echo $screenings; ?></p>
-          </div>
         </div>
       </div>
       <?php
