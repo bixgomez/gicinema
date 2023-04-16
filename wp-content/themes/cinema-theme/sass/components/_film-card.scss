@@ -1,6 +1,6 @@
 // The grid for the teaser
 .film-card {
-  font-size: 1em;
+  font-size: 1.25em;
   display: grid;
   grid-template-areas:
     "title"
@@ -15,6 +15,7 @@
   padding: 0;
 
   @include breakpoint($sm) {
+    font-size: 1em;
     grid-template-areas:
       "poster title"
       "poster info"
@@ -60,10 +61,6 @@
   grid-gap: 10px;
   justify-content: flex-end;
 
-  a {
-    max-width: 250px;
-  }
-
   @include breakpoint($md) {
     grid-gap: 12px;
     justify-content: flex-start;
@@ -76,8 +73,9 @@
 
 .film-card--title {
   grid-area: title;
-  font-size: 3em;
-  margin: 0;
+  font-size: 2.5em;
+  margin: 0 0 -0.25em;
+  text-align: center;
 
   a {
     text-decoration: none;
@@ -89,6 +87,8 @@
 
   @include breakpoint($sm) {
     font-size: 2.25em;
+    margin: 0;
+    text-align: left;
 
     .film-card.coming-soon & {
       // font-size: 1.825em;
@@ -99,9 +99,16 @@
 .film-card--film-info {
   grid-area: info;
   padding: 0;
-  margin: -0.75em 0 0;
-  font-size: 1em;
+  margin: -0.25em 0 0;
+  font-size: 1.125em;
   font-weight: $font-weight--bold;
+  text-align: center;
+
+  @include breakpoint($sm) {
+    margin: -0.75em 0 0;
+    font-size: 1em;
+    text-align: left;
+  }
 
   @include breakpoint($md) {
     font-size: 0.9em;
@@ -118,6 +125,7 @@
   margin: 0;
   font-size: 1em;
   height: min-content;
+  text-align: left;
 
   p:first-child {
     margin-top: 0;
@@ -129,6 +137,10 @@
 
   .film-card.coming-soon & {
     display: none;
+  }
+
+  @include breakpoint($sm) {
+    text-align: left;
   }
 }
 
@@ -160,6 +172,23 @@
     display: block;
     padding: 0;
     margin: 0;
+  }
+}
+
+a.film-button {
+  max-width: 100%;
+  font-size: 1.25em;
+  padding: 0.5em 0;
+
+  @include breakpoint($sm) {
+    max-width: 250px;
+    font-size: 1em;
+    padding: 0.3em 0;
+  }
+
+  @include breakpoint($md) {
+    max-width: 100%;
+    padding: 0.5em 0;
   }
 }
 
