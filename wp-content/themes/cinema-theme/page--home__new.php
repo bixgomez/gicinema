@@ -192,7 +192,7 @@ get_header();
     <!-- Display their "half teasers", in "next screening" order -->
 
     <?php 
-    echo '<div class="film-cards film-cards--coming-soon">';
+    echo '<div class="film-cards film-cards--coming_soon">';
     foreach ($comingSoonFilmIds as $comingSoonFilmId) :
         $args = array (
             'post_type' => 'film',
@@ -204,7 +204,7 @@ get_header();
         if ( $getThePostId->have_posts() ) :
             while ( $getThePostId->have_posts() ) : $getThePostId->the_post();
                 $filmPostId = get_the_ID();
-                filmCard(filmPostId:$filmPostId, classes:'coming-soon');
+                filmCard(filmPostId:$filmPostId, classes:'coming_soon');
             endwhile;
         endif;
         wp_reset_query();
