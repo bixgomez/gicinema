@@ -11,7 +11,7 @@ h2.section-title {
 }
 
 .film-cards {
-  border: 0 dashed orange;
+  // border: 1px dashed orange;
   display: grid;
   gap: 3rem;
   margin: 0 0 3rem;
@@ -23,6 +23,10 @@ h2.section-title {
 
 .film-cards--coming-soon {
   border-color: green;
+
+  @include breakpoint($md) {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .film-cards > .film-teaser {

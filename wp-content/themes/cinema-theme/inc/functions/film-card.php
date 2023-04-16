@@ -53,23 +53,25 @@ function filmCard($filmPostId, $classes='film') {
         </div>
         <div class="film-card--sidebar">
           <div class="film-card--poster">
-            <?php
-            if (has_post_thumbnail($filmPostId)) {
-              echo get_the_post_thumbnail($filmPostId);
-            } else {
-              $poster = get_field('poster_url', $filmPostId);
-              if ($poster) {
-                echo '<div class="film-poster"><img src="' . $poster . '"></div>';
+            <a class="film-title" href="<?php echo $link; ?>">
+              <?php
+              if (has_post_thumbnail($filmPostId)) {
+                echo get_the_post_thumbnail($filmPostId);
+              } else {
+                $poster = get_field('poster_url', $filmPostId);
+                if ($poster) {
+                  echo '<div class="film-poster"><img src="' . $poster . '"></div>';
+                }
               }
-            }
-            ?>
+              ?>
+            </a>
           </div>
           <div class="film-card--links">
             <div class="film-card--trailer">
-              <a class="film-trailer" href="https://youtu.be/<?php echo $trailer; ?>" target="_blank">View Trailer</a>
+              <a class="film-button" href="https://youtu.be/<?php echo $trailer; ?>" target="_blank"><span>View </span>Trailer</a>
             </div>
             <div class="film-card--buy-tickets">
-              <a class="film-trailer" href="<?php echo $ticketPurchaseLink; ?>" target="_blank">Buy Tickets</a>
+              <a class="film-button" href="<?php echo $ticketPurchaseLink; ?>" target="_blank"><span>Buy </span>Tickets</a>
             </div>
           </div>
         </div>
@@ -79,12 +81,10 @@ function filmCard($filmPostId, $classes='film') {
           </div>
         </div>
         <div class="film-card--description">
-          <p>
             <?php 
               echo $description;
               echo $addlInfo;
             ?>
-          </p>
         </div>
       </div>
       <?php
