@@ -1,0 +1,152 @@
+@import "breakpoint";
+@import "config/config";
+// @import "base/base";
+@import "typography/typography";
+@import "layout/layout";
+@import "components/components";
+
+$color-wpblue: #0073aa;
+
+$bgcolor-body: #f1f1f1;
+$bgcolor-block--default: rgba(#FFF, .25);
+$bgcolor-block--hover: rgba(#FFF, .5);
+$bgcolor-block--selected: #FFF;
+
+$border-block--default: 1px dotted rgba($color-wpblue, .1);
+$border-block--hover: 1px dashed rgba($color-wpblue, .9);
+$border-block--selected: 1px solid  rgba($color-wpblue, .5);
+
+$editor-outline: #007cba;
+
+body {
+  background-color: $bgcolor-body;
+}
+
+p {
+  @extend p;
+}
+
+.edit-post-layout__content,
+.wp-block {
+  font-size: $font-size--base;
+}
+
+.editor-styles-wrapper {
+  font-size: $font-size--base;
+}
+
+.editor-styles-wrapper .home-page-feature--link {
+  display: none;
+}
+
+.editor-post-title__block .editor-post-title__input {
+  @extend h1;
+  margin-left: 2px;
+  width: calc(100% - 4px);
+  margin-bottom: -2px;
+  box-sizing: border-box;
+  line-height: 1.2;
+  padding: 14px;
+  display: inline-block;
+  margin-top: 20px;
+  height: auto;
+}
+
+.editor-styles-wrapper h2 {
+  @extend h2;
+}
+
+.editor-styles-wrapper h3 {
+  @extend h3;
+}
+
+.editor-styles-wrapper h4 {
+  @extend h4;
+}
+
+.editor-styles-wrapper h5 {
+  @extend h5;
+}
+
+.editor-styles-wrapper h6 {
+  @extend h6;
+}
+
+.edit-post-layout .edit-post-layout__content,
+.editor-styles-wrapper,
+.block-editor__container,
+.editor-writing-flow {
+  background-color: $bgcolor-body !important;
+}
+
+.edit-post-visual-editor .editor-block-list__block .editor-block-list__block-edit {
+  margin: 0 !important;
+}
+
+.editor-block-list__block::before {
+  left: 0 !important;
+  right: 0 !important;
+}
+
+.editor-post-title__block:not(.is-focus-mode):not(.has-fixed-toolbar) .editor-post-title__input {
+  background-color: $bgcolor-block--default;
+  border: $border-block--default;
+  &:hover {
+    background-color: $bgcolor-block--hover;
+    border: $border-block--hover;
+  }
+  &:focus {
+    background-color: $bgcolor-block--selected;
+    border: $border-block--selected;
+  }
+}
+
+.editor-block-list__block .editor-block-list__block-edit::before {
+  background-color: $bgcolor-block--default;
+  outline: $border-block--default;
+}
+
+.editor-block-list__block.is-hovered > .editor-block-list__block-edit::before {
+  background-color: $bgcolor-block--hover;
+  outline: $border-block--hover;
+}
+
+.editor-block-list__block .editor-block-list__block-edit:hover::before {
+  background-color: $bgcolor-block--selected;
+  outline: $border-block--hover;
+}
+
+.editor-block-list__block.is-selected > .editor-block-list__block-edit::before,
+.editor-block-list__block.is-focused.is-focus-mode .editor-block-list__block-edit::before {
+  background-color: $bgcolor-block--selected;
+  outline: $border-block--selected;
+}
+
+.wp-block {
+  max-width: 100%;
+}
+
+.editor-block-toolbar {
+  overflow: hidden;
+  border: $border-block--selected;
+  border-bottom: 0;
+  margin-bottom: 0;
+  margin-top: -1px;
+  border-radius: 8px 8px 0 0;
+}
+
+.editor-post-permalink {
+  background-color: $bgcolor-block--selected;
+  background: $bgcolor-block--selected;
+  border: $border-block--selected;
+  padding: 25px 10px;
+  * {
+    background-color: transparent;
+    background: none;
+  }
+}
+
+// A minor fix for "Edit as HTML"
+.editor-block-list__block .editor-block-list__block-html-textarea {
+  position: relative;
+}

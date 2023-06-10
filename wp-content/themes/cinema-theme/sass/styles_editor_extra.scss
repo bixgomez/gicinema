@@ -1,0 +1,167 @@
+@import "breakpoint";
+@import "config/config";
+// @import "base/base";
+@import "typography/typography";
+@import "layout/layout";
+@import "components/components";
+
+// Variables derived from default editor layout values.
+// I am keeping these as-is, but enforcing their "highest breakpoint" values.
+$editor-padding: 43px;
+$block-margin: 14px;
+
+// Custom margin values to compensate for block mover on left, and to add breathing room on right.
+$editor-margin-left: 33px;
+$editor-margin-right: 10px;
+
+.edit-post-visual-editor.editor-styles-wrapper {
+  font-size: $font-size--html;
+}
+
+.edit-post-layout__content,
+.wp-block {
+  font-size: $font-size--base;
+}
+
+body.is-fullscreen-mode .edit-post-layout__content {
+  overflow: visible;
+}
+
+.edit-post-visual-editor {
+  padding: 0;
+}
+
+.editor-block-list__layout .editor-block-list__block {
+  padding-left: $editor-padding;
+  padding-right: $editor-padding;
+}
+
+.editor-block-list__layout .editor-block-list__block .editor-block-drop-zone {
+  margin-left: $block-margin;
+  margin-right: $block-margin;
+}
+
+.editor-block-list__layout .editor-block-list__block .editor-block-list__block-edit > div[data-block] {
+  position: relative;
+
+  &.editor-block-contextual-toolbar {
+    position: unset;
+  }
+
+  > * {
+    z-index: 1000;
+  }
+
+  .editor-block-contextual-toolbar {
+    position: unset;
+  }
+}
+
+.editor-block-list__block .editor-block-contextual-toolbar {
+  z-index: 1000;
+}
+
+.editor-block-list__layout .editor-block-list__block .editor-block-list__block-edit::before {
+  left: -$block-margin;
+  right: -$block-margin;
+}
+
+.editor-block-list__layout .editor-block-list__block .editor-block-drop-zone {
+  top: -18px;
+  bottom: -17px;
+  margin: 0;
+}
+
+.edit-post-visual-editor .editor-block-list__block .editor-block-list__block-edit {
+  margin-left: -(2 * $block-margin);
+  margin-right: -(2 * $block-margin);
+}
+
+.block-editor__typewriter {
+  padding-left: $editor-margin-left;
+  padding-right: $editor-margin-right;
+}
+
+.editor-styles-wrapper .editor-block-list__layout,
+.editor-styles-wrapper .editor-post-title {
+  //padding-left: $editor-margin-left;
+  //padding-right: $editor-margin-right;
+}
+
+.components-popover.block-editor-block-list__block-popover .components-popover__content .block-editor-block-contextual-toolbar,
+.components-popover.block-editor-block-list__block-popover .components-popover__content .block-editor-block-list__block-selection-button {
+  margin-bottom: -2px;
+  border: 2px solid #1e1e1e;
+}
+
+.editor-styles-wrapper .wp-block {
+  border: 2px dashed rgba(#000, .125);
+
+  &:hover {
+    border: 2px solid rgba(#000, .125);;
+    background-color: rgba(#FFF, .5);
+  }
+
+  &.is-selected,
+  &.is-selected:hover {
+    border: 2px solid #1e1e1e;
+    background-color: rgba(#FFF, .75);
+  }
+}
+
+.editor-styles-wrapper .editor-writing-flow {
+  max-width: $max-site-width + $editor-margin-right + $editor-margin-left + (2 * $block-margin) + 2px - ($site-padding * 2);
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 47px;
+}
+
+.editor-block-list__block > .editor-block-list__insertion-point {
+  top: -24px;
+}
+
+.editor-block-list__insertion-point-inserter .editor-inserter__toggle {
+  margin-top: 3px;
+}
+
+.editor-post-title__block {
+  padding: 0;
+}
+
+
+// Fixing typography issues whilst editing in the WYSIWIG.
+
+div.editor-styles-wrapper p.mce-content-body,
+.editor-styles-wrapper p {
+  @include typography-body;
+}
+
+.editor-styles-wrapper .editor-post-title__block .editor-post-title__input {
+  @extend h1;
+}
+
+.wp-block-heading h1.editor-rich-text__tinymce { @extend h1; }
+.wp-block-heading h2.editor-rich-text__tinymce { @extend h2; }
+.wp-block-heading h3.editor-rich-text__tinymce { @extend h3; }
+.wp-block-heading h4.editor-rich-text__tinymce { @extend h4; }
+.wp-block-heading h5.editor-rich-text__tinymce { @extend h5; }
+.wp-block-heading h6.editor-rich-text__tinymce { @extend h6; }
+
+
+// Some additional nice-to-haves.
+
+.components-notice.is-warning {
+  background-color: rgba(#fef8ee, .85);
+
+  &:hover {
+    background-color: #fef8ee;
+  }
+}
+
+.components-notice.is-success {
+  background-color: rgba(#eff9f1, .85);
+
+  &:hover {
+    background-color: #eff9f1;
+  }
+}
