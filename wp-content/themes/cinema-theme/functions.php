@@ -128,11 +128,13 @@ add_action('wp_head', 'cinema_theme_ajaxurl');
 /**
  * Enqueue admin styles.
  */
+/*
 function cinema_theme_admin_style() {
   wp_enqueue_style( 'cinema_theme-admin-style', get_stylesheet_uri() );
 }
 add_action('admin_enqueue_scripts', 'cinema_theme_admin_style');
 add_action('login_enqueue_scripts', 'cinema_theme_admin_style');
+*/
 
 
 /**
