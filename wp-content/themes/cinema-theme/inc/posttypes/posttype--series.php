@@ -10,7 +10,7 @@ function series_cpt() {
       'all_items'    => __( 'All Series', 'text_domain' ),
       'add_new'      => __( 'Add New Series', 'text_domain' ),
       'add_new_item' => __( 'Add New Series', 'text_domain' ),
-      'edit_item' => __( 'EditSeries', 'text_domain' ),
+      'edit_item' => __( 'Edit Series', 'text_domain' ),
     ),
     'description' => 'Allowing you to group films into a series.',
     'public' => true,
