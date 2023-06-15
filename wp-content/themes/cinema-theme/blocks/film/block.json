@@ -2,9 +2,9 @@
   "name": "film",
   "title": "Film",
   "description": "Displays a film card/teaser.",
-  "category": "theme",
+  "category": "common",
   "apiVersion": 2,
-  "icon": "admin-comments",
+  "icon": "editor-video",
   "acf": {
     "mode": "edit",
     "renderTemplate": "blocks/film/block.php"

@@ -1,20 +1,20 @@
 @import "breakpoint";
 @import "config/config";
 // @import "base/base";
-@import "typography/typography";
+// @import "typography/typography";
 @import "layout/layout";
-@import "components/components";
+// @import "components/components";
 
 $color-wpblue: #0073aa;
 
 $bgcolor-body: #f1f1f1;
-$bgcolor-block--default: rgba(#FFF, .25);
-$bgcolor-block--hover: rgba(#FFF, .5);
-$bgcolor-block--selected: #FFF;
+$bgcolor-block--default: rgba(#fff, 0.25);
+$bgcolor-block--hover: rgba(#fff, 0.5);
+$bgcolor-block--selected: #fff;
 
-$border-block--default: 1px dotted rgba($color-wpblue, .1);
-$border-block--hover: 1px dashed rgba($color-wpblue, .9);
-$border-block--selected: 1px solid  rgba($color-wpblue, .5);
+$border-block--default: 1px dotted rgba($color-wpblue, 0.1);
+$border-block--hover: 1px dashed rgba($color-wpblue, 0.9);
+$border-block--selected: 1px solid rgba($color-wpblue, 0.5);
 
 $editor-outline: #007cba;
 
@@ -28,11 +28,11 @@ p {
 
 .edit-post-layout__content,
 .wp-block {
-  font-size: $font-size--base;
+  // font-size: $font-size--base;
 }
 
 .editor-styles-wrapper {
-  font-size: $font-size--base;
+  // font-size: $font-size--base;
 }
 
 .editor-styles-wrapper .home-page-feature--link {
@@ -40,7 +40,7 @@ p {
 }
 
 .editor-post-title__block .editor-post-title__input {
-  @extend h1;
+  // @extend h1;
   margin-left: 2px;
   width: calc(100% - 4px);
   margin-bottom: -2px;
@@ -79,7 +79,9 @@ p {
   background-color: $bgcolor-body !important;
 }
 
-.edit-post-visual-editor .editor-block-list__block .editor-block-list__block-edit {
+.edit-post-visual-editor
+  .editor-block-list__block
+  .editor-block-list__block-edit {
   margin: 0 !important;
 }
 
@@ -88,7 +90,8 @@ p {
   right: 0 !important;
 }
 
-.editor-post-title__block:not(.is-focus-mode):not(.has-fixed-toolbar) .editor-post-title__input {
+.editor-post-title__block:not(.is-focus-mode):not(.has-fixed-toolbar)
+  .editor-post-title__input {
   background-color: $bgcolor-block--default;
   border: $border-block--default;
   &:hover {
@@ -117,7 +120,8 @@ p {
 }
 
 .editor-block-list__block.is-selected > .editor-block-list__block-edit::before,
-.editor-block-list__block.is-focused.is-focus-mode .editor-block-list__block-edit::before {
+.editor-block-list__block.is-focused.is-focus-mode
+  .editor-block-list__block-edit::before {
   background-color: $bgcolor-block--selected;
   outline: $border-block--selected;
 }

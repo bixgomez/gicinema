@@ -6,8 +6,8 @@
 
 const PROJECT_URL   = 'https://gicinema.local';
 const ROOT          = './';
-const STYLES_MAIN   = './sass/style.scss';
-const STYLES_ADMIN  = './sass/admin.scss';
+const STYLES_MAIN   = './sass/*.scss';
+const STYLES_ADMIN  = './sass/style_admin.scss';
 const STYLES_SOURCE = './sass/**/*.scss';
 const STYLES_DEST   = ROOT;
 const JS_SOURCE     = './assets/js/src/**/*.js';
@@ -31,7 +31,7 @@ sass.compiler = require('sass')
 
 // Compile CSS from Sass.
 function buildStyles() {
-  return src( STYLES_MAIN, STYLES_ADMIN )
+  return src( STYLES_MAIN )
     .pipe(plumbError()) // Global error handler through all pipes.
     .pipe(sourcemaps.init())
     .pipe(sassGlob())

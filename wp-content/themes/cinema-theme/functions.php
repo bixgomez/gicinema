@@ -128,13 +128,20 @@ add_action('wp_head', 'cinema_theme_ajaxurl');
 /**
  * Enqueue admin styles.
  */
-/*
 function cinema_theme_admin_style() {
-  wp_enqueue_style( 'cinema_theme-admin-style', get_stylesheet_uri() );
+  wp_enqueue_style( 'cinema_theme-admin-style', get_template_directory_uri() . '/style_admin.css', array(), filemtime(get_template_directory() . '/style_admin.css' ), false);
 }
 add_action('admin_enqueue_scripts', 'cinema_theme_admin_style');
 add_action('login_enqueue_scripts', 'cinema_theme_admin_style');
-*/
+
+/**
+ * Load Gutenberg stylesheet. Add backend styles for Gutenberg.
+ */
+function extra_gutenberg_assets() {
+    // Load the theme styles within Gutenberg.
+    wp_enqueue_style( 'extra-gutenberg', get_template_directory_uri() . '/styles_editor_extra.css', array(), filemtime(get_template_directory() . '/styles_editor_extra.css' ), false);
+}
+add_action( 'enqueue_block_editor_assets', 'extra_gutenberg_assets' );
 
 
 /**
