@@ -67,12 +67,23 @@ function filmCard($filmPostId, $classes='film') {
             </a>
           </div>
           <div class="film-card--links">
-            <div class="film-card--trailer">
-              <a class="film-button" href="https://youtu.be/<?php echo $trailer; ?>" target="_blank"><span>View </span>Trailer</a>
-            </div>
-            <div class="film-card--buy-tickets">
-              <a class="film-button" href="<?php echo $ticketPurchaseLink; ?>" target="_blank"><span>Buy </span>Tickets</a>
-            </div>
+
+            <?php if ($trailer != '') : ?>
+              <?php 
+              if (!str_contains($trailer, 'http')) :
+                $trailer = 'https://youtu.be/' . $trailer . '';
+              endif;
+              ?>
+              <div class="film-card--trailer">
+                <a class="film-button" href="<?php echo $trailer; ?>" target="_blank"><span>View </span>Trailer</a>
+              </div>
+            <?php endif ?>
+
+            <?php if ($ticketPurchaseLink != '') : ?>
+              <div class="film-card--buy-tickets">
+                <a class="film-button" href="<?php echo $ticketPurchaseLink; ?>" target="_blank"><span>Buy </span>Tickets</a>
+              </div>
+            <?php endif ?>
           </div>
         </div>
         <div class="film-card--screenings">
