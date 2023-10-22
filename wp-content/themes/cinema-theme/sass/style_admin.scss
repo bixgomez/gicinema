@@ -1,7 +1,36 @@
 @import "breakpoint";
-// @import "config/config";
+@import "config/config";
 // @import "beaver/beaver";
 
 body {
-  background-color: #ddd;
+  background-color: mix($c--admin-background, $c--white, 75%);
+}
+
+#edit-slug-box {
+  margin-top: 17px;
+  background: rgba($c--white, 0.5);
+  border: 1px solid rgba($c--black, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  grid-gap: 8px;
+  padding: 5px 10px;
+}
+
+.post-type-film .postarea {
+  border: 3px dashed orange;
+  display: none;
+}
+
+.handle-order-higher,
+.handle-order-lower {
+  display: none;
+}
+
+a[title="Edit field group"] {
+  display: none;
+}
+
+.acf-postbox > .postbox-header:hover .acf-hndle-cog {
+  display: none !important;
 }

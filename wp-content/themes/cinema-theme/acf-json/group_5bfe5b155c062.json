@@ -1,6 +1,6 @@
 {
     "key": "group_5bfe5b155c062",
-    "title": "Film: Details",
+    "title": "Film Details",
     "fields": [
         {
             "key": "field_5bff7a79ae6c4",
@@ -305,14 +305,17 @@
             }
         ]
     ],
-    "menu_order": 0,
+    "menu_order": 100,
     "position": "acf_after_title",
     "style": "default",
     "label_placement": "top",
     "instruction_placement": "label",
-    "hide_on_screen": "",
+    "hide_on_screen": [
+        "the_content",
+        "excerpt"
+    ],
     "active": true,
     "description": "",
-    "show_in_rest": 0,
-    "modified": 1674618330
+    "show_in_rest": 1,
+    "modified": 1694895033
 }
