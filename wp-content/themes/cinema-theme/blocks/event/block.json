@@ -1,0 +1,15 @@
+{
+  "name": "Event",
+  "title": "Event",
+  "description": "Displays a formatted block of text.",
+  "category": "theme",
+  "apiVersion": 2,
+  "icon": "calendar-alt",
+  "acf": {
+    "mode": "edit",
+    "renderTemplate": "blocks/event/block.php"
+  },
+  "supports": {
+    "anchor": true
+  }
+}

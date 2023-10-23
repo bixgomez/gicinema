@@ -1,5 +1,7 @@
 <?php
 
+/*
+
 // Setting the time zone is not helpful, as it the time as though it is GMT.
 // NOTE: Never, ever do this!
 // https://github.com/elementor/elementor/issues/9609
@@ -54,3 +56,7 @@ while ($n <= 52):
 
   $n++;
 endwhile;
+
+*/
+
+echo '<h1>NOT IN USE</h1>';

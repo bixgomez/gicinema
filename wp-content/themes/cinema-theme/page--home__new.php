@@ -17,10 +17,25 @@ get_header();
 
 <div class="home-page-content">
 
-    <?php get_alerts(); ?>
+    <?php 
+    // get_alerts(); 
+    ?>
 
-    <h1 class="debug">NEW HOME PAGE</h1>
-    <hr class="debug" />
+    <?php 
+    global $post;
+    if ( have_posts() ) {
+        while ( have_posts() ) {
+            the_post();            
+            if ( has_blocks( $post->post_content ) ) {
+                echo '<h2 class="section-title">Special Events and Series</h2>'; 
+                echo '<div class="blocks blocks--event">'; 
+                the_content(); 
+                echo '</div>'; 
+            }
+        } // end while
+    } // end if
+    wp_reset_query();
+    ?>
 
     <h2 class="section-title">Now Playing</h2>
 

@@ -1,0 +1,15 @@
+{
+  "name": "alert",
+  "title": "Alert",
+  "description": "Displays a formatted block of text.",
+  "category": "theme",
+  "apiVersion": 2,
+  "icon": "megaphone",
+  "acf": {
+    "mode": "edit",
+    "renderTemplate": "blocks/alert/block.php"
+  },
+  "supports": {
+    "anchor": true
+  }
+}
