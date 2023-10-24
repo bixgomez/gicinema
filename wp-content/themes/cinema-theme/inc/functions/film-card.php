@@ -30,27 +30,61 @@ function filmCard($filmPostId, $classes='film') {
       $addlInfo = wpautop($addlInfo, false);
       ?>
       <div class="film-card <?php echo $classes; ?>">
+        
         <h2 class="film-card--title">
           <a class="film-title" href="<?php echo $link; ?>"><?php echo $displayName; ?></a>
         </h2>
+
         <div class="film-card--film-info">
-          <div class="film-card--director">
-            <?php echo $director; ?> · <?php echo $year; ?>
-          </div>
-          <div class="film-card--format">
-            <?php echo $length . 'min'; ?> · <?php echo $format; ?>
-          </div>
-          <div class="film-card--screening-range">
-            <?php
-                $firstScreeningDisp = date('M j', strtotime($firstScreening));
-                $lastScreeningDisp = date('M j', strtotime($lastScreening));
-                echo 'Playing ' . $firstScreeningDisp;
-                if ($lastScreeningDisp != $firstScreeningDisp) {
-                    echo ' through ' . $lastScreeningDisp;
-                }
-                ?>
-          </div>
+
+          <?php
+          // Setting director and year to null if either is "Various".
+          // Yes, this undermines the code in the next block, but so be it for now.
+          $director = ( $director == "Various" ) ? null : $director;
+          $year = ( $year == "Various" ) ? null : $year;
+          ?>
+          
+          <?php if (strlen($director) || strlen($year)) : ?>
+            <div>
+              <?php 
+              echo $director;
+              echo ( $director == "Various" ) ? ' directors' : null;
+              echo (strlen($director) && strlen($year)) ? ' · ' : null;
+              echo $year;
+              echo ( $year == "Various" ) ? ' years' : null;
+              echo null;
+              ?>
+            </div>
+          <?php endif ?>
+          
+          <?php if (strlen($length) || strlen($format)) : ?>
+            <div>
+              <?php 
+              echo (strlen($length)) ? $length . 'min' : null;
+              echo (strlen($length) && strlen($format)) ? ' · ' : null;
+              echo $format; 
+              ?>
+            </div>
+          <?php endif ?>
+          
+          <?php 
+          $firstScreeningDisp = date('M j', strtotime($firstScreening));
+          $lastScreeningDisp = date('M j', strtotime($lastScreening));
+          ?>
+
+          <?php if (strlen($firstScreeningDisp) || strlen($lastScreeningDisp)) : ?>
+            <div class="film-card--screening-range">
+              <?php
+              echo 'Playing ' . $firstScreeningDisp;
+              if ($lastScreeningDisp != $firstScreeningDisp) {
+                  echo ' through ' . $lastScreeningDisp;
+              }
+              ?>
+            </div>
+          <?php endif ?>
+
         </div>
+
         <div class="film-card--sidebar">
           <div class="film-card--poster">
             <a class="film-title" href="<?php echo $link; ?>">
@@ -66,6 +100,7 @@ function filmCard($filmPostId, $classes='film') {
               ?>
             </a>
           </div>
+
           <div class="film-card--links">
 
             <?php if ($trailer != '') : ?>
@@ -86,11 +121,15 @@ function filmCard($filmPostId, $classes='film') {
             <?php endif ?>
           </div>
         </div>
-        <div class="film-card--screenings">
-          <div class="screenings">
-            <p><?php echo $screenings; ?></p>
+
+        <?php if ( strlen($screenings) ) : ?>
+          <div class="film-card--screenings">
+            <div class="screenings">
+              <p><?php echo $screenings; ?></p>
+            </div>
           </div>
-        </div>
+        <?php endif ?>
+
         <div class="film-card--description">
             <?php 
               echo $description;
