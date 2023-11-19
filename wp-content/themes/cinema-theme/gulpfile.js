@@ -4,7 +4,7 @@
 // $ npm install --global gulp-cli
 // $ npm install
 
-const PROJECT_URL   = 'https://gicinema.local';
+const PROJECT_URL   = 'https://gicinema.ddev.site';
 const ROOT          = './';
 const STYLES_MAIN   = './sass/*.scss';
 const STYLES_ADMIN  = './sass/style_admin.scss';
@@ -68,10 +68,7 @@ function watchFiles() {
 // Init BrowserSync.
 function browserSync(done) {
   browsersync.init({
-    proxy: PROJECT_URL,
-    socket: {
-      domain: 'localhost:3000'
-    }
+    proxy: PROJECT_URL
   });
   done();
 }
