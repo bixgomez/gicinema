@@ -17,7 +17,8 @@ function displayFilmForDate ($film_id, $date) {
       $get_film_post->the_post();
       $this_link = get_permalink();
       $shortName = get_field('short_name');
-      $displayName = strlen($shortName) ? $shortName : get_the_title();
+      $displayName = !is_null($shortName) && strlen($shortName) ? $shortName : get_the_title();
+
       echo '<span class="film-title">' . $displayName . '</span>';
       if (validateDate($date)) :
         global $wpdb;

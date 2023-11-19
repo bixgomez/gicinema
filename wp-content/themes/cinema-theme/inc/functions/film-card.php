@@ -13,7 +13,7 @@ function filmCard($filmPostId, $classes='film') {
       $filmCardQuery->the_post();
       $link = get_permalink($filmPostId);
       $shortName = get_field('short_name', $filmPostId);
-      $displayName = strlen($shortName) ? $shortName : get_the_title();
+      $displayName = !is_null($shortName) && strlen($shortName) ? $shortName : get_the_title();
       $country = get_field('country', $filmPostId);
       $director = get_field('film_director', $filmPostId);
       $format = get_field('format', $filmPostId);
@@ -25,9 +25,10 @@ function filmCard($filmPostId, $classes='film') {
       $ticketPurchaseLink = get_field('ticket_purchase_link', $filmPostId);
       $year = get_field('film_year', $filmPostId);
       $description = get_field('description', $filmPostId);
-      $description = wpautop($description, false);
+      $description = !is_null($description) ? wpautop($description, false) : '';
       $addlInfo = get_field('additional_info', $filmPostId);
-      $addlInfo = wpautop($addlInfo, false);
+      $addlInfo = !is_null($addlInfo) ? wpautop($addlInfo, false) : '';
+
       ?>
       <div class="film-card <?php echo $classes; ?>">
         
