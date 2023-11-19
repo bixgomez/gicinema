@@ -85,11 +85,21 @@ $this_month_display = date( 'F Y', strtotime( $the_month ) );
 
             for ( $k = 1; $k <= $days_in_month; $k ++ ) {
                 $n = $k < 10 ? '0'.$k : $k;
-                echo '<li class="day">';
+                $todays_date = wp_date("Y-m-d");
                 $curr_date_a = $curr_year . '-' . $curr_month . '-' . $n;
                 $curr_date_b = date_create_from_format("Y-m-d",$curr_date_a);
                 $curr_date_full = date_format($curr_date_b,"l, F j, Y");
                 $curr_date_num = date_format($curr_date_b,"j");
+
+                if ($curr_date_a < $todays_date) {
+                    $when = 'past';
+                } elseif ($curr_date_a > $todays_date) {
+                    $when = 'future';
+                } else {
+                    $when = 'present';
+                }
+                
+                echo '<li class="day day--'. $when .'">';
                 echo '<div class="date-display">';
                 echo '<span class="date-display--day date-display--day__full">'.$curr_date_full.' </span>';
                 echo '<span class="date-display--day date-display--day__num">'.$curr_date_num.'</span>';

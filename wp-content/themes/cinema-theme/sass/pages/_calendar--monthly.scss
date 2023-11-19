@@ -39,6 +39,20 @@
     flex-direction: column;
     justify-content: flex-start;
 
+    &--past {
+      background-color: rgba(#000, 0.025);
+
+      .date-display {
+        background-color: rgba(#000, 0.25);
+      }
+    }
+
+    &--present {
+      .date-display {
+        background-color: rgba(#000, 0.9);
+      }
+    }
+
     @include breakpoint($md) {
       justify-content: flex-end;
       min-height: 4em;
