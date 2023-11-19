@@ -26,3 +26,5 @@ wp-config.php
 debug.log
 uploads-webpc
 /local-xdebuginfo.php
+.ddev
+wp-config-ddev.php

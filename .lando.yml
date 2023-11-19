@@ -2,7 +2,7 @@ name: grandillusioncinema
 recipe: wordpress
 config:
   webroot: .
-  php: '7.4'
+  php: '8.1'
   via: apache
   database: mysql
   xdebug: true
