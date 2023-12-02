@@ -1,10 +1,10 @@
 {
-  "name": "alert",
+  "name": "Alert",
   "title": "Alert",
   "description": "Displays a formatted block of text.",
   "category": "theme",
   "apiVersion": 2,
-  "icon": "megaphone",
+  "icon": "calendar-alt",
   "acf": {
     "mode": "edit",
     "renderTemplate": "blocks/alert/block.php"

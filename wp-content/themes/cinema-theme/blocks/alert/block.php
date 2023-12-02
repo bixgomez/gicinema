@@ -1,6 +1,6 @@
 <?php
 /**
- * Formatted Alert Block
+ * Formatted Text Block
  */
 
 // $data is what we're going to expose to our render template
@@ -10,7 +10,7 @@ $data = array(
 );
 
 // Dynamic block ID
-$block_id = 'alert-block-' . $block['id'];
+$block_id = 'text-block-' . $block['id'];
 
 // Check if a custom ID is set in the block editor
 if( !empty($block['anchor']) ) {
@@ -18,7 +18,7 @@ if( !empty($block['anchor']) ) {
 }
 
 // Block classes
-$class_name = 'alert-block';
+$class_name = 'block block--alert';
 if( !empty($block['class_name']) ) {
     $class_name .= ' ' . $block['class_name'];
 }
