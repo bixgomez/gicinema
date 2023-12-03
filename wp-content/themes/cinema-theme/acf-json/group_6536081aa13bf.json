@@ -43,11 +43,11 @@
             "delay": 0
         },
         {
-            "key": "field_6536d010cde65",
+            "key": "field_656cfde5c98b1",
             "label": "Link",
             "name": "link",
             "aria-label": "",
-            "type": "link",
+            "type": "url",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -56,7 +56,8 @@
                 "class": "",
                 "id": ""
             },
-            "return_format": "array"
+            "default_value": "",
+            "placeholder": ""
         }
     ],
     "location": [
@@ -77,5 +78,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1700419334
+    "modified": 1701641736
 }

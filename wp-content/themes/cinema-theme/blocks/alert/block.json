@@ -4,7 +4,7 @@
   "description": "Displays a formatted block of text.",
   "category": "theme",
   "apiVersion": 2,
-  "icon": "calendar-alt",
+  "icon": "megaphone",
   "acf": {
     "mode": "edit",
     "renderTemplate": "blocks/alert/block.php"

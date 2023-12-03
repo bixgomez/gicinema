@@ -1,0 +1,21 @@
+.block--alert {
+  display: flex;
+  flex-direction: column;
+  grid-gap: 0.5rem;
+  padding: 0.825rem 0.75rem;
+  font-size: 1em;
+  background-color: rgba(#fff, 0.75);
+  border: 1px solid rgba(#ccc, 0.5);
+
+  h2 {
+    margin: 0;
+  }
+
+  p {
+    margin: 0 0 0.5rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}

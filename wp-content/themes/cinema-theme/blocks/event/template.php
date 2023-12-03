@@ -22,13 +22,27 @@ $class_name = $args['class_name'];
 $title = get_field( 'title' );
 $text = get_field( 'text' );
 $link = get_field( 'link' );
-$link_title = $link[ 'title' ];
-$link_url = $link[ 'url' ];
+if ($link) {
+    $link_title = $link[ 'title' ];
+    $link_url = $link[ 'url' ];
+}
 
 ?>
 
+<?php if($link || $title): ?>
 <div class="<?php echo $class_name ?>">
-    <?php echo '<h2 class="title title--event"><a href="' . $link_url . '">' . $title . '</a></h2>'; ?>
-    <?php echo '<div class="text text--event">' . $text . '</div>'; ?>
-    <?php echo '<div class="link link--event"><a href="' . $link_url . '">' . $link_title . '</a></div>'; ?>
+    <?php 
+    if ($link && $title) {
+        echo '<h2 class="title title--event"><a href="' . $link_url . '">' . $title . '</a></h2>';
+    } elseif ($title) {
+        echo '<h2 class="title title--event">' . $title . '</h2>';
+    }
+    if ($text) {
+        echo '<div class="text text--event">' . $text . '</div>';
+    }
+    if ($link) {
+        echo '<div class="link link--event"><a href="' . $link_url . '">' . $link_title . '</a></div>';
+    }
+    ?>
 </div>
+<?php endif; ?>

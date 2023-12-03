@@ -5,3 +5,12 @@
   grid-gap: 1.5rem;
   margin: 2rem 0 3rem;
 }
+
+.block {
+  margin-bottom: 1.5rem;
+
+  .blocks > &,
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
