@@ -68,7 +68,8 @@ function watchFiles() {
 // Init BrowserSync.
 function browserSync(done) {
   browsersync.init({
-    proxy: PROJECT_URL
+    proxy: PROJECT_URL,
+    port: 3003
   });
   done();
 }
