@@ -12,7 +12,7 @@
 // If this file is called directly, abort!
 defined('ABSPATH') or die('Unauthorized Access');
 
-require_once "function__create-db-table.php";
+require_once "function__create_custom_table.php";
 require_once "function__create-shortcodes.php";
 require_once "cron-jobs.php";
 require_once "page__admin.php";
@@ -23,3 +23,5 @@ function gicinema_enqueue_styles() {
   wp_enqueue_style('gicinema-custom-styles', plugins_url('gicinema-styles.css', __FILE__));
 }
 add_action('admin_enqueue_scripts', 'gicinema_enqueue_styles');
+
+register_activation_hook(__FILE__, 'gicinema__create_custom_table');
