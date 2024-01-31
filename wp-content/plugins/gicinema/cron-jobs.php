@@ -1,5 +1,7 @@
 <?php 
 
+require_once "function__shows-importer.php";
+
 add_action('shows_importer_hook', 'shows_importer');
 if (!wp_next_scheduled('shows_importer_hook')) {
     wp_schedule_event(time(), 'half_hourly', 'shows_importer_hook');

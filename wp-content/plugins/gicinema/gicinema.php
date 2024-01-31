@@ -14,5 +14,12 @@ defined('ABSPATH') or die('Unauthorized Access');
 
 require_once "function__create-db-table.php";
 require_once "function__create-shortcodes.php";
-require_once "admin-page.php";
 require_once "cron-jobs.php";
+require_once "page__admin.php";
+require_once "page__all-films.php";
+require_once "page__screenings-table.php";
+
+function gicinema_enqueue_styles() {
+  wp_enqueue_style('gicinema-custom-styles', plugins_url('gicinema-styles.css', __FILE__));
+}
+add_action('admin_enqueue_scripts', 'gicinema_enqueue_styles');

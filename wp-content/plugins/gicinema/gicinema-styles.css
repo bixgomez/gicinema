@@ -1,0 +1,56 @@
+body {
+  background-color: #fff !important;
+  color: #000 !important;
+}
+
+.wrap--gicinema {
+  margin: 20px 20px 0 0;
+}
+
+.wrap--gicinema>h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.wrap--gicinema table {
+  background-color: #efefef;
+  /* width: 100%; */
+  border-spacing: 0;
+  border-color: #fff;
+  border-width: 1px 1px 0 0;
+  border-style: dashed;
+  border-color: #ccc;
+}
+
+.wrap--gicinema table th {
+  background-color: #efefef;
+}
+
+.wrap--gicinema table tr {
+  background-color: #efefef;
+}
+
+.wrap--gicinema table td,
+.wrap--gicinema table th {
+  padding: 5px 5px 5px 7px;
+  border-width: 0 0 1px 1px;
+  border-style: dashed;
+  border-color: #ccc;
+  text-align: left;
+}
+
+.wrap--gicinema table th {
+  border-bottom-style: double;
+  border-bottom-width: 3px;
+  padding-right: 20px;
+}
+
+.wrap--gicinema table th,
+.wrap--gicinema table td {
+  /* width: min-content; */
+}
+
+.wrap--gicinema table th:last-child,
+.wrap--gicinema table td:last-child {
+  /* width: auto; */
+}
