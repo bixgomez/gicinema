@@ -9,6 +9,7 @@ function filmCard($filmPostId, $classes='film') {
   );
   $filmCardQuery = new WP_Query( $filmCardArgs );
   if ($filmCardQuery->have_posts()) :
+
     while ($filmCardQuery->have_posts()) :
       $filmCardQuery->the_post();
       $link = get_permalink($filmPostId);
@@ -18,7 +19,8 @@ function filmCard($filmPostId, $classes='film') {
       $director = get_field('film_director', $filmPostId);
       $format = get_field('format', $filmPostId);
       $length = get_field('film_length', $filmPostId);
-      $screenings = get_field('film_screenings', $filmPostId);
+      $screenings = get_field('screenings', $filmPostId);
+      $filmScreenings = get_field('film_screenings', $filmPostId);
       $firstScreening = get_field('screening_first', $filmPostId);
       $lastScreening = get_field('screening_last', $filmPostId);
       $trailer = get_field('trailer_url', $filmPostId);
@@ -44,6 +46,18 @@ function filmCard($filmPostId, $classes='film') {
           $director = ( $director == "Various" ) ? null : $director;
           $year = ( $year == "Various" ) ? null : $year;
           ?>
+
+          <?php
+          if ($director == null) {
+            $director = '[is null]';
+          } elseif (is_string($director)) {
+            $director = $director;
+          } elseif (is_array($director)) {
+            $director = '[an array]';
+          } else {
+            $director = '';
+          }
+          ?>
           
           <?php if (strlen($director) || strlen($year)) : ?>
             <div>
@@ -57,6 +71,18 @@ function filmCard($filmPostId, $classes='film') {
               ?>
             </div>
           <?php endif ?>
+
+          <?php
+          if ($format == null) {
+            $format = '[is null]';
+          } elseif (is_string($format)) {
+            $format = $format;
+          } elseif (is_array($format)) {
+            $format = '[an array]';
+          } else {
+            $format = '';
+          }
+          ?>
           
           <?php if (strlen($length) || strlen($format)) : ?>
             <div>
@@ -68,11 +94,14 @@ function filmCard($filmPostId, $classes='film') {
             </div>
           <?php endif ?>
           
+          <?php /* ?>
           <?php 
           $firstScreeningDisp = date('M j', strtotime($firstScreening));
           $lastScreeningDisp = date('M j', strtotime($lastScreening));
           ?>
+          <?php */ ?>
 
+          <?php /* ?>
           <?php if (strlen($firstScreeningDisp) || strlen($lastScreeningDisp)) : ?>
             <div class="film-card--screening-range">
               <?php
@@ -83,10 +112,12 @@ function filmCard($filmPostId, $classes='film') {
               ?>
             </div>
           <?php endif ?>
+          <?php */ ?>
 
         </div>
 
         <div class="film-card--sidebar">
+
           <div class="film-card--poster">
             <a class="film-title" href="<?php echo $link; ?>">
               <?php
@@ -103,7 +134,6 @@ function filmCard($filmPostId, $classes='film') {
           </div>
 
           <div class="film-card--links">
-
             <?php if ($trailer != '') : ?>
               <?php 
               if (!str_contains($trailer, 'http')) :
@@ -114,22 +144,46 @@ function filmCard($filmPostId, $classes='film') {
                 <a class="film-button" href="<?php echo $trailer; ?>" target="_blank"><span>View </span>Trailer</a>
               </div>
             <?php endif ?>
-
             <?php if ($ticketPurchaseLink != '') : ?>
               <div class="film-card--buy-tickets">
                 <a class="film-button" href="<?php echo $ticketPurchaseLink; ?>" target="_blank"><span>Buy </span>Tickets</a>
               </div>
             <?php endif ?>
           </div>
+
         </div>
 
-        <?php if ( strlen($screenings) ) : ?>
-          <div class="film-card--screenings">
-            <div class="screenings">
-              <p><?php echo $screenings; ?></p>
-            </div>
+
+        <div class="film-card--screenings">
+          <div class="screenings">
+
+            <?php if ($filmScreenings !== null && is_string($filmScreenings)) : ?>
+              <?php if ( strlen($filmScreenings) ) : ?>
+                <p><?php echo $filmScreenings; ?></p>
+              <?php endif; ?>
+            <?php endif; ?>
+
+            <hr>
+
+            <?php if (is_array($screenings)) : ?>
+              <p>
+                <?php 
+                print_r($screenings);
+                echo '<hr>';
+                foreach ($screenings as $screeningRow) {
+                  $screening = $screeningRow['screening'];
+                  // $screeningTicketLink = $screeningRow['screening_ticket_link'];
+
+                  $date = DateTime::createFromFormat('m/d/Y g:i a', $screening);
+                  $formattedDate = $date->format('l, M j, Y: g:i a');
+                  echo $formattedDate . "<br>";
+                }
+                ?>
+              </p>
+            <?php endif; ?>
+
           </div>
-        <?php endif ?>
+        </div>
 
         <div class="film-card--description">
             <?php 
@@ -138,7 +192,7 @@ function filmCard($filmPostId, $classes='film') {
             ?>
         </div>
       </div>
-      <?php
-    endwhile;
+
+    <?php endwhile;
   endif;
 }
