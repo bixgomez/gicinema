@@ -169,5 +169,4 @@ function shows_importer() {
 
         echo '</div>';
     }
-
 }
