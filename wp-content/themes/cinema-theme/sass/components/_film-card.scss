@@ -152,9 +152,30 @@
   border: 1px solid rgba(#ccc, 0.5);
   height: min-content;
 
-  .screenings p {
+  ul.screenings-list {
     margin: 0;
     line-height: 1.625;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li.screening {
+      padding: 0;
+      margin: 0;
+
+      &.past {
+        opacity: 0.5;
+        font-weight: 100;
+      }
+
+      &.present {
+        font-weight: 600;
+      }
+
+      &.future {
+        color: $c--black;
+      }
+    }
   }
 }
 
