@@ -1,5 +1,6 @@
 <?php
 require_once get_template_directory() . '/inc/functions/function--validate-date.php';
+require_once get_template_directory() . '/inc/functions/function--date-compare.php';
 
 function filmCard($filmPostId, $classes='film') {
   $filmCardArgs = array(
