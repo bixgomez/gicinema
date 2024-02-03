@@ -146,14 +146,6 @@ function filmCard($filmPostId, $classes='film') {
               $today = (new DateTime('now', $timezone))->setTime(0, 0, 0);
               $twoMonthsAgo = (new DateTime('-2 months', $timezone))->setTime(0, 0, 0); 
 
-              foreach ($screenings as $screeningRow) {
-                $screening = $screeningRow['screening'];
-                $date = DateTime::createFromFormat('m/d/Y g:i a', $screening);
-                $formattedDate = $date->format('l, M j, Y: g:i a');
-                echo $formattedDate . "<br>";
-              }
-                   
-
               foreach ($screeningsArray as $screening_date) {
                 $dateTime = new DateTime($screening_date);
                 $dateTimeCompare = (new DateTime($screening_date, $timezone))->setTime(0, 0, 0);
@@ -170,7 +162,6 @@ function filmCard($filmPostId, $classes='film') {
                   echo '<li class="screening '.$extraClass.'">' . $formattedDate . ', ' . $formattedTime . '</li>';
                 }
               }
-              
               ?>
             </ul>
           </div>
