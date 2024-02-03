@@ -157,23 +157,23 @@ function filmCard($filmPostId, $classes='film') {
         <div class="film-card--screenings">
           <div class="screenings">
 
+            <?php /* ?>
             <?php if ($filmScreenings !== null && is_string($filmScreenings)) : ?>
               <?php if ( strlen($filmScreenings) ) : ?>
                 <p><?php echo $filmScreenings; ?></p>
               <?php endif; ?>
             <?php endif; ?>
-
             <hr>
+            <?php */ ?>
 
             <?php if (is_array($screenings)) : ?>
               <p>
                 <?php 
-                print_r($screenings);
-                echo '<hr>';
+                // print_r($screenings);
+                // echo '<hr>';
                 foreach ($screenings as $screeningRow) {
                   $screening = $screeningRow['screening'];
                   // $screeningTicketLink = $screeningRow['screening_ticket_link'];
-
                   $date = DateTime::createFromFormat('m/d/Y g:i a', $screening);
                   $formattedDate = $date->format('l, M j, Y: g:i a');
                   echo $formattedDate . "<br>";
