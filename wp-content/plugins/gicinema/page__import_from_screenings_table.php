@@ -7,22 +7,22 @@ require_once "function__find_film_via_agile_id.php";
 require_once "function__delete_all_screenings_for_film.php";
 require_once "function__add_screening_to_film.php";
 
-function gicinema_page_add__screenings_table() {
+function gicinema_page_add__import_from_screenings_table() {
   // Main menu page is added here
 
   // Add sub-menu page
   add_submenu_page(
       'gicinema--admin', // The slug name for the parent menu
-      'Screenings Table', // The text to be displayed in the title tags of the page when the menu is selected
-      'Screenings Table', // The text to be used for the menu
+      'Import From Screenings Table', // The text to be displayed in the title tags of the page when the menu is selected
+      'Import From Screenings Table', // The text to be used for the menu
       'manage_options', // The capability required for this menu to be displayed to the user
-      'gicinema--screenings-table', // The slug name to refer to this submenu by (should be unique for this submenu)
-      'gicinema_page_display__screenings_table' // The function to be called to output the content for this page
+      'gicinema--import-from-screenings-table', // The slug name to refer to this submenu by (should be unique for this submenu)
+      'gicinema_page_display__import_from_screenings_table' // The function to be called to output the content for this page
   );
 }
-add_action('admin_menu', 'gicinema_page_add__screenings_table');
+add_action('admin_menu', 'gicinema_page_add__import_from_screenings_table');
 
-function gicinema_page_display__screenings_table() {
+function gicinema_page_display__import_from_screenings_table() {
 
   echo '<div class="wrap wrap--gicinema">';
   echo '<h2>Screenings Table</h2>';

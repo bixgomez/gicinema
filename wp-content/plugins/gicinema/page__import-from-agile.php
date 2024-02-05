@@ -22,8 +22,7 @@ function gicinema_page_display__import_films_from_agile() {
 
   // Check if the form was submitted
   if (isset($_POST['confirm_import']) && $_POST['confirm_import'] == 'yes') {
-      $result = import_films_from_agile();
-      echo "<div class='notice notice-success'><p>{$result}</p></div>";
+      import_films_from_agile();
   } else {
       // Display warning and confirmation form
       echo '<p><strong>Warning:</strong> This action will import all film posts from Agile. This action is irreversible.</p>';
