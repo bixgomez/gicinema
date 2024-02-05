@@ -1,7 +1,7 @@
 <?php
-require_once "function__import-screenings.php";
+require_once "function__import_screenings_from_agile.php";
 
-function shows_importer() {
+function import_films_from_agile() {
     global $wpdb;
 
     $url = 'https://prod5.agileticketing.net/websales/feed.ashx?guid=52c1280f-be14-4579-8ddf-4b3dadbf96c7&showslist=true&withmedia=true&format=json&v=latest';
@@ -159,7 +159,7 @@ function shows_importer() {
         // Create variable for future screenings array from Agile.
         $screenings_array = $show->CurrentShowings;
 
-        import_screenings(
+        import_screenings_from_agile(
             $agile_array=$screenings_array, 
             $repeater_field_key='field_screenings',
             $repeater_field_name='screenings',

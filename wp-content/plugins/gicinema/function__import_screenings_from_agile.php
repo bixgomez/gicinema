@@ -1,6 +1,6 @@
 <?php
 
-function import_screenings(
+function import_screenings_from_agile(
   $agile_array = null,
   $repeater_field_key = null,
   $repeater_field_name = null,
