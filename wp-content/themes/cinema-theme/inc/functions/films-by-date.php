@@ -1,5 +1,5 @@
 <?php
-require_once get_template_directory() . '/inc/functions/validate-date.php';
+require_once get_template_directory() . '/inc/functions/function--validate-date.php';
 
 function filmsByDate($date) {
 	if ($date) :

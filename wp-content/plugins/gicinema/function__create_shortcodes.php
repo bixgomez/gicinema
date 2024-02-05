@@ -1,13 +1,13 @@
 <?php 
 
-require_once "function__shows-importer.php";
+require_once "function__import_from_agile.php";
 
 // shows importer shortcode
-function shows_importer_shortcode_function($atts) {
+function import_from_agile_shortcode_function($atts) {
     // Check if the current user has the 'manage_options' capability
     if (!current_user_can('manage_options')) {
         return __('You do not have permission to access this content.', 'text-domain');
     }
-    shows_importer();
+    import_from_agile();
 }
-add_shortcode('shows_importer_shortcode', 'shows_importer_shortcode_function');
+add_shortcode('import_from_agile_shortcode', 'import_from_agile_shortcode_function');

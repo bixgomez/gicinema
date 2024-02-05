@@ -21,6 +21,7 @@ add_action('admin_menu', 'gicinema_page_add__delete_all_films');
 function gicinema_page_display__delete_all_films() {
   echo '<div class="wrap wrap--gicinema">';
   echo '<h2>Delete All Films!</h2>';
+
   // Check if the form was submitted
   if (isset($_POST['confirm_delete']) && $_POST['confirm_delete'] == 'yes') {
       $result = delete_all_film_posts();
@@ -33,5 +34,6 @@ function gicinema_page_display__delete_all_films() {
       echo '<input type="submit" class="button button-primary" value="Confirm Deletion">';
       echo '</form>';
   }
+  
   echo '</div>';
 }

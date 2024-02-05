@@ -58,16 +58,6 @@ function filmCard($filmPostId, $classes='film') {
               ?>
             </div>
           <?php endif ?>
-          
-          <?php if (strlen($length) || strlen($format)) : ?>
-            <div>
-              <?php 
-              echo (strlen($length)) ? $length . 'min' : null;
-              echo (strlen($length) && strlen($format)) ? ' · ' : null;
-              echo $format; 
-              ?>
-            </div>
-          <?php endif ?>
 
           <?php
           if ($format == null) {

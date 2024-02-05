@@ -18,6 +18,7 @@ require_once "cron-jobs.php";
 require_once "page__admin.php";
 require_once "page__all-films.php";
 require_once "page__screenings-table.php";
+require_once "page__import-from-agile.php";
 require_once "page__delete-all-films.php";
 
 function gicinema_enqueue_styles() {
