@@ -1,5 +1,8 @@
 <?php
 
+// If this file is called directly, abort!
+defined('ABSPATH') or die('Unauthorized Access');
+
 function gicinema__create_custom_table() {
     global $wpdb;
     $charset_collate = $wpdb->get_charset_collate();

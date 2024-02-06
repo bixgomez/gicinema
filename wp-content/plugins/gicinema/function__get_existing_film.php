@@ -1,5 +1,8 @@
 <?php 
 
+// If this file is called directly, abort!
+defined('ABSPATH') or die('Unauthorized Access');
+
 function get_existing_film($agile_id) {
 
   $args = array(

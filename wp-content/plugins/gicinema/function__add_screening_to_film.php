@@ -1,5 +1,8 @@
 <?php
 
+// If this file is called directly, abort!
+defined('ABSPATH') or die('Unauthorized Access');
+
 function gicinema__add_screening_to_film($post_id, $screening) {
 
   echo '<div>Adding screening ('.$screening.') to ' . $post_id . '</div>';

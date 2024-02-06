@@ -3,7 +3,7 @@
 // If this file is called directly, abort!
 defined('ABSPATH') or die('Unauthorized Access');
 
-require_once "function__delete-all-films.php";
+require_once "function__delete_all_films.php";
 
 function gicinema_page_add__delete_all_films() {
   // Add sub-menu page

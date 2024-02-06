@@ -1,5 +1,8 @@
 <?php
 
+// If this file is called directly, abort!
+defined('ABSPATH') or die('Unauthorized Access');
+
 function delete_all_film_posts() {
     // WP_Query arguments to fetch all 'film' post types
     $args = array(

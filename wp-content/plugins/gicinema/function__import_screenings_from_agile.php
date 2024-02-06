@@ -1,5 +1,8 @@
 <?php
 
+// If this file is called directly, abort!
+defined('ABSPATH') or die('Unauthorized Access');
+
 function import_screenings_from_agile(
   $agile_array = null,
   $repeater_field_key = null,

@@ -1,5 +1,8 @@
 <?php 
 
+// If this file is called directly, abort!
+defined('ABSPATH') or die('Unauthorized Access');
+
 function gicinema_add_admin_page() {
   add_menu_page(
       'GI Cinema Plugin', // The text to be displayed in the title tags of the page when the menu is selected
@@ -17,6 +20,8 @@ add_action('admin_menu', 'gicinema_add_admin_page');
 function gicinema_admin_page_display() {
   echo '<div class="wrap wrap--gicinema">';
   echo '<h2>GI Cinema Plugin</h2>';
-  
+  echo '<p>';
+  echo 'Some pertinent information about this plugin.';
+  echo '</p>';  
   echo '</div>';
 }

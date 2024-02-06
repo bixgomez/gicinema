@@ -1,5 +1,8 @@
 <?php 
 
+// If this file is called directly, abort!
+defined('ABSPATH') or die('Unauthorized Access');
+
 require_once "function__import_films_from_agile.php";
 
 add_action('shows_importer_hook', 'import_films_from_agile');

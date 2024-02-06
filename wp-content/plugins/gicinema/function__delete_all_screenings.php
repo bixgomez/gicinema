@@ -1,5 +1,8 @@
 <?php
 
+// If this file is called directly, abort!
+defined('ABSPATH') or die('Unauthorized Access');
+
 // Function to delete all screenings data
 function delete_all_screenings() {
     // Query all 'film' posts

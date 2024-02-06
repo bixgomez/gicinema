@@ -1,5 +1,8 @@
 <?php
 
+// If this file is called directly, abort!
+defined('ABSPATH') or die('Unauthorized Access');
+
 function gicinema__find_film_via_agile_id($agile_id) {
 
   $args = array(
