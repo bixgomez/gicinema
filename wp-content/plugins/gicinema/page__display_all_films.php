@@ -9,8 +9,8 @@ function gicinema_page_add__display_all_films() {
   // Add sub-menu page
   add_submenu_page(
       'gicinema--admin', // The slug name for the parent menu
-      'All Films', // The text to be displayed in the title tags of the page when the menu is selected
-      'All Films', // The text to be used for the menu
+      'Display All Films', // The text to be displayed in the title tags of the page when the menu is selected
+      'Display All Films', // The text to be used for the menu
       'manage_options', // The capability required for this menu to be displayed to the user
       'gicinema--display-all-films', // The slug name to refer to this submenu by (should be unique for this submenu)
       'gicinema_page_display__all_films' // The function to be called to output the content for this page
