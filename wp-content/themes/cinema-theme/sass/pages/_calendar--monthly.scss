@@ -43,13 +43,34 @@
       background-color: rgba(#000, 0.025);
 
       .date-display {
-        background-color: rgba(#000, 0.25);
+        color: rgba(#000, 0.3);
+
+        @include breakpoint($md) {
+          color: #fff;
+          background-color: rgba(#000, 0.25);
+        }
       }
     }
 
     &--present {
       .date-display {
-        background-color: rgba(#000, 0.9);
+        color: #000;
+
+        @include breakpoint($md) {
+          color: #fff;
+          background-color: rgba(#000, 0.9);
+        }
+      }
+    }
+
+    &--future {
+      .date-display {
+        color: rgba(#000, 0.625);
+
+        @include breakpoint($md) {
+          color: #fff;
+          background-color: rgba(#000, 0.625);
+        }
       }
     }
 
