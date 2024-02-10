@@ -8,29 +8,33 @@ function import_screenings_from_agile(
   $repeater_field_key = null,
   $repeater_field_name = null,
   $repeater_subfield_name = null,
-  $post_id = 0 ) {
+  $post_id = 0,
+  $agile_id = 0 ) {
 
   if ( $agile_array===null || $repeater_field_name === null || $repeater_field_key === null || $post_id===0) {
     return;
   }
 
-  echo '<div style="min-height:5px; background:pink; padding:15px; border:1px dashed orange;"><b>Importing Screenings</b><br><br>';
-  echo '<i>$repeater_field_key:</i> '.$repeater_field_key.'<br>';
-  echo '<i>$repeater_field_name:</i> '.$repeater_field_name.'<br>';
-  echo '<i>$repeater_subfield_name:</i> '.$repeater_subfield_name.'<br>';
-  echo '<i>$post_id:</i> '.$post_id.'<br><br>';
+  echo '<div style="background-color:#fefefe;padding:10px;margin: 0 0 12px;max-height:150px;overflow-y:scroll;"><b>Importing Screenings</b><br><br>';
+  echo '<i>$repeater_field_key:</i> ' . $repeater_field_key . '<br>';
+  echo '<i>$repeater_field_name:</i> ' . $repeater_field_name . '<br>';
+  echo '<i>$repeater_subfield_name:</i> ' . $repeater_subfield_name . '<br>';
+  echo '<i>$post_id:</i> ' . $post_id . '<br><br>';
 
   $new_screenings = [];
   $existing_screenings = [];
   $all_screenings = [];
 
-  if (have_rows($repeater_field_key, $post_id)) {
-    while (have_rows($repeater_field_key, $post_id)) {
-      the_row();
-      $screening_value = get_sub_field($repeater_subfield_name);
+  // Check if the "screenings" repeater field has rows of data.
+  echo '<i>Checking if the "screenings" repeater field has rows of data</i><br><br>';
+  if (have_rows($repeater_field_name, $post_id)) :
+    while (have_rows($repeater_field_name, $post_id)) : the_row();    
+      // Use get_sub_field with the second parameter as false to avoid formatting
+      $screening_value = get_sub_field($repeater_subfield_name, false);
       $existing_screenings[] = $screening_value;
-    }
-  }
+      echo $screening_value . '<br>';  
+    endwhile;  
+  endif;
 
   foreach( $agile_array as $screening ) :
     $screening_datetime = date('Y-m-d H:i:s', strtotime($screening->StartDate));
@@ -54,7 +58,7 @@ function import_screenings_from_agile(
   // Get the current date and time
   $currentTime = time();
 
-  echo '<i>$currentTime:</i> '.$currentTime.'<br>';
+  echo '<i>$currentTime:</i> ' . $currentTime . '<br>';
   echo "Current time: " . date('Y-m-d H:i:s', $currentTime).'<br><br>';
 
   // Sort the array by date
@@ -93,7 +97,49 @@ function import_screenings_from_agile(
     }
   }
 
+  echo '<i>Now, check the custom table for screening data!</i><br><br>';
+
+  global $wpdb;
+
+  $table_name = $wpdb->prefix . 'gi_screenings';
+
+  foreach ($all_screenings as $screening) {
+
+    // Prepare the SQL query to check if the row exists
+    echo '<i>Checking the custom table for screening=' . $screening . ' and film_id($agile_id)=' . $agile_id . ' and post_id=' . $post_id . '</i><br>';
+    $query = $wpdb->prepare(
+        "SELECT COUNT(*) FROM $table_name WHERE screening = %s AND film_id = %d AND post_id = %d",
+        $screening,
+        $agile_id,
+        $post_id
+    );
+
+    // Execute the query
+    $exists = $wpdb->get_var($query);
+
+    // If the row doesn't exist, insert it
+    if ($exists == 0) {
+        echo '<i>The row doesn\'t exist; insert it.</i><br><br>';
+        $wpdb->insert(
+            $table_name,
+            array(
+                'screening' => $screening,
+                'film_id' => $agile_id,
+                'post_id' => $post_id
+            ),
+            array(
+                '%s', // placeholder for 'screening' field
+                '%d', // placeholder for 'film_id' field
+                '%d'  // placeholder for 'post_id' field
+            )
+        );
+    } else {
+      echo '<i>The row exists; ignoring.</i><br><br>';
+    }
+}
+
   echo '</div>';
+
 }
 
 // Custom comparison function for sorting by date

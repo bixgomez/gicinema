@@ -6,11 +6,16 @@ defined('ABSPATH') or die('Unauthorized Access');
 require_once "function__import_screenings_from_agile.php";
 
 function import_films_from_agile() {
+
     global $wpdb;
+
+    echo '<h3>OK, let us import films from Agile!</h3>';
 
     $url = 'https://prod5.agileticketing.net/websales/feed.ashx?guid=52c1280f-be14-4579-8ddf-4b3dadbf96c7&showslist=true&withmedia=true&format=json&v=latest';
     $args = array( 'method' => 'GET' );
     $response = wp_remote_get( $url, $args );
+
+    echo '<b>Our feed is at:</b> ' . $url . '<hr>';
 
     if ( is_wp_error( $response ) ) {
         $error_msg = $response->get_error_message();
@@ -19,6 +24,8 @@ function import_films_from_agile() {
 
     $results = json_decode( wp_remote_retrieve_body( $response ) );
     $agile_shows_array = $results->ArrayOfShows;
+
+    echo '<i>Looping through all the films in the feed...</i><br>';
 
     foreach( $agile_shows_array as $show ) {
 
@@ -42,7 +49,7 @@ function import_films_from_agile() {
         $short_description = $show->ShortDescription;
         $info_link = $show->InfoLink;
 
-        echo '<div style="background-color: white; padding: 12px; font-size: 14px; margin: 10px 0 20px;">';
+        echo '<div style="background-color: #eee; padding: 12px; font-size: 14px; margin: 10px 0 20px;">';
 
         // Set values for media variables.
         foreach( $show->AdditionalMedia as $addlMedia ) {
@@ -75,13 +82,9 @@ function import_films_from_agile() {
             }
         }
 
-        $existingFilms = get_posts([
-            'post_type'  => 'film',
-            'title' => $film_title,
-        ]);
-
         // Display all the values.
-        echo '<h4>' . $film_title . '</h4><hr>';
+        echo '<h4 style="font-size: 1.5em; margin: 0 0 12px;">' . $film_title . '</h4>';
+        echo '<div style="background-color:#fefefe;padding:10px;margin: 0 0 12px;max-height:150px;overflow-y:scroll;">';
         echo '$film_title = ' . $film_title . '<br>';
         echo '$agile_film_id = ' . $agile_film_id . '<hr>';
         echo '$short_description = ' . $short_description . '<hr>';
@@ -93,20 +96,36 @@ function import_films_from_agile() {
         echo '$country = ' .  $country . '<br>';
         echo '$format = ' .  $format . '<br>';
         echo '$poster_url = ' .  $poster_url . '<br>';
-        echo '$trailer_url = ' .  $trailer_url . '<hr>';
+        echo '$trailer_url = ' .  $trailer_url . '</div>';
+
+        // Query to find the WordPress film posts with this Agile film id.
+        echo '<h4 style="margin: 0 0 12px;">Checking WordPress posts for film with Agile ID of ' . $agile_film_id . ')</h4>';
+        $existingFilmPost = get_posts([
+            'post_type'      => 'film',
+            'posts_per_page' => 1, // Limit to only 1 post
+            'meta_query'     => [
+                [
+                    'key'   => 'agile_film_id',
+                    'value' => $agile_film_id,
+                    'compare' => '=',
+                ],
+            ],
+        ]);
 
         // If no existing films were found, create a new film.
-        if ( empty($existingFilms) ) {
+        if ( empty($existingFilmPost) ) {
 
-            echo '<b><i>Creating new film...</i></b><br>';
             // Create post object
             $newMovie = array(
                 'post_type'     => 'film',
                 'post_title'    => $film_title,
                 'post_status'   => 'publish'
             );
+
             // Insert the post into the database
             $this_film_ID = wp_insert_post($newMovie);
+
+            echo '<h4 style="margin: 0 0 12px;">No existing film found; creating new film record (' . $this_film_ID . ')</h4>';
 
             // https://wordpress.stackexchange.com/questions/256830/programmatically-adding-images-to-media-library
             $insert_id = $this_film_ID;
@@ -131,22 +150,20 @@ function import_films_from_agile() {
             require_once( ABSPATH . 'wp-admin/includes/image.php' );
             $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
             wp_update_attachment_metadata( $attach_id, $attach_data );
+
             // And finally assign featured image to post
-            echo 'Attempting to insert image '.$attach_id.' into film '.$insert_id.'...';
+            echo '<h4 style="margin: 0 0 12px;">Inserting image ' . $attach_id . ' into film ' . $insert_id . '</h4>';
             set_post_thumbnail($insert_id, $attach_id);
             update_field( 'film_poster', $attach_id, $insert_id );
 
         } else {
 
-            foreach ( $existingFilms as $existingFilm ) {
-                $existingFilm = get_post( $existingFilm );
-                $this_film_ID = $existingFilm->ID;
-                echo '<h5 style="margin-bottom: 0;"><i>Updating existing film ('.$this_film_ID.')</i></h5>';
-            }
-
+            $this_film_ID = $existingFilmPost[0]->ID;
+            echo '<h4 style="margin: 0 0 12px;">Existing film found; updating film record (' . $this_film_ID . ')</i></h4>';
+            
         }
 
-        echo '<br><b>Update custom fields with Agile data</b><br>';
+        echo '<h4 style="margin: 0 0 12px;">Updating custom fields with Agile data</h4>';
 
         update_post_meta($this_film_ID, 'agile_film_id', $agile_film_id);
         update_post_meta($this_film_ID, 'description', $short_description);
@@ -169,6 +186,7 @@ function import_films_from_agile() {
             $repeater_field_name='screenings',
             $repeater_subfield_name='screening',
             $post_id=$this_film_ID,
+            $agile_id=$agile_film_id
         );
 
         echo '</div>';
