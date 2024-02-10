@@ -3,11 +3,14 @@
 // If this file is called directly, abort!
 defined('ABSPATH') or die('Unauthorized Access');
 
+require_once "function__dedupe_screenings_table.php";
 require_once "function__find_film_via_agile_id.php";
 require_once "function__delete_all_screenings_for_film.php";
 require_once "function__add_screening_to_film.php";
 
 function function__import_from_screenings_table() {
+
+  function__dedupe_screenings_table();
 
   global $wpdb;
     

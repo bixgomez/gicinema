@@ -3,6 +3,8 @@
 // If this file is called directly, abort!
 defined('ABSPATH') or die('Unauthorized Access');
 
+require_once "function__dedupe_screenings_table.php";
+
 function import_screenings_from_agile(
   $agile_array = null,
   $repeater_field_key = null,
@@ -136,7 +138,10 @@ function import_screenings_from_agile(
     } else {
       echo '<i>The row exists; ignoring.</i><br><br>';
     }
-}
+
+    echo '<i>Run the custom table deduper.</i><br><br>';
+    function__dedupe_screenings_table();
+  }
 
   echo '</div>';
 
