@@ -3,8 +3,7 @@
 // If this file is called directly, abort!
 defined('ABSPATH') or die('Unauthorized Access');
 
-require_once "function__dedupe_screenings_table.php";
-
+// Define the function that imports screenings from agile for each film.
 function import_screenings_from_agile(
   $agile_array = null,
   $repeater_field_key = null,
@@ -99,6 +98,7 @@ function import_screenings_from_agile(
     }
   }
 
+  // Now it is time to update the custom screenings table (which we still need).
   echo '<i>Now, check the custom table for screening data!</i><br><br>';
 
   global $wpdb;
@@ -109,9 +109,19 @@ function import_screenings_from_agile(
 
     // Prepare the SQL query to check if the row exists
     echo '<i>Checking the custom table for screening=' . $screening . ' and film_id($agile_id)=' . $agile_id . ' and post_id=' . $post_id . '</i><br>';
+    
+    // Splitting screening into separate date and time strings
+    list($screening_date, $screening_time) = explode(" ", $screening);
+
+    echo '<b>Screening: </b>' . $screening . '<br>';
+    echo '<b>Screening date: </b>' . $screening_date . '<br>';
+    echo '<b>Screening time: </b>' . $screening_time . '<br>';
+    
     $query = $wpdb->prepare(
         "SELECT COUNT(*) FROM $table_name WHERE screening = %s AND film_id = %d AND post_id = %d",
         $screening,
+        $screening_date,
+        $screening_time,
         $agile_id,
         $post_id
     );
@@ -125,22 +135,23 @@ function import_screenings_from_agile(
         $wpdb->insert(
             $table_name,
             array(
-                'screening' => $screening,
-                'film_id' => $agile_id,
-                'post_id' => $post_id
+              'screening' => $screening,
+              'screening_date' => $screening_date,
+              'screening_time' => $screening_time,
+              'film_id' => $agile_id,
+              'post_id' => $post_id
             ),
             array(
-                '%s', // placeholder for 'screening' field
-                '%d', // placeholder for 'film_id' field
-                '%d'  // placeholder for 'post_id' field
+              '%s', // placeholder for 'screening' field
+              '%s', // placeholder for 'screening_date' field
+              '%s', // placeholder for 'screening_time' field
+              '%d', // placeholder for 'film_id' field
+              '%d'  // placeholder for 'post_id' field
             )
         );
     } else {
       echo '<i>The row exists; ignoring.</i><br><br>';
     }
-
-    echo '<i>Run the custom table deduper.</i><br><br>';
-    function__dedupe_screenings_table();
   }
 
   echo '</div>';

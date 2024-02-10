@@ -10,8 +10,6 @@ function function__import_from_screenings_table() {
   function__dedupe_screenings_table();
 
   global $wpdb;
-
-  echo '<div style="margin: 12px 0; background:#eee; padding: 12px;">';
     
   // The table name
   $table_name = $wpdb->prefix . 'gi_screenings';
@@ -34,29 +32,37 @@ function function__import_from_screenings_table() {
   foreach ($column_names as $name) {
       echo $name . '<br>';
   }
-
-  echo '</div>';
+  echo '<br>';
 
   // Prepare and execute the query to select distinct Agile ID values.
-  $query__screenings = "SELECT DISTINCT * FROM {$table_name} ORDER BY film_id ASC";
-  $results__screenings = $wpdb->get_results($query__screenings);
+  $query__distinct_ids = "SELECT DISTINCT film_id FROM {$table_name} ORDER BY film_id ASC";
+  $results__distinct_ids = $wpdb->get_results($query__distinct_ids);
 
   // Check if any results are returned
-  if(!empty($results__screenings)) {
+  if(!empty($results__distinct_ids)) {
 
     echo '<div style="display:flex; flex-direction:column; grid-gap:8px; background:#ede; padding:8px;">';
 
     // Loop through each result
-    foreach($results__screenings as $row) {
+    foreach($results__distinct_ids as $row) {
       echo '<div style="background:#fef; padding:8px;">';
-      echo '<div>film_id (Agile): ' . esc_html($row->film_id) . '</div>';
-      echo '<div>post_id: ' . esc_html($row->post_id) . '</div>';
-      echo '<div>screening: ' . esc_html($row->screening) . '</div>';
-      echo '<div>screening_date: ' . esc_html($row->screening_date) . '</div>';
-      echo '<div>screening_time: ' . esc_html($row->screening_time) . '</div>';
+      echo '<div>Agile ID: ' . esc_html($row->film_id) . '</div>';
       
-      if (empty($row->post_id)) {
-        echo '<div><i>This one has no post ID!</i></div>';
+      $film_post_id = gicinema__find_film_via_agile_id($row->film_id);
+
+      if ($film_post_id) {
+        echo '<div>Post ID: ' . $film_post_id . '</div>';
+
+        gicinema__delete_all_screenings_for_film($film_post_id);
+
+        // Prepare and execute the query to select screenings for this film.
+        $query__screenings = "SELECT screening FROM {$table_name} WHERE film_id = $row->film_id ORDER BY screening ASC";
+        $results__screenings = $wpdb->get_results($query__screenings);
+
+        foreach($results__screenings as $result__screening) {
+          echo '<div>Screening: ' . $result__screening->screening . '</div>';
+          gicinema__add_screening_to_film($film_post_id, $result__screening->screening);
+        }
       }
 
       echo '</div>';
@@ -77,7 +83,7 @@ function gicinema__delete_all_screenings_for_film($post_id) {
 
 }
 
-function gicinema__get_postid_from_agileid($agile_id) {
+function gicinema__find_film_via_agile_id($agile_id) {
 
   $args = array(
       'post_type' => 'film', 

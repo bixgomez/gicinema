@@ -3,7 +3,9 @@
 // If this file is called directly, abort!
 defined('ABSPATH') or die('Unauthorized Access');
 
+// Import functions that will be needed in this template.
 require_once "function__import_screenings_from_agile.php";
+require_once "function__dedupe_screenings_table.php";
 
 function import_films_from_agile() {
 
@@ -191,4 +193,7 @@ function import_films_from_agile() {
 
         echo '</div>';
     }
+
+    echo '<i>Run the custom table deduper.</i><br><br>';
+    function__dedupe_screenings_table();
 }
