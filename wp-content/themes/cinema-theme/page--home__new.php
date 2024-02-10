@@ -18,10 +18,6 @@ get_header();
 <div class="home-page-content">
 
     <?php 
-    // get_alerts(); 
-    ?>
-
-    <?php 
     global $post;
     if ( have_posts() ) {
         while ( have_posts() ) {
