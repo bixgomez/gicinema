@@ -5,7 +5,7 @@ defined('ABSPATH') or die('Unauthorized Access');
 
 require_once "function__dedupe_screenings_table.php";
 
-function function__update_screenings_table() {
+function function__update_screenings_field() {
 
   function__dedupe_screenings_table();
 
@@ -72,13 +72,9 @@ function function__update_screenings_table() {
           echo '<div>screening_time: ' . esc_html($row->screening_time) . '</div>';
           echo '<div>post_id: ' . esc_html($row->post_id) . '</div>';
           
-          if (empty($row->post_id)) {
-            echo '<div><i>This one has no post ID!</i></div>';
-            $found_post_id = gicinema__get_postid_from_agileid($row->film_id);
-
-            if (!empty($found_post_id)) {
-              gicinema__update_postID_for_filmID($row->film_id, $found_post_id);
-            }
+          if (!empty($row->post_id)) {
+            echo '<div><b><i>This one has a post ID!</i></b></div>';
+            
           }
 
           echo '</div>';
@@ -123,27 +119,28 @@ function gicinema__update_postID_for_filmID($film_id, $post_id) {
 
 }
 
-function gicinema__get_postid_from_agileid($agile_id) {
+function gicinema__delete_all_screenings_for_film($post_id) {
 
-  $args = array(
-      'post_type' => 'film', 
-      'posts_per_page' => 1, 
-      'fields' => 'ids', 
-      'meta_query' => array(
-          array(
-              'key' => 'agile_film_id',
-              'value' => $agile_id, 
-              'compare' => '=',
-          ),
-      ),
-  );
+  echo '<div>Deleting all screenings for ' . $post_id . '</div>';
+  update_field('screenings', array(), $post_id);
 
-  // The Query
-  $query = new WP_Query($args);
+}
 
-  // The Loop
-  if ($query->have_posts()) {
-    return $query->posts[0];
+function gicinema__add_screening_to_film($post_id, $screening) {
+
+  echo '<div>Adding screening ('.$screening.') to ' . $post_id . '</div>';
+
+  $field_key = 'field_617b2f8e4b8c4';
+
+  $screening_array = array('screening' => $screening);
+
+  // Add a row to the 'screenings' repeater field for the specified post
+  $success = add_row($field_key, $screening_array, $post_id);
+
+  if ($success) {
+      echo 'Screening added successfully.';
+  } else {
+      echo 'Failed to add screening.';
   }
 
 }

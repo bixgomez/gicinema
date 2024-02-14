@@ -21,6 +21,7 @@ require_once "page__display_all_films.php";
 require_once "page__delete_all_films.php";
 require_once "page__import_from_agile.php";
 require_once "page__update_screenings_table.php";
+require_once "page__update_screenings_field.php";
 
 function gicinema_enqueue_styles() {
   wp_enqueue_style('gicinema-custom-styles', plugins_url('gicinema-styles.css', __FILE__));
