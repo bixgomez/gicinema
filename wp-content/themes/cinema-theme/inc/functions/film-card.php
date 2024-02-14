@@ -46,12 +46,17 @@ function filmCard($filmPostId, $classes='film') {
           $year = ( $year == "Various" ) ? null : $year;
           ?>
           
-          <?php if (strlen($director) || strlen($year)) : ?>
+          <?php if ((is_string($director) && strlen($director)) || strlen($year)) : ?>
             <div>
               <?php 
-              echo $director;
+
+              if (is_string($director) && strlen($director)) :
+                echo $director;
+              endif;
+              
               echo ( $director == "Various" ) ? ' directors' : null;
-              echo (strlen($director) && strlen($year)) ? ' · ' : null;
+              
+              echo ( (is_string($director) && strlen($director)) && strlen($year) ) ? ' · ' : null;
               echo $year;
               echo ( $year == "Various" ) ? ' years' : null;
               echo null;

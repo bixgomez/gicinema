@@ -77,7 +77,6 @@ function function__update_screenings_table() {
             $found_post_id = gicinema__get_postid_from_agileid($row->film_id);
 
             if (!empty($found_post_id)) {
-              echo '<B><i>UPDATING</i></B>';
               gicinema__update_postID_for_filmID($row->film_id, $found_post_id);
             }
           }
@@ -104,6 +103,8 @@ function function__update_screenings_table() {
 
 function gicinema__update_postID_for_filmID($film_id, $post_id) {
 
+  echo '<B><i>Updating Agile ID (' . $film_id . ') for Post ID (' . $post_id . ')</i></B><br>';
+
   global $wpdb;
   $table_name = $wpdb->prefix . 'gi_screenings';
 
@@ -115,7 +116,6 @@ function gicinema__update_postID_for_filmID($film_id, $post_id) {
   );
 
   if ($result !== false) {
-    echo 'gicinema__update_postID_for_filmID(' . $row->film_id . ', ' . $found_post_id . ')<br>';
     echo "The row has been updated successfully.";
   } else {
     echo "There was an error updating the row: " . $wpdb->last_error;

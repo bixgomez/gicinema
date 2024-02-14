@@ -14,6 +14,7 @@ defined('ABSPATH') or die('Unauthorized Access');
 
 // Imports all necessary functions and pages.
 require_once "function__create_custom_table.php";
+require_once "function__update_film_on_save.php";
 require_once "cron_jobs.php";
 require_once "page__admin.php";
 require_once "page__display_all_films.php";

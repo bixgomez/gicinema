@@ -5,7 +5,8 @@ let domReady = (cb) => {
     : document.addEventListener('DOMContentLoaded', cb);
 };
 
+// Display body when DOM is loaded
 domReady(() => {
-  // Display body when DOM is loaded
   document.body.style.visibility = 'visible';
+  document.body.style.opacity = '1';
 });
