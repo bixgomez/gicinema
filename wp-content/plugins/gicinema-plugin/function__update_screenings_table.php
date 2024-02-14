@@ -103,7 +103,7 @@ function function__update_screenings_table() {
 
 function gicinema__update_postID_for_filmID($film_id, $post_id) {
 
-  echo '<B><i>Updating Agile ID (' . $film_id . ') for Post ID (' . $post_id . ')</i></B><br>';
+  echo '<B><i>Updating Agile ID (' . $film_id . ') for Post ID (' . $post_id . ')</i></B>';
 
   global $wpdb;
   $table_name = $wpdb->prefix . 'gi_screenings';
@@ -120,6 +120,13 @@ function gicinema__update_postID_for_filmID($film_id, $post_id) {
   } else {
     echo "There was an error updating the row: " . $wpdb->last_error;
   }
+
+}
+
+function gicinema__delete_all_screenings_for_film($post_id) {
+
+  echo '<div>Deleting all screenings for ' . $post_id . '</div>';
+  update_field('screenings', array(), $post_id);
 
 }
 
@@ -144,6 +151,25 @@ function gicinema__get_postid_from_agileid($agile_id) {
   // The Loop
   if ($query->have_posts()) {
     return $query->posts[0];
+  }
+
+}
+
+function gicinema__add_screening_to_film($post_id, $screening) {
+
+  echo '<div>Adding screening ('.$screening.') to ' . $post_id . '</div>';
+
+  $field_key = 'field_617b2f8e4b8c4';
+
+  $screening_array = array('screening' => $screening);
+
+  // Add a row to the 'screenings' repeater field for the specified post
+  $success = add_row($field_key, $screening_array, $post_id);
+
+  if ($success) {
+      echo 'Screening added successfully.';
+  } else {
+      echo 'Failed to add screening.';
   }
 
 }
