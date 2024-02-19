@@ -39,8 +39,22 @@ pre {
   margin: 0;
 }
 
+.success {
+  color: green;
+  font-style: italic;
+}
+
+.failure {
+  color: red;
+  font-style: italic;
+}
+
 .wrap--gicinema {
   margin: 20px 20px 0 0;
+}
+
+.wrap--gicinema .yoast-notification {
+  display: none;
 }
 
 .wrap--gicinema>h2:first-child {
