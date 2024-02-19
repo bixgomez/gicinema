@@ -17,11 +17,10 @@ require_once "function__create_custom_table.php";
 require_once "function__update_film_on_save.php";
 require_once "cron_jobs.php";
 require_once "page__admin.php";
-require_once "page__display_all_films.php";
+require_once "page__all_film_posts.php";
 require_once "page__delete_all_films.php";
 require_once "page__import_from_agile.php";
-require_once "page__update_screenings_table.php";
-require_once "page__update_screenings_field.php";
+require_once "page__manage_screenings.php";
 
 function gicinema_enqueue_styles() {
   wp_enqueue_style('gicinema-custom-styles', plugins_url('gicinema-styles.css', __FILE__));

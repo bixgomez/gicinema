@@ -3,6 +3,42 @@ body {
   color: #000 !important;
 }
 
+#wpbody-content {
+  padding-bottom: 40px;
+}
+
+pre {
+  margin: 0;
+  font-weight: 300;
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.function-info {
+  margin: 10px 0;
+  padding: 10px;
+  background: #00000033;
+  border: 1px solid #00000033;
+  display: flex;
+  flex-direction: column;
+  grid-gap: 8px;
+}
+
+.function-info .function-info {
+  margin: 0;
+  background: #FFFFFF77;
+}
+
+.function-info ul {
+  margin: 0;
+  list-style: disc;
+  padding-left: 14px;
+}
+
+.function-info ul li {
+  margin: 0;
+}
+
 .wrap--gicinema {
   margin: 20px 20px 0 0;
 }
@@ -14,7 +50,6 @@ body {
 
 .wrap--gicinema table {
   background-color: #efefef;
-  /* width: 100%; */
   border-spacing: 0;
   border-color: #fff;
   border-width: 1px 1px 0 0;
@@ -43,14 +78,4 @@ body {
   border-bottom-style: double;
   border-bottom-width: 3px;
   padding-right: 20px;
-}
-
-.wrap--gicinema table th,
-.wrap--gicinema table td {
-  /* width: min-content; */
-}
-
-.wrap--gicinema table th:last-child,
-.wrap--gicinema table td:last-child {
-  /* width: auto; */
 }

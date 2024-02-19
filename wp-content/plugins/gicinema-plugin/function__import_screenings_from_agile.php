@@ -112,7 +112,6 @@ function import_screenings_from_agile(
     
     // Splitting screening into separate date and time strings
     list($screening_date, $screening_time) = explode(" ", $screening);
-    $screening_time = $screening_time . ' ' . $ampm;
 
     echo '<b>Screening: </b>' . $screening . '<br>';
     echo '<b>Screening date: </b>' . $screening_date . '<br>';
