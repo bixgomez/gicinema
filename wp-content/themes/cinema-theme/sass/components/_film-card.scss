@@ -169,10 +169,7 @@
         font-weight: 100;
       }
 
-      &.present {
-        // font-weight: 600;
-      }
-
+      &.present,
       &.future {
         color: $c--black;
       }
