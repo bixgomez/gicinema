@@ -31,3 +31,4 @@ uploads-webpc
 /local-xdebuginfo.php
 .ddev
 wp-config-ddev.php
+wp-config-ddev*
