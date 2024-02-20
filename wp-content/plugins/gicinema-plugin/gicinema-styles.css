@@ -29,6 +29,25 @@ pre {
   background: #FFFFFF77;
 }
 
+.function-info h1,
+.function-info h2,
+.function-info h3,
+.function-info h4,
+.function-info h5 {
+  margin: 0;
+  line-height: 1.2;
+}
+
+.function-info h1 { font-size: 2em; }
+
+.function-info h2 { font-size: 1.75em; }
+
+.function-info h3 { font-size: 1.5em; }
+
+.function-info h4 { font-size: 1.25em; }
+
+.function-info h5 { font-size: 1em; }
+
 .function-info ul {
   margin: 0;
   list-style: disc;
@@ -37,6 +56,11 @@ pre {
 
 .function-info ul li {
   margin: 0;
+}
+
+.scrolly {
+  max-height: 30vh;
+  overflow-y: scroll;
 }
 
 .success {

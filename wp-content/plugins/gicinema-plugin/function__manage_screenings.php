@@ -6,9 +6,9 @@ defined('ABSPATH') or die('Unauthorized Access');
 require_once "function__dedupe_screenings_table.php";
 require_once "function__sync_screenings.php";
 
-function function__manage_screenings() {
+function gicinema__manage_screenings() {
 
-  function__dedupe_screenings_table();
+  // function__dedupe_screenings_table();
 
   global $wpdb;
 

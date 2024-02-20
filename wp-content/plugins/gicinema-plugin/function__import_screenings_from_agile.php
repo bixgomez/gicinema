@@ -4,7 +4,7 @@
 defined('ABSPATH') or die('Unauthorized Access');
 
 // Define the function that imports screenings from agile for each film.
-function import_screenings_from_agile(
+function gicinema__import_screenings_from_agile (
   $agile_array = null,
   $repeater_field_key = null,
   $repeater_field_name = null,
@@ -16,18 +16,24 @@ function import_screenings_from_agile(
     return;
   }
 
-  echo '<div style="background-color:#fefefe;padding:10px;margin: 0 0 12px;max-height:150px;overflow-y:scroll;"><b>Importing Screenings</b><br><br>';
+  echo '<div class="function-info scrolly">';
+  echo '<h4>Importing Screenings</b></h4>';
+
+  echo '<div class="function-info">';
+  echo '<div>';
   echo '<i>$repeater_field_key:</i> ' . $repeater_field_key . '<br>';
   echo '<i>$repeater_field_name:</i> ' . $repeater_field_name . '<br>';
   echo '<i>$repeater_subfield_name:</i> ' . $repeater_subfield_name . '<br>';
-  echo '<i>$post_id:</i> ' . $post_id . '<br><br>';
+  echo '<i>$post_id:</i> ' . $post_id;
+  echo '</div>';
+  echo '</div>';
 
   $new_screenings = [];
   $existing_screenings = [];
   $all_screenings = [];
 
   // Check if the "screenings" repeater field has rows of data.
-  echo '<i>Checking if the "screenings" repeater field has rows of data</i><br><br>';
+  echo '<i>Checking if the "screenings" ACF repeater field has rows of data</i>';
   if (have_rows($repeater_field_name, $post_id)) :
     while (have_rows($repeater_field_name, $post_id)) : the_row();    
       // Use get_sub_field with the second parameter as false to avoid formatting
@@ -99,7 +105,7 @@ function import_screenings_from_agile(
   }
 
   // Now it is time to update the custom screenings table (which we still need).
-  echo '<i>Now, check the custom table for screening data!</i><br><br>';
+  echo '<i>Now, check the custom table for screening data!</i>';
 
   global $wpdb;
 
@@ -107,18 +113,28 @@ function import_screenings_from_agile(
 
   foreach ($all_screenings as $screening) {
 
+    echo '<div class="function-info">';
+
     // Prepare the SQL query to check if the row exists
-    echo '<i>Checking the custom table for screening=' . $screening . ' and film_id($agile_id)=' . $agile_id . ' and post_id=' . $post_id . '</i><br>';
+    echo '<i>Checking the custom table for screening=' . $screening . ' and film_id($agile_id)=' . $agile_id . ' and post_id=' . $post_id . '</i>';
     
     // Splitting screening into separate date and time strings
     list($screening_date, $screening_time) = explode(" ", $screening);
 
+    echo '<div>';
     echo '<b>Screening: </b>' . $screening . '<br>';
     echo '<b>Screening date: </b>' . $screening_date . '<br>';
-    echo '<b>Screening time: </b>' . $screening_time . '<br>';
+    echo '<b>Screening time: </b>' . $screening_time;
+    echo '</div>';
     
     $query = $wpdb->prepare(
-        "SELECT COUNT(*) FROM $table_name WHERE screening = %s AND film_id = %d AND post_id = %d",
+        "SELECT COUNT(*) 
+         FROM $table_name 
+         WHERE screening = %s
+         AND screening_date = %s
+         AND screening_time = %s
+         AND film_id = %d 
+         AND post_id = %d",
         $screening,
         $screening_date,
         $screening_time,
@@ -131,7 +147,7 @@ function import_screenings_from_agile(
 
     // If the row doesn't exist, insert it
     if ($exists == 0) {
-        echo '<i>The row doesn\'t exist; insert it.</i><br><br>';
+        echo '<i>The row doesn\'t exist; insert it.</i>';
         $wpdb->insert(
             $table_name,
             array(
@@ -150,8 +166,10 @@ function import_screenings_from_agile(
             )
         );
     } else {
-      echo '<i>The row exists; ignoring.</i><br><br>';
+      echo '<i>The row exists; ignoring.</i>';
     }
+
+    echo '</div>';
   }
 
   echo '</div>';

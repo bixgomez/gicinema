@@ -7,7 +7,7 @@ defined('ABSPATH') or die('Unauthorized Access');
 require_once "function__import_screenings_from_agile.php";
 require_once "function__dedupe_screenings_table.php";
 
-function import_films_from_agile() {
+function gicinema__import_films_from_agile() {
 
     global $wpdb;
 
@@ -51,7 +51,7 @@ function import_films_from_agile() {
         $short_description = $show->ShortDescription;
         $info_link = $show->InfoLink;
 
-        echo '<div style="background-color: #eee; padding: 12px; font-size: 14px; margin: 10px 0 20px;">';
+        echo '<div class="function-info">';
 
         // Set values for media variables.
         foreach( $show->AdditionalMedia as $addlMedia ) {
@@ -85,23 +85,25 @@ function import_films_from_agile() {
         }
 
         // Display all the values.
-        echo '<h4 style="font-size: 1.5em; margin: 0 0 12px;">' . $film_title . '</h4>';
-        echo '<div style="background-color:#fefefe;padding:10px;margin: 0 0 12px;max-height:150px;overflow-y:scroll;">';
-        echo '$film_title = ' . $film_title . '<br>';
-        echo '$agile_film_id = ' . $agile_film_id . '<hr>';
-        echo '$short_description = ' . $short_description . '<hr>';
-        echo '$duration = ' .  $duration . '<br>';
-        echo '$info_link = ' .  $info_link . '<br>';
-        echo '$film_year = ' .  $film_year . '<br>';
-        echo '$format = ' .  $format . '<br>';
-        echo '$film_director = ' .  $film_director . '<br>';
-        echo '$country = ' .  $country . '<br>';
-        echo '$format = ' .  $format . '<br>';
-        echo '$poster_url = ' .  $poster_url . '<br>';
-        echo '$trailer_url = ' .  $trailer_url . '</div>';
+        echo '<h2>' . $film_title . '</h2>';
+        echo '<div class="function-info scrolly">';
+        echo '<h3>The data from the API feed</h3>';
+        echo '<div>$film_title = ' . $film_title . '</div>';
+        echo '<div>$agile_film_id = ' . $agile_film_id . '</div>';
+        echo '<div>$short_description = ' . $short_description . '</div>';
+        echo '<div>$duration = ' .  $duration . '</div>';
+        echo '<div>$info_link = ' .  $info_link . '</div>';
+        echo '<div>$film_year = ' .  $film_year . '</div>';
+        echo '<div>$format = ' .  $format . '</div>';
+        echo '<div>$film_director = ' .  $film_director . '</div>';
+        echo '<div>$country = ' .  $country . '</div>';
+        echo '<div>$format = ' .  $format . '</div>';
+        echo '<div>$poster_url = ' .  $poster_url . '</div>';
+        echo '<div>$trailer_url = ' .  $trailer_url . '</div>';
+        echo '</div>';
 
         // Query to find the WordPress film posts with this Agile film id.
-        echo '<h4 style="margin: 0 0 12px;">Checking WordPress posts for film with Agile ID of ' . $agile_film_id . ')</h4>';
+        echo '<div>Checking WordPress posts for film with Agile ID of ' . $agile_film_id . ')</div>';
         $existingFilmPost = get_posts([
             'post_type'      => 'film',
             'posts_per_page' => 1, // Limit to only 1 post
@@ -117,6 +119,9 @@ function import_films_from_agile() {
         // If no existing films were found, create a new film.
         if ( empty($existingFilmPost) ) {
 
+            echo '<div class="failure">No existing film found.</div>';
+            echo '<div>Creating new WordPress post of type \'film\'</div>';
+
             // Create post object
             $newMovie = array(
                 'post_type'     => 'film',
@@ -125,75 +130,87 @@ function import_films_from_agile() {
             );
 
             // Insert the post into the database
-            $this_film_ID = wp_insert_post($newMovie);
+            $post_ID = wp_insert_post($newMovie);
 
-            echo '<h4 style="margin: 0 0 12px;">No existing film found; creating new film record (' . $this_film_ID . ')</h4>';
+            echo '<div>The post_id of the new film post is ' . $post_ID . '</div>';
 
             // https://wordpress.stackexchange.com/questions/256830/programmatically-adding-images-to-media-library
-            $insert_id = $this_film_ID;
+            $insert_id = $post_ID;
             $image_url = $poster_url;
             $upload_dir = wp_upload_dir();
-            $image_data = file_get_contents( $image_url );
-            $filename = basename( $image_url );
-            if ( wp_mkdir_p( $upload_dir['path'] ) ) {
-                $file = $upload_dir['path'] . '/' . $filename;
-            } else {
-                $file = $upload_dir['basedir'] . '/' . $filename;
-            }
-            file_put_contents( $file, $image_data );
-            $wp_filetype = wp_check_filetype( $filename, null );
-            $attachment = array(
-                'post_mime_type' => $wp_filetype['type'],
-                'post_title' => sanitize_file_name( $filename ),
-                'post_content' => '',
-                'post_status' => 'inherit'
-            );
-            $attach_id = wp_insert_attachment( $attachment, $file );
-            require_once( ABSPATH . 'wp-admin/includes/image.php' );
-            $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
-            wp_update_attachment_metadata( $attach_id, $attach_data );
 
-            // And finally assign featured image to post
-            echo '<h4 style="margin: 0 0 12px;">Inserting image ' . $attach_id . ' into film ' . $insert_id . '</h4>';
-            set_post_thumbnail($insert_id, $attach_id);
-            update_field( 'film_poster', $attach_id, $insert_id );
+            if (!empty($image_url) && filter_var($image_url, FILTER_VALIDATE_URL) !== false) {
+
+                echo '<div class="success">The $image_url is valid.</div>';
+
+                $image_data = file_get_contents( $image_url );
+                $filename = basename( $image_url );
+                if ( wp_mkdir_p( $upload_dir['path'] ) ) {
+                    $file = $upload_dir['path'] . '/' . $filename;
+                } else {
+                    $file = $upload_dir['basedir'] . '/' . $filename;
+                }
+                file_put_contents( $file, $image_data );
+                $wp_filetype = wp_check_filetype( $filename, null );
+                $attachment = array(
+                    'post_mime_type' => $wp_filetype['type'],
+                    'post_title' => sanitize_file_name( $filename ),
+                    'post_content' => '',
+                    'post_status' => 'inherit'
+                );
+                $attach_id = wp_insert_attachment( $attachment, $file );
+                require_once( ABSPATH . 'wp-admin/includes/image.php' );
+                $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
+                wp_update_attachment_metadata( $attach_id, $attach_data );
+
+                // And finally assign featured image to post
+                echo '<div>Inserting image ' . $attach_id . ' into film ' . $insert_id . '</div>';
+                set_post_thumbnail($insert_id, $attach_id);
+                update_field( 'film_poster', $attach_id, $insert_id );
+
+            } else {
+
+                echo '<div class="failure">The $image_url is either empty or invalid.</div>';
+
+            }
 
         } else {
 
-            $this_film_ID = $existingFilmPost[0]->ID;
-            echo '<h4 style="margin: 0 0 12px;">Existing film found; updating film record (' . $this_film_ID . ')</i></h4>';
+            $post_ID = $existingFilmPost[0]->ID;
+            echo '<div class="success">Existing film found</div>';
             
         }
 
-        echo '<h4 style="margin: 0 0 12px;">Updating custom fields with Agile data</h4>';
+        echo '<div>Updating ACF fields with data from Agile</div>';
 
-        update_post_meta($this_film_ID, 'agile_film_id', $agile_film_id);
-        update_post_meta($this_film_ID, 'description', $short_description);
-        update_post_meta($this_film_ID, 'film_length', $duration);
-        update_post_meta($this_film_ID, 'ticket_purchase_link', $info_link);
-        update_post_meta($this_film_ID, 'film_year', $film_year);
-        update_post_meta($this_film_ID, 'format', $format);
-        update_post_meta($this_film_ID, 'film_director', $film_director);
-        update_post_meta($this_film_ID, 'country', $country);
-        update_post_meta($this_film_ID, 'format', $format);
-        update_post_meta($this_film_ID, 'poster_url', $poster_url);
-        update_post_meta($this_film_ID, 'trailer_url', $trailer_url);
+        update_post_meta($post_ID, 'agile_film_id', $agile_film_id);
+        update_post_meta($post_ID, 'description', $short_description);
+        update_post_meta($post_ID, 'film_length', $duration);
+        update_post_meta($post_ID, 'ticket_purchase_link', $info_link);
+        update_post_meta($post_ID, 'film_year', $film_year);
+        update_post_meta($post_ID, 'format', $format);
+        update_post_meta($post_ID, 'film_director', $film_director);
+        update_post_meta($post_ID, 'country', $country);
+        update_post_meta($post_ID, 'format', $format);
+        update_post_meta($post_ID, 'poster_url', $poster_url);
+        update_post_meta($post_ID, 'trailer_url', $trailer_url);
 
         // Create variable for future screenings array from Agile.
         $screenings_array = $show->CurrentShowings;
 
-        import_screenings_from_agile(
-            $agile_array=$screenings_array, 
-            $repeater_field_key='field_screenings',
-            $repeater_field_name='screenings',
-            $repeater_subfield_name='screening',
-            $post_id=$this_film_ID,
-            $agile_id=$agile_film_id
-        );
+        // gicinema__import_screenings_from_agile(
+        //     $agile_array=$screenings_array, 
+        //     $repeater_field_key='field_screenings',
+        //     $repeater_field_name='screenings',
+        //     $repeater_subfield_name='screening',
+        //     $post_id=$post_ID,
+        //     $agile_id=$agile_film_id
+        // );
 
         echo '</div>';
     }
 
-    echo '<i>Run the custom table deduper.</i><br><br>';
-    function__dedupe_screenings_table();
+    echo '<div class="funtion-info">';
+    gicinema__dedupe_screenings_table();
+    echo '</div>';
 }

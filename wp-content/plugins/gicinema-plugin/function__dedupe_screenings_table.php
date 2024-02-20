@@ -3,24 +3,30 @@
 // If this file is called directly, abort!
 defined('ABSPATH') or die('Unauthorized Access');
 
-function function__dedupe_screenings_table() {
+function gicinema__dedupe_screenings_table() {
+
+    echo '<div class="function-info">';
+
+    echo '<h4>Deduping the custom screenings table</h4>';
 
     echo '<div class="function-info">';
     
-    echo '<div>Running <i>function__dedupe_screenings_table()</i></div>';
+    echo '<div>Running <i>gicinema__dedupe_screenings_table()</i></div>';
     
     echo '<div>Deduping custom screenings table.</div>';
 
     global $wpdb;
     $table_name = $wpdb->prefix . 'gi_screenings';
-  
+
     $query = "
-        DELETE FROM $table_name
-        WHERE screening_id NOT IN (
-            SELECT MIN(screening_id)
+        DELETE t1 
+        FROM $table_name AS t1
+        LEFT JOIN (
+            SELECT MIN(screening_id) AS min_id
             FROM $table_name
             GROUP BY screening, film_id, post_id
-        )
+        ) AS t2 ON t1.screening_id = t2.min_id
+        WHERE t2.min_id IS NULL
     ";
 
     $rows_affected = $wpdb->query($query);
@@ -38,6 +44,7 @@ function function__dedupe_screenings_table() {
         echo '<div>There was an error in attempting to delete duplicate rows.</div>';
     }
 
+    echo "</div>";
     echo "</div>";
 
 }

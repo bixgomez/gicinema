@@ -25,7 +25,7 @@ function gicinema_page_display__sync_screenings() {
 
   // Check if the form was submitted
   if (isset($_POST['confirm_import']) && $_POST['confirm_import'] == 'yes') {
-    function__sync_screenings();
+    gicinema__sync_screenings();
   } else {
       // Display warning and confirmation form
       echo '<p><strong>Warning:</strong> This action will update the screenings table AND the screenings field. This action is irreversible.</p>';
