@@ -11,7 +11,7 @@ require_once "function__manage_screenings.php";
 function gicinema__hook_interval($schedules) {
     $schedules['every_23_minutes'] = array(
         'interval' => 1380,
-        'display' => esc_html__('Every 20 Minutes'),
+        'display' => esc_html__('Every 23 Minutes'),
     );
     $schedules['every_30_minutes'] = array(
         'interval' => 1800,
@@ -19,7 +19,7 @@ function gicinema__hook_interval($schedules) {
     );
     $schedules['every_47_minutes'] = array(
         'interval' => 2820,
-        'display' => esc_html__('Every 50 Minutes'),
+        'display' => esc_html__('Every 47 Minutes'),
     );
     return $schedules;
 }
