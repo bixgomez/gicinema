@@ -21,13 +21,17 @@ function gicinema__hook_interval($schedules) {
         'interval' => 2820,
         'display' => esc_html__('Every 47 Minutes'),
     );
+    $schedules['every_128_minutes'] = array(
+        'interval' => 7680,
+        'display' => esc_html__('Every 128 Minutes'),
+    );
     return $schedules;
 }
 add_filter('cron_schedules', 'gicinema__hook_interval');
 
 // Cron job to manage screenings.
 if (!wp_next_scheduled('cron__manage_screenings')) {
-    wp_schedule_event(time(), 'every_47_minutes', 'cron__manage_screenings');
+    wp_schedule_event(time(), 'every_128_minutes', 'cron__manage_screenings');
 }
 add_action('cron__manage_screenings', 'gicinema__manage_screenings');
 
