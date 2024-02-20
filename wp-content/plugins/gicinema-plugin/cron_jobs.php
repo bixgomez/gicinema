@@ -9,16 +9,16 @@ require_once "function__manage_screenings.php";
 
 // Setting up custom cron intervals.
 function gicinema__hook_interval($schedules) {
-    $schedules['every_20_minutes'] = array(
-        'interval' => 1200,
+    $schedules['every_23_minutes'] = array(
+        'interval' => 1380,
         'display' => esc_html__('Every 20 Minutes'),
     );
     $schedules['every_30_minutes'] = array(
         'interval' => 1800,
         'display' => esc_html__('Every 30 Minutes'),
     );
-    $schedules['every_50_minutes'] = array(
-        'interval' => 3000,
+    $schedules['every_47_minutes'] = array(
+        'interval' => 2820,
         'display' => esc_html__('Every 50 Minutes'),
     );
     return $schedules;
@@ -27,7 +27,7 @@ add_filter('cron_schedules', 'gicinema__hook_interval');
 
 // Cron job to manage screenings.
 if (!wp_next_scheduled('cron__manage_screenings')) {
-    wp_schedule_event(time(), 'every_50_minutes', 'cron__manage_screenings');
+    wp_schedule_event(time(), 'every_47_minutes', 'cron__manage_screenings');
 }
 add_action('cron__manage_screenings', 'gicinema__manage_screenings');
 
@@ -39,7 +39,7 @@ add_action('cron__import_films_from_agile', 'gicinema__import_films_from_agile')
 
 // Cron job to run the Agile shows fetcher.
 if ( ! wp_next_scheduled( 'cron__update_agile_shows_array' ) ) {
-    wp_schedule_event( time(), 'every_20_minutes', 'cron__update_agile_shows_array' );
+    wp_schedule_event( time(), 'every_23_minutes', 'cron__update_agile_shows_array' );
 }
 add_action( 'cron__update_agile_shows_array', 'gicinema__update_agile_shows_array' );
 
