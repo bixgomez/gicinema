@@ -98,7 +98,7 @@
 
           <div class="region region__footer-third">
             <div class="region-inner">
-              &copy; 2020 The Grand Illusion Cinema
+              <?php echo "&copy; " . date("Y") . " The Grand Illusion Cinema"; ?>
             </div>
           </div>
 
@@ -107,8 +107,6 @@
     </footer>
   </div>
 </div>
-
-<div id="is_dom_ready" style="height: 10px;background-color: pink;"></div>
 
 <?php wp_footer(); ?>
 </body>
