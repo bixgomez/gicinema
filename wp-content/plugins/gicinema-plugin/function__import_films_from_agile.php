@@ -9,25 +9,23 @@ require_once "function__dedupe_screenings_table.php";
 
 function gicinema__import_films_from_agile() {
 
+    echo '<div class="function-info">';
+
     global $wpdb;
 
     echo '<h3>OK, let us import films from Agile!</h3>';
 
-    $url = 'https://prod5.agileticketing.net/websales/feed.ashx?guid=52c1280f-be14-4579-8ddf-4b3dadbf96c7&showslist=true&withmedia=true&format=json&v=latest';
-    $args = array( 'method' => 'GET' );
-    $response = wp_remote_get( $url, $args );
+    $results = get_transient( 'agile_shows_array' );
 
-    echo '<b>Our feed is at:</b> ' . $url . '<hr>';
-
-    if ( is_wp_error( $response ) ) {
-        $error_msg = $response->get_error_message();
-        return "Something went wrong: $error_message";
+    if ( ! $results ) {
+        // Transient expired or not set, fetch from API again
+        fetch_and_store_api_response();
+        $results = get_transient( 'agile_shows_array' );
     }
 
-    $results = json_decode( wp_remote_retrieve_body( $response ) );
-    $agile_shows_array = $results->ArrayOfShows;
+    $agile_shows_array = json_decode( $results )->ArrayOfShows;
 
-    echo '<i>Looping through all the films in the feed...</i><br>';
+    echo '<i>Looping through all the films in the feed...</i>';
 
     foreach( $agile_shows_array as $show ) {
 
@@ -85,9 +83,9 @@ function gicinema__import_films_from_agile() {
         }
 
         // Display all the values.
-        echo '<h2>' . $film_title . '</h2>';
+        echo '<h4>' . $film_title . '</h4>';
         echo '<div class="function-info scrolly">';
-        echo '<h3>The data from the API feed</h3>';
+        echo '<h5>The data from the API feed</h5>';
         echo '<div>$film_title = ' . $film_title . '</div>';
         echo '<div>$agile_film_id = ' . $agile_film_id . '</div>';
         echo '<div>$short_description = ' . $short_description . '</div>';
@@ -198,17 +196,19 @@ function gicinema__import_films_from_agile() {
         // Create variable for future screenings array from Agile.
         $screenings_array = $show->CurrentShowings;
 
-        // gicinema__import_screenings_from_agile(
-        //     $agile_array=$screenings_array, 
-        //     $repeater_field_key='field_screenings',
-        //     $repeater_field_name='screenings',
-        //     $repeater_subfield_name='screening',
-        //     $post_id=$post_ID,
-        //     $agile_id=$agile_film_id
-        // );
+        gicinema__import_screenings_from_agile(
+            $agile_array=$screenings_array, 
+            $repeater_field_key='field_screenings',
+            $repeater_field_name='screenings',
+            $repeater_subfield_name='screening',
+            $post_id=$post_ID,
+            $agile_id=$agile_film_id
+        );
 
         echo '</div>';
     }
+
+    echo '</div>';
 
     echo '<div class="funtion-info">';
     gicinema__dedupe_screenings_table();
