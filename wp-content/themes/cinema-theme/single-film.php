@@ -9,6 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+require get_template_directory() . '/inc/functions/film-card.php';
+
 get_header();
 ?>
 
