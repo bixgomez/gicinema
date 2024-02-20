@@ -1,4 +1,8 @@
 <?php
+
+// If this file is called directly, abort!
+defined('ABSPATH') or die('Unauthorized Access');
+
 require_once get_template_directory() . '/inc/functions/function__validate_date.php';
 
 function filmsByDate($date) {

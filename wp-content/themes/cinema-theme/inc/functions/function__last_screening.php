@@ -1,5 +1,8 @@
 <?php
 
+// If this file is called directly, abort!
+defined('ABSPATH') or die('Unauthorized Access');
+
 $GLOBALS['last_screening_date'] = 0;
 
 $querystr = "SELECT meta_value FROM $wpdb->postmeta WHERE ( ";

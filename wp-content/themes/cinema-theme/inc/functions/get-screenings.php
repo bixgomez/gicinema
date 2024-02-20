@@ -1,5 +1,8 @@
 <?php
 
+// If this file is called directly, abort!
+defined('ABSPATH') or die('Unauthorized Access');
+
 function getScreenings($agile_film_id) {
     global $wpdb;
     $screenings_table_name = $wpdb->prefix . 'gi_screenings';
@@ -12,9 +15,6 @@ function getScreenings($agile_film_id) {
     ";
 
     $result = $wpdb->get_results($screenings_query);
-
-    // Display query (for debugging)
-    // echo '<pre>' . $screenings_query . '</pre>';
 
     if ( count($result) ) {
         foreach( $result as $key => $row) {

@@ -1,5 +1,8 @@
 <?php
 
+// If this file is called directly, abort!
+defined('ABSPATH') or die('Unauthorized Access');
+
 // Run a series of queries to determine the maximum number of future screenings for the most-screened film.
 // Break this out into its own separate function.
 

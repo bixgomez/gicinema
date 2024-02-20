@@ -1,5 +1,8 @@
 <?php
 
+// If this file is called directly, abort!
+defined('ABSPATH') or die('Unauthorized Access');
+
 // Define a comparison function for dates
 function date_compare($a, $b) {
   $dateTimeA = new DateTime($a);
