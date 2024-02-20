@@ -9,7 +9,7 @@
  * https://joeyfarruggio.com/wordress/register-acf-blocks/
  */
 
-require_once get_theme_file_path( 'inc/functions/get-screenings.php' );
+require_once get_theme_file_path( 'inc/functions/function__get_screenings.php' );
 require_once get_theme_file_path( 'inc/functions/film-card.php' );
 
 // The block attributes
