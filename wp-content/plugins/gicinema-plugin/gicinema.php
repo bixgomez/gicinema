@@ -19,6 +19,7 @@ require_once "cron_jobs.php";
 require_once "page__admin.php";
 require_once "page__all_film_posts.php";
 require_once "page__delete_all_films.php";
+require_once "page__truncate_screenings_table.php";
 require_once "page__import_from_agile.php";
 require_once "page__dedupe_screenings_table.php";
 require_once "page__manage_screenings.php";
