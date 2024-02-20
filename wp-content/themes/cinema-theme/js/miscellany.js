@@ -9,4 +9,8 @@ let domReady = (cb) => {
 domReady(() => {
   // document.body.style.visibility = 'visible';
   // document.body.style.opacity = '1';
+  let element = document.getElementById("is_dom_ready");
+  if (element) {
+    element.style.backgroundColor = 'maroon';
+  }
 });

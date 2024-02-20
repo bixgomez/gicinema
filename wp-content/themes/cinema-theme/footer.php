@@ -108,6 +108,8 @@
   </div>
 </div>
 
+<div id="is_dom_ready" style="height: 10px;background-color: pink;"></div>
+
 <?php wp_footer(); ?>
 </body>
 </html>
