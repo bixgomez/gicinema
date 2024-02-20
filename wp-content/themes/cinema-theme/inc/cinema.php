@@ -12,8 +12,8 @@ include('posttypes/posttype--alerts.php');
 include('shortcodes/shortcode--film-teaser.php');
 
 // Custom functions.
-include('functions/function--max-screenings.php');
-include('functions/function--last-screening.php');
+include('functions/function__max_screenings.php');
+include('functions/function__last_screening.php');
 
 /**
  * If more than one page exists, return TRUE.

@@ -1,15 +1,19 @@
 <?php
-require_once get_template_directory() . '/inc/functions/function--validate-date.php';
-require_once get_template_directory() . '/inc/functions/function--date-compare.php';
+require_once get_template_directory() . '/inc/functions/function__validate_date.php';
+require_once get_template_directory() . '/inc/functions/function__date_compare.php';
 
 function filmCard($filmPostId, $classes='film') {
+
   $filmCardArgs = array(
     'posts_per_page' => 1,
     'post_type' => 'film',
     'p' => $filmPostId
   );
+  
   $filmCardQuery = new WP_Query( $filmCardArgs );
+  
   if ($filmCardQuery->have_posts()) :
+
     while ($filmCardQuery->have_posts()) :
       $filmCardQuery->the_post();
       $link = get_permalink($filmPostId);
@@ -144,7 +148,6 @@ function filmCard($filmPostId, $classes='film') {
 
                 foreach ($screeningsArray as $screening_date) {
                   $dateTime = new DateTime($screening_date);
-
                   // If the screening is current, only display screening from the most recent 2 months.
                   // If it's an older screening, show all of the screenings.
                   $dateTimeCompare = (new DateTime($screening_date, $timezone))->setTime(0, 0, 0);
@@ -160,7 +163,6 @@ function filmCard($filmPostId, $classes='film') {
                     endif;
                     echo '<li class="screening '.$extraClass.'">' . $formattedDate . ', ' . $formattedTime . '</li>';
                   }
-
                 }
                 ?>
               </ul>
