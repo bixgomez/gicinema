@@ -19,7 +19,7 @@
 	<?php wp_head(); ?>
 </head>
 
-<body <?php body_class(); ?> style="opacity: .5;">
+<body <?php body_class(); ?>">
 
 <div class="site-wrapper">
 

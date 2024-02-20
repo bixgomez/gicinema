@@ -7,6 +7,6 @@ let domReady = (cb) => {
 
 // Display body when DOM is loaded
 domReady(() => {
-  document.body.style.visibility = 'visible';
-  document.body.style.opacity = '1';
+  // document.body.style.visibility = 'visible';
+  // document.body.style.opacity = '1';
 });
