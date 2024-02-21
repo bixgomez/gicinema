@@ -107,7 +107,7 @@ add_action( 'wp_enqueue_scripts', 'cinema_theme_scripts' );
  * Ajax-specific experiments.
  */
 function cinema_theme_ajax_call(){
-	require get_template_directory() . '/inc/ajax--calendar.php';
+	require_once get_template_directory() . '/inc/ajax--calendar.php';
   wp_die();// this is required to terminate immediately and return a proper response
 }
 add_action('wp_ajax_cinema_theme_ajax_call', 'cinema_theme_ajax_call');

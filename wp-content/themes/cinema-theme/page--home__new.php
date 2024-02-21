@@ -12,7 +12,7 @@
  * @package Cinema_Theme
  */
 
-require get_template_directory() . '/inc/functions/film-card.php';
+require_once get_template_directory() . '/inc/functions/film-card.php';
 
 get_header();
 ?>
