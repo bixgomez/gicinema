@@ -93,11 +93,11 @@ function gicinema__get_screenings_from_post($post_id) {
   if ($query->have_posts()) {
     while ($query->have_posts()) {
       $query->the_post();
+    
+      // Initialize an array to hold the screenings data
+      $screenings_data = array();
 
       if(have_rows('screenings', $post_id)) {
-    
-        // Initialize an array to hold the screenings data
-        $screenings_data = array();
         
         // Loop through each row
         while(have_rows('screenings', $post_id)) {

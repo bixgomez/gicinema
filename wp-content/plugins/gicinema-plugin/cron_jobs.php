@@ -6,6 +6,8 @@ defined('ABSPATH') or die('Unauthorized Access');
 // Loading functions we'll be running as cron jobs.
 require_once "function__import_films_from_agile.php";
 require_once "function__manage_screenings.php";
+require_once "function__db_backup_and_cleanup.php";
+require_once "function__update_agile_shows_array.php";
 
 // Setting up custom cron intervals.
 function gicinema__hook_interval($schedules) {
@@ -47,14 +49,8 @@ if ( ! wp_next_scheduled( 'cron__update_agile_shows_array' ) ) {
 }
 add_action( 'cron__update_agile_shows_array', 'gicinema__update_agile_shows_array' );
 
-// Function that fetches and stores the Agile data as a transient.
-function gicinema__update_agile_shows_array() {
-    $url = 'https://prod5.agileticketing.net/websales/feed.ashx?guid=52c1280f-be14-4579-8ddf-4b3dadbf96c7&showslist=true&withmedia=true&format=json&v=latest';
-    $args = array( 'method' => 'GET' );
-    $response = wp_remote_get( $url, $args );
-    
-    if ( ! is_wp_error( $response ) ) {
-        $body = wp_remote_retrieve_body( $response );
-        set_transient( 'agile_shows_array', $body, 12 * HOUR_IN_SECONDS );
-    }
+// Cron job to backup the database.
+if (!wp_next_scheduled('cron__db_backup_and_cleanup')) {
+    wp_schedule_event(strtotime('21:00:00'), 'daily', 'cron__db_backup_and_cleanup');
 }
+add_action('cron__db_backup_and_cleanup', 'gicinema__db_backup_and_cleanup');

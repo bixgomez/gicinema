@@ -3,6 +3,7 @@
 // If this file is called directly, abort!
 defined('ABSPATH') or die('Unauthorized Access');
 
+require_once get_template_directory() . '/inc/functions/function__get_screenings.php';
 require_once get_template_directory() . '/inc/functions/function__validate_date.php';
 require_once get_template_directory() . '/inc/functions/function__date_compare.php';
 
@@ -55,20 +56,17 @@ function filmCard($filmPostId, $classes='film') {
           <?php if ((is_string($director) && strlen($director)) || strlen($year)) : ?>
             <div>
               <?php 
-
               if (is_string($director) && strlen($director)) :
                 echo $director;
               endif;
-              
               echo ( $director == "Various" ) ? ' directors' : null;
-              
               echo ( (is_string($director) && strlen($director)) && strlen($year) ) ? ' · ' : null;
               echo $year;
               echo ( $year == "Various" ) ? ' years' : null;
               echo null;
               ?>
             </div>
-          <?php endif ?>
+          <?php endif; ?>
 
           <?php
           if ($format == null) {
@@ -90,7 +88,7 @@ function filmCard($filmPostId, $classes='film') {
               echo $format; 
               ?>
             </div>
-          <?php endif ?>
+          <?php endif; ?>
 
         </div>
 
@@ -121,65 +119,31 @@ function filmCard($filmPostId, $classes='film') {
               <div class="film-card--trailer">
                 <a class="film-button" href="<?php echo $trailer; ?>" target="_blank"><span>View </span>Trailer</a>
               </div>
-            <?php endif ?>
+            <?php endif; ?>
             <?php if ($ticketPurchaseLink != '') : ?>
               <div class="film-card--buy-tickets">
                 <a class="film-button" href="<?php echo $ticketPurchaseLink; ?>" target="_blank"><span>Buy </span>Tickets</a>
               </div>
-            <?php endif ?>
+            <?php endif; ?>
           </div>
 
         </div>
 
-        <?php if (isset($screenings) && is_array($screenings) && count($screenings) > 0) : ?>
-          <div class="film-card--screenings">
-            <div class="screenings">
-              <ul class="screenings-list">
-                <?php 
-                $screeningsArray = array_map(function ($item) {
-                  return $item['screening'];
-                }, $screenings);
+        <?php 
+        if (isset($screenings) && is_array($screenings) && count($screenings) > 0) : 
+          echo '<div class="film-card--screenings">';
+          echo '<div class="screenings">';
+          getScreenings($filmPostId);
+          echo '</div>';
+          echo '</div>';
+        endif;
+        
+        echo '<div class="film-card--description">';
+        echo $description;
+        echo $addlInfo;
+        echo '</div>';
+        ?>
 
-                // Sort the screenings array in ascending order
-                usort($screeningsArray, "date_compare");
-
-                $timezone = new DateTimeZone('America/Los_Angeles');
-                $today = (new DateTime('now', $timezone))->setTime(0, 0, 0);
-                $twoMonthsAgo = (new DateTime('-2 months', $timezone))->setTime(0, 0, 0);
-
-                // date/time object of the most recent screening of this film.
-                $lastScreeningCompare = (new DateTime(end($screeningsArray), $timezone))->setTime(0, 0, 0);
-
-                foreach ($screeningsArray as $screening_date) {
-                  $dateTime = new DateTime($screening_date);
-                  // If the screening is current, only display screening from the most recent 2 months.
-                  // If it's an older screening, show all of the screenings.
-                  $dateTimeCompare = (new DateTime($screening_date, $timezone))->setTime(0, 0, 0);
-                  if (  ($lastScreeningCompare < $twoMonthsAgo) || ($dateTimeCompare > $twoMonthsAgo) ) {
-                    $formattedDate = $dateTime->format('l, M j, Y');
-                    $formattedTime = $dateTime->format('g:ia');
-                    if ($dateTimeCompare < $today):
-                      $extraClass = 'past';
-                    elseif ($dateTimeCompare == $today):
-                      $extraClass = 'present';
-                    elseif ($dateTimeCompare > $today):
-                      $extraClass = 'future';
-                    endif;
-                    echo '<li class="screening '.$extraClass.'">' . $formattedDate . ', ' . $formattedTime . '</li>';
-                  }
-                }
-                ?>
-              </ul>
-            </div>
-          </div>
-        <?php endif ?>
-
-        <div class="film-card--description">
-            <?php 
-              echo $description;
-              echo $addlInfo;
-            ?>
-        </div>
       </div>
 
     <?php endwhile;

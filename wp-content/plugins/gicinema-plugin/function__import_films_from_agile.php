@@ -6,6 +6,7 @@ defined('ABSPATH') or die('Unauthorized Access');
 // Import functions that will be needed in this template.
 require_once "function__import_screenings_from_agile.php";
 require_once "function__dedupe_screenings_table.php";
+require_once "function__update_agile_shows_array.php";
 
 function gicinema__import_films_from_agile() {
 
@@ -17,10 +18,12 @@ function gicinema__import_films_from_agile() {
 
     $results = get_transient( 'agile_shows_array' );
 
-    if ( ! $results ) {
-        // Transient expired or not set, fetch from API again
-        fetch_and_store_api_response();
-        $results = get_transient( 'agile_shows_array' );
+    if (false === $results) {
+        echo '<div>The transient does not exist, so call the function to update it.</div>';
+        gicinema__update_agile_shows_array();
+    
+        // After updating, try to get the transient again
+        $results = get_transient('agile_shows_array');
     }
 
     $agile_shows_array = json_decode( $results )->ArrayOfShows;
@@ -118,7 +121,7 @@ function gicinema__import_films_from_agile() {
         if ( empty($existingFilmPost) ) {
 
             echo '<div class="failure">No existing film found.</div>';
-            echo '<div>Creating new WordPress post of type \'film\'</div>';
+            echo '<div>Creating new WordPress post of type "film"</div>';
 
             // Create post object
             $newMovie = array(
@@ -128,6 +131,7 @@ function gicinema__import_films_from_agile() {
             );
 
             // Insert the post into the database
+            wp_cache_set('skip_gicinema_update', true, '', 60);
             $post_ID = wp_insert_post($newMovie);
 
             echo '<div>The post_id of the new film post is ' . $post_ID . '</div>';
