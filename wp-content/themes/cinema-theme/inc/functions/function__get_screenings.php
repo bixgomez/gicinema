@@ -7,12 +7,11 @@ function getScreenings($post_id) {
     global $wpdb;
     $screenings_table_name = $wpdb->prefix . 'gi_screenings';
 
-    $screenings_query = "
-        SELECT screening
-        FROM {$screenings_table_name} 
-        WHERE post_id = {$post_id} 
-        ORDER BY screening
-    ";
+    $screenings_query = "SELECT screening
+      FROM {$screenings_table_name} 
+      WHERE post_id = {$post_id} 
+      AND status = 1
+      ORDER BY screening";
 
     $result = $wpdb->get_results($screenings_query);
 
@@ -21,7 +20,7 @@ function getScreenings($post_id) {
         // Transforming the array
         $screeningsArray = [];
         foreach ($result as $item) {
-            $screeningsArray[] = convertDateFormat($item->screening);
+          $screeningsArray[] = convertDateFormat($item->screening);
         }
 
         // Sort the screenings array in ascending order
@@ -62,6 +61,11 @@ function getScreenings($post_id) {
 
 // Function to convert datetime format
 function convertDateFormat($dateTimeStr) {
-  $date = new DateTime($dateTimeStr);
-  return $date->format('m/d/Y g:i a');
+  try {
+    $date = new DateTime($dateTimeStr);
+    return $date->format('m/d/Y g:i a');
+  } catch (Exception $e) {
+    // Handle the error or return a default value
+    return 'Invalid date';
+  }
 }
