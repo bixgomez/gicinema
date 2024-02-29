@@ -10,7 +10,7 @@ function filmsByDate($date) {
 		if (validateDate($date)) :
 			global $wpdb;
 			$screenings_table_name = $wpdb->prefix . 'gi_screenings';
-			$result = $wpdb->get_results("SELECT distinct film_id FROM $screenings_table_name WHERE screening_date = '$date' ORDER BY screening_time");
+			$result = $wpdb->get_results("SELECT distinct film_id FROM $screenings_table_name WHERE screening_date = '$date' AND status = 1 ORDER BY screening_time");
 			if ($result) :
 				$filmIds = array();
 				foreach ($result as $key=>$row) :

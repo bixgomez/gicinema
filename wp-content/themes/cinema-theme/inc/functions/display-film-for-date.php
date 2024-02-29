@@ -27,7 +27,7 @@ function displayFilmForDate ($film_id, $date) {
       if (validateDate($date)) :
         global $wpdb;
         $scrs_table_name = $wpdb->prefix . 'gi_screenings';
-        $result = $wpdb->get_results("SELECT screening_time FROM $scrs_table_name WHERE film_id = '$film_id' AND screening_date = '$date' ORDER BY screening_time");
+        $result = $wpdb->get_results("SELECT screening_time FROM $scrs_table_name WHERE film_id = '$film_id' AND screening_date = '$date' AND status = 1 ORDER BY screening_time");
         if ($result) :
           $allScreenings = '';
           $thisTime = '';

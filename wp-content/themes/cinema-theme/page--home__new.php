@@ -60,6 +60,7 @@ get_header();
         SELECT film_id, screening
         FROM {$screenings_table_name} 
         WHERE screening_date IN ($nowPlayingDaysAsString)
+        AND status = 1
         ORDER BY screening
     ";
 
@@ -123,6 +124,7 @@ get_header();
         SELECT film_id, screening
         FROM {$screenings_table_name} 
         WHERE screening_date IN ($comingSoonDaysAsString)
+        AND status = 1
         ORDER BY screening
     ";
 

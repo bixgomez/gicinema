@@ -14,6 +14,7 @@ function gicinema__create_custom_table() {
         screening TEXT,
         screening_date TEXT,
         screening_time TEXT,
+        status TINYINT(1) NOT NULL DEFAULT 1,
         PRIMARY KEY  (screening_id)
     ) $charset_collate;";
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
