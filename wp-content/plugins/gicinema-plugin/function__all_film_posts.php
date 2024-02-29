@@ -65,74 +65,35 @@ function gicinema__all_film_posts() {
 
 function gicinema__add_film_to_table($post_id, $agile_id) {
 
+  echo '<div class="function-info">';
+  echo '<div class="function-title">gicinema__add_film_to_table($post_id, $agile_id)</div>';
+
   $missing_post_id = 0;
   $missing_agile_id = 0;
 
   global $wpdb;
   $table_name = $wpdb->prefix . 'gi_screenings';
 
-  echo '<div class="function-info">';
-
-
-
-
-
-
-
-
   if (!$agile_id) :
     echo '<div class="failure">There is no Agile ID for this film!</div>'; 
-
   else :  
-
     echo '<div>Looking for NULL post id for film_id ' . $agile_id . ' in the custom screenings table...</div>';
 
-    $query = $wpdb->prepare( 
-      "SELECT * FROM $table_name WHERE post_id IS NULL AND film_id = %d", $agile_id
-    );
+    $query = $wpdb->prepare( "SELECT * FROM $table_name WHERE post_id IS NULL AND film_id = %d", $agile_id );
     $results = $wpdb->get_results( $query );
 
-    if ( empty( $results ) ) {
-      echo '<div class="failure">The post_id value is NULL for this film in the custom table.</div>'; 
-      echo '<div><b>Add post_id to existing records in table.</b></div>';
-      // $query = $wpdb->prepare("UPDATE $table_name SET post_id = %d WHERE film_id = %d", $post_id, $agile_id);
-      // $result = $wpdb->query($query);
-      // if(false === $result) {
-      //   echo '<div class="failure">Failure</div>';
-      // } else {
-      //   echo '<div class="success">Success</div>';
-      // }
+    if ( !empty( $results ) ) {
+      echo '<div class="failure">The post_id value is NULL for this film in the custom table.</div>';
+      echo '<div><b>Recommended: </b>Add post_id to existing records in table.</div>';
     } else {
       echo '<div class="success">There are no NULL post_id values for this film in the custom table.</div>'; 
     }
 
   endif;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   echo '<div>Looking for post id ' . $post_id . ' in the custom screenings table...</div>';
 
-  $query = $wpdb->prepare( 
-    "SELECT * FROM $table_name WHERE post_id = %d", 
-    $post_id 
-  );
+  $query = $wpdb->prepare( "SELECT * FROM $table_name WHERE post_id = %d", $post_id );
   $results = $wpdb->get_results( $query );
 
   if ( empty( $results ) ) {
@@ -142,45 +103,33 @@ function gicinema__add_film_to_table($post_id, $agile_id) {
     echo '<div class="success">Matching record found in the custom table.</div>';  
   }
 
-  echo '<div>Looking for agile id ' . $agile_id . ' in the custom screenings table...</div>';
+  if ($agile_id) :
+    echo '<div>Looking for agile id (' . $agile_id . ') in the custom screenings table...</div>';
 
-  $query = $wpdb->prepare( 
-    "SELECT * FROM $table_name WHERE film_id = %d", 
-    $agile_id 
-  );
-  $results = $wpdb->get_results( $query );
+    $query = $wpdb->prepare( "SELECT * FROM $table_name WHERE film_id = %d", $agile_id );
+    $results = $wpdb->get_results( $query );
 
-  if ( empty( $results ) ) {
-    echo '<div class="failure">No matching record found in the custom table.</div>';
+    if ( empty( $results ) ) {
+      echo '<div class="failure">No matching record found in the custom table.</div>';
+      $missing_agile_id = 1;
+    } else {   
+      echo '<div class="success">Matching record found in the custom table.</div>';  
+    }
+  else :
     $missing_agile_id = 1;
-  } else {   
-    echo '<div class="success">Matching record found in the custom table.</div>';  
-  }
+  endif;  
 
   if($missing_post_id && $missing_agile_id) {
-    echo '<div><b>Add full record to table.</b></div>';
+    echo '<div class="failure">Missing both post ID and Agile ID.</div>';
+    echo '<div><b>Recommended:</b> Create a record for this film in the custom table, importing screenings from repeater field.</div>';
   }
 
   elseif ($missing_post_id) {
-    echo '<div><b>Add post_id data to existing record in table.</b></div>';
-    // $query = $wpdb->prepare("UPDATE $table_name SET post_id = %d WHERE film_id = %d", $post_id, $agile_id);
-    // $result = $wpdb->query($query);
-    // if(false === $result) {
-    //   echo '<div class="failure">Failure</div>';
-    // } else {
-    //   echo '<div class="success">Success</div>';
-    // }
+    echo '<div class="failure">Missing post ID.</div>';
   }
 
   elseif ($missing_agile_id) {
-    echo '<div><b>Add agile_id data to existing record in table.</b></div>';
-    // $query = $wpdb->prepare("UPDATE $table_name SET film_id = %d WHERE post_id = %d", $agile_id, $post_id);
-    // $result = $wpdb->query($query);
-    // if(false === $result) {
-    //   echo '<div class="failure">Failure</div>';
-    // } else {
-    //   echo '<div class="success">Success</div>';
-    // }
+    echo '<div class="failure">Missing Agile ID.</div>';
   }
 
   else {
@@ -188,5 +137,4 @@ function gicinema__add_film_to_table($post_id, $agile_id) {
   }
 
   echo '</div>';
-
 }

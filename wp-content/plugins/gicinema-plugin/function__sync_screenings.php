@@ -8,6 +8,7 @@ function gicinema__sync_screenings($post_id) {
   global $wpdb;
 
   echo '<div class="function-info">';
+  echo '<div class="function-name">gicinema__sync_screenings($post_id)</div>';
     
   $table_name = $wpdb->prefix . 'gi_screenings';
 
@@ -43,13 +44,10 @@ function gicinema__sync_screenings($post_id) {
   echo '</div>';
 
   gicinema__replace_all_screenings_in_post($merged_screenings, $post_id);
-
   gicinema__replace_all_screenings_in_table($merged_screenings, $post_id, $agile_id_from_post);
 
   echo '</div>';
-
 }
-
 
 
 
@@ -72,7 +70,6 @@ function gicinema__get_agile_id_from_post($post_id) {
     }
   }
 }
-
 
 
 
@@ -103,13 +100,24 @@ function gicinema__get_screenings_from_post($post_id) {
         while(have_rows('screenings', $post_id)) {
           the_row();
           
-          // Directly access sub-field values and convert the date
-          $screening = get_sub_field('screening');
-          $screening = DateTime::createFromFormat('m/d/Y g:i a', $screening);
-          $screening = $screening->format('Y-m-d H:i:s');
+          // Directly access sub-field values
+          $screeningString = get_sub_field('screening');
           
-          // Add the 'screening' data to the array
-          $screenings_data[] = $screening;
+          // Attempt to convert the date
+          $screeningDateTime = DateTime::createFromFormat('m/d/Y g:i a', $screeningString);
+          
+          // Check if the DateTime object was successfully created
+          if ($screeningDateTime !== false) {
+              // If successful, format the date
+              $formattedScreening = $screeningDateTime->format('Y-m-d H:i:s');
+          } else {
+              // Handle the error, such as logging or using a default value
+              error_log("Failed to convert screening date: " . $screeningString);
+              $formattedScreening = 'Invalid date'; // Example error handling
+          }
+          
+          // Add the formatted 'screening' data to the array, or an error message
+          $screenings_data[] = $formattedScreening;
         }
       }
 
@@ -129,7 +137,7 @@ function gicinema__get_screenings_from_table($post_id) {
 
   // Prepare the SQL query to get all screening values for a given post ID.
   $query = $wpdb->prepare(
-    "SELECT screening FROM {$table_name} WHERE post_id = %d",
+    "SELECT screening FROM {$table_name} WHERE post_id = %d AND status = 1",
     $post_id
   );
 
@@ -159,11 +167,10 @@ function gicinema__merge_screenings_arrays($array_1, $array_2) {
 
 
 
-
-
 function gicinema__replace_all_screenings_in_post($new_screenings, $post_id) {
 
-  echo '<div class="function-info">Replacing all screenings in post</div>';
+  echo '<div class="function-info">';
+  echo '<div class="function-name">gicinema__replace_all_screenings_in_post($new_screenings, $post_id)</div>';
 
   // Prepare the array to update the repeater field
   $screenings_to_update = [];
@@ -174,10 +181,9 @@ function gicinema__replace_all_screenings_in_post($new_screenings, $post_id) {
   // Update the repeater field with the new array of screenings
   // Replace 'screenings' with your actual repeater field name
   update_field('screenings', $screenings_to_update, $post_id);
-
+  
+  echo '</div>';
 }
-
-
 
 
 
@@ -186,7 +192,7 @@ function gicinema__replace_all_screenings_in_post($new_screenings, $post_id) {
 function gicinema__replace_all_screenings_in_table($new_screenings, $post_id, $agile_id) {
 
   echo '<div class="function-info">';
-
+  echo '<div class="function-name">gicinema__replace_all_screenings_in_table($new_screenings, $post_id, $agile_id)</div>';
   echo '<div>Replacing all screenings in custom screenings table</div>';
 
   global $wpdb;    
@@ -202,15 +208,13 @@ function gicinema__replace_all_screenings_in_table($new_screenings, $post_id, $a
     $screening_date = sanitize_text_field($screening_date);
     $screening_time = sanitize_text_field($screening_time);
 
-    echo '<div>';
-    echo '<b>Screening: </b>' . $screening . '<br>';
-    echo '<b>Screening date: </b>' . $screening_date . '<br>';
-    echo '<b>Screening time: </b>' . $screening_time . '<br>';
+    echo '<div class="function-info">';
+    echo '<div><pre>' . $screening . ' | ' . $screening_date . ' | ' . $screening_time . '</pre></div>';
     echo '</div>';
     
     // Query to check if the row exists
     $query = $wpdb->prepare(
-      "SELECT * FROM {$table_name} WHERE film_id = %d AND post_id = %d AND screening = %s AND screening_date = %s AND screening_time = %s LIMIT 1",
+      "SELECT * FROM {$table_name} WHERE film_id = %d AND post_id = %d AND screening = %s AND screening_date = %s AND screening_time = %s AND status = 1 LIMIT 1",
       $agile_id, $post_id, $screening, $screening_date, $screening_time
     );
     
@@ -218,9 +222,9 @@ function gicinema__replace_all_screenings_in_table($new_screenings, $post_id, $a
     $row_exists = $wpdb->get_row($query);
 
     // Check if row exists
+    echo '<div>If row does not exist, create it.</div>';
     if (is_null($row_exists)) {
-      // Row does not exist, so insert new row
-      echo '<div>This record does not exist in the custom table; inserting new row.</div>';
+      echo '<div class="failure">This record does not exist in the custom table; inserting new row.</div>';
       $wpdb->insert(
           $table_name,
           array(
@@ -233,28 +237,9 @@ function gicinema__replace_all_screenings_in_table($new_screenings, $post_id, $a
           array('%d', '%d', '%s', '%s', '%s') // Specify the format of each column value
       );
     } else {
-      // Row exists
-      echo '<div>This record already exists in the custom table.</div>';
+      echo '<div class="success">This record already exists in the custom table skipping.</div>';
     }
   }
 
   echo '</div>';
-
 }
-
-
-
-
-
-// Sort the dates array using usort and the custom comparison function
-// function gicinema__sort_dates($dates_array) {
-//   usort($dates_array, "datetimeCompare");
-//   return $dates_array;
-// }
-
-// custom date comparison function
-// function datetimeCompare($a, $b) {
-//   $timestampA = strtotime($a);
-//   $timestampB = strtotime($b);
-//   return $timestampA - $timestampB;
-// }
