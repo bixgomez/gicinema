@@ -26,7 +26,13 @@ pre {
 
 .function-info .function-info {
   margin: 0;
-  background: #FFFFFF77;
+  background: #FFFFFF55;
+}
+
+.function-name {
+  font-weight: 500;
+  color: blue;
+  font-style: italic;
 }
 
 .function-info h1,
