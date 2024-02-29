@@ -5,7 +5,7 @@ defined('ABSPATH') or die('Unauthorized Access');
 
 // Loading functions we'll be running as cron jobs.
 require_once "function__import_films_from_agile.php";
-require_once "function__manage_screenings.php";
+require_once "function__sync_all_screenings.php";
 require_once "function__db_backup_and_cleanup.php";
 require_once "function__update_agile_shows_array.php";
 
@@ -31,11 +31,14 @@ function gicinema__hook_interval($schedules) {
 }
 add_filter('cron_schedules', 'gicinema__hook_interval');
 
-// Cron job to manage screenings.
-if (!wp_next_scheduled('cron__manage_screenings')) {
-    wp_schedule_event(time(), 'every_128_minutes', 'cron__manage_screenings');
+// Cron job to sync all screenings.
+// TODO: Figure out the problem with this (it is converting to GMT when inserting records into the custom screenings table)
+/*
+if (!wp_next_scheduled('cron__sync_all_screenings')) {
+    wp_schedule_event(time(), 'every_128_minutes', 'cron__sync_all_screenings');
 }
-add_action('cron__manage_screenings', 'gicinema__manage_screenings');
+add_action('cron__sync_all_screenings', 'gicinema__sync_all_screenings');
+*/
 
 // Cron job to import films from Agile.
 if (!wp_next_scheduled('cron__import_films_from_agile')) {

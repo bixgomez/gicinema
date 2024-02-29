@@ -22,7 +22,7 @@ require_once "page__delete_all_films.php";
 require_once "page__truncate_screenings_table.php";
 require_once "page__import_from_agile.php";
 require_once "page__dedupe_screenings_table.php";
-require_once "page__manage_screenings.php";
+require_once "page__sync_all_screenings.php";
 require_once "page__db_backup_and_cleanup.php";
 
 function gicinema_enqueue_styles() {
