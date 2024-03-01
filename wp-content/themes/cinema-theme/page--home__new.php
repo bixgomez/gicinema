@@ -15,11 +15,13 @@
 require_once get_template_directory() . '/inc/functions/film-card.php';
 
 get_header();
-?>
 
-<div class="home-page-content">
+error_log('');
+error_log('* * * * THIS IS THE HOME PAGE * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *');
+error_log('');
 
-    <?php 
+echo '<div class="home-page-content">';
+
     global $post;
     if ( have_posts() ) {
         while ( have_posts() ) {
@@ -33,11 +35,9 @@ get_header();
         } // end while
     } // end if
     wp_reset_query();
-    ?>
 
-    <h2 class="section-title">Now Playing</h2>
-
-    <?php 
+    echo '<h2 class="section-title">Now Playing</h2>';
+    
     // Films showing in the next 7 days, one per line.
     // First, get 7 dates starting with today
     $nowPlayingDays = [];
@@ -50,9 +50,7 @@ get_header();
         $nowPlayingDays[] = '\''.$day->format('Y-m-d').'\'';
     }
     $nowPlayingDaysAsString = implode (',', $nowPlayingDays);
-    ?>
-
-    <?php
+    
     // Get all the "now playing" movies that have screenings on those dates
     global $wpdb;
     $screenings_table_name = $wpdb->prefix . 'gi_screenings';
@@ -75,9 +73,7 @@ get_header();
         endforeach;
 
     endif;
-    ?>
-
-    <?php 
+    
     // Display their full teasers, in "next screening" order 
     echo '<div class="film-cards film-cards--now-playing">';
     foreach ($nowPlayingFilmIds as $nowPlayingFilmId) :
@@ -97,11 +93,9 @@ get_header();
         wp_reset_query();
     endforeach;
     echo '</div>';
-    ?>
 
-    <h2 class="section-title">Coming Soon</h2>
+    echo '<h2 class="section-title">Coming Soon</h2>';
 
-    <?php 
     // Get all the movies that have upcoming screenings that are NOT in the first set
     // First, get 100 dates starting with today
     $comingSoonDays = [];
@@ -162,9 +156,11 @@ get_header();
         wp_reset_query();
     endforeach;
     echo '</div>';
-    ?>
 
-</div>
+echo '</div>';
 
-<?php
+error_log('');
+error_log('* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *');
+error_log('');
+
 get_footer();
