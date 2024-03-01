@@ -1,10 +1,12 @@
 <?php
+
+// If this file is called directly, abort!
+defined('ABSPATH') or die('Unauthorized Access');
+
 require_once get_template_directory() . '/inc/functions/film-card.php';
 
 $filmId = $_POST['filmId'];
 $filmPostId = 0;
-
-// echo 'This film\'s Agile ID is ' . $filmId . '<br>';
 
 // WP_Query arguments
 $args = array (
@@ -14,12 +16,8 @@ $args = array (
   'meta_value' => $filmId
 );
 
-// var_dump($args);
-
 // The Query
 $getThePostId = new WP_Query( $args );
-
-// echo $getThePostId->request;
 
 // The Loop
 if ( $getThePostId->have_posts() ) :
@@ -27,11 +25,7 @@ if ( $getThePostId->have_posts() ) :
     $filmPostId = get_the_ID();
     filmCard(filmPostId:$filmPostId);
   endwhile;
-else:
-  // no posts found
 endif;
 
 // Restore original Post Data
 wp_reset_query();
-
-?>
