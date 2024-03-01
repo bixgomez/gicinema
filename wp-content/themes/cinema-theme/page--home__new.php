@@ -51,22 +51,21 @@ foreach ($period as $day) {
 }
 $nowPlayingDaysAsString = implode (',', $nowPlayingDays);
 
+error_log($nowPlayingDaysAsString);
+
 // Get all the "now playing" movies that have screenings on those dates
 global $wpdb;
 $screenings_table_name = $wpdb->prefix . 'gi_screenings';
-$nowPlayingScreeningsQuery = "
-    SELECT film_id, screening
+$nowPlayingScreeningsQuery = "SELECT post_id, film_id, screening
     FROM {$screenings_table_name} 
     WHERE screening_date IN ($nowPlayingDaysAsString)
     AND status = 1
-    ORDER BY screening
-";
+    ORDER BY screening";
 
 $result = $wpdb->get_results($nowPlayingScreeningsQuery);
 if ( count($result) ) :
     $nowPlayingFilmIds = [];
     foreach( $result as $key => $row) :
-        echo '<span class="debug">' . $row->film_id . ': ' . $row->screening . '<br></span>';
         if (!in_array($row->film_id, $nowPlayingFilmIds)) :
             $nowPlayingFilmIds[] = $row->film_id;
         endif;
@@ -126,7 +125,6 @@ $result = $wpdb->get_results($comingSoonScreeningsQuery);
 if ( count($result) ) :
     $comingSoonFilmIds = [];
     foreach( $result as $key => $row) :
-        echo '<span class="debug">' . $row->film_id . ': ' . $row->screening . '<br></span>';
         if (!in_array($row->film_id, $comingSoonFilmIds)) :
             $comingSoonFilmIds[] = $row->film_id;
         endif;
