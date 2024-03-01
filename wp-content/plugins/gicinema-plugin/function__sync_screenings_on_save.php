@@ -3,76 +3,37 @@
 // If this file is called directly, abort!
 defined('ABSPATH') or die('Unauthorized Access');
 
-function gicinema__sync_screenings_on_save($post_id) {
+function gicinema__sync_screenings_on_save($post_id, $agile_id, $acf_screenings_array) {
 
-  error_log('running gicinema__sync_screenings_on_save('.$post_id.')');
+  // error_log('');
+  // error_log('* * * * START * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *');
+  // error_log('');
+  // error_log('FUNCTION gicinema__sync_screenings_on_save');
+  // error_log('We are working with post_id ' . $post_id);
+  // error_log('');
 
-  global $wpdb;
+  // error_log('(1) get the ACF screenings array (and simplify/convert it to the structure we neeed)');
+  $acf_screenings_array = gicinema__simplify_screenings_array( $acf_screenings_array );
 
-  echo '<div class="function-info">';
-  echo '<div class="function-name">gicinema__sync_screenings_on_save($post_id)</div>';
-    
-  $table_name = $wpdb->prefix . 'gi_screenings';
+  // error_log(print_r($acf_screenings_array, true));
 
-  echo '<div>' . $post_id . '</div>';
+  // error_log('(2) update the custom table, setting the status to 0 for ALL the screenings for');
+  // error_log('    this post_id');
 
-  $agile_id_from_post = gicinema__get_agile_id_from_post($post_id);
+  gicinema__disable_all_screenings($post_id);
 
-  $screenings_from_post = gicinema__get_screenings_from_post($post_id);
+  // error_log('(3) loop through the array of screenings, setting the status to 1 for all the');
+  // error_log('    screenings in the custom table that match this post_id and screening');
 
-  echo '<div class="function-info">';
-  echo '<div>Array of screenings from ACF repeater field:</div>';
-  echo '<pre>';
-  print_r($screenings_from_post);
-  echo '</pre>';
-  echo '</div>';
+  // error_log('(4) add any NEW screenings in the ACF screenings array to the custom table');
 
-  $screenings_from_table = gicinema__get_screenings_from_table($post_id);
-
-  echo '<div class="function-info">';
-  echo '<div>Array of screenings from custom table:</div>';
-  echo '<pre>';
-  print_r($screenings_from_table);
-  echo '</pre>';
-  echo '</div>';
-
-  $merged_screenings = gicinema__merge_screenings_arrays($screenings_from_post, $screenings_from_table);
-
-  echo '<div class="function-info">';
-  echo '<div>Array of merged screenings from both sources:</div>';
-  echo '<pre>';
-  print_r($merged_screenings);
-  echo '</pre>';
-  echo '</div>';
-
-  gicinema__replace_all_screenings_in_post($merged_screenings, $post_id);
-  gicinema__replace_all_screenings_in_table($merged_screenings, $post_id, $agile_id_from_post);
-
-  echo '<div class="function-info">';  
-  echo '<div>This is on save, so let us prepare the incoming screenings value.</div>';
-  $incoming_screenings = gicinema__get_saved_screenings_value($post_id);
-  if (isset($incoming_screenings) && !empty($incoming_screenings) && is_array($incoming_screenings)) {
-    echo "<div>The variable exists, has a value, and is an array.</div>";
-    echo "<div><pre>";
-    $incoming_screenings = gicinema__simplify_screenings_array($incoming_screenings);
-    print_r($incoming_screenings);
-    echo "</pre></div>";
-
-    $screenings_to_delete = gicinema__compare_screening_arrays($incoming_screenings, $screenings_from_post);
-
-    $arrayString_todelete = print_r($screenings_to_delete, true);
-    error_log('$screenings_to_delete: ' . $arrayString_todelete);
-
-    gicinema__remove_screenings($screenings_to_delete, $post_id );
-
-    // TODO: Still must deal with the current film post, which just got that value re-inserted!
-
-  } else {
-    echo "<div>The variable does not meet all the conditions.</div>";
+  foreach ($acf_screenings_array as $screening) {
+    gicinema__update_screenings_table_row($screening, $post_id, $agile_id);
   }
-  echo '</div>';
 
-  echo '</div>';
+  // error_log('');
+  // error_log('* * * * END * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *');
+  // error_log('');
 }
 
 
@@ -108,23 +69,65 @@ function gicinema__simplify_screenings_array($originalArray) {
 
 
 
-
-function gicinema__compare_screening_arrays($array_before, $array_after) {
-  $array_diff = array_values(array_diff($array_before, $array_after));
-  error_log('running gicinema__compare_screening_arrays($array_1, $array_2)');
-  $arrayString_before = print_r($array_before, true);
-  $arrayString_after = print_r($array_after, true);
-  $arrayString_diff = print_r($array_diff, true);  
-  error_log('$array_before: ' . $arrayString_before);
-  error_log('$array_after: ' . $arrayString_after);
-  error_log('$array_diff: ' . $arrayString_diff);
-  if (count($array_after) < count($array_before)) {
-    return $array_diff;
-  } else {
-    return [];
-  }
+function gicinema__disable_all_screenings($post_id) {
+  global $wpdb;
+  $query = $wpdb->prepare("UPDATE wp_gi_screenings SET status = 0 WHERE post_id = %d", $post_id);
+  $wpdb->query($query);
 }
 
+
+
+function gicinema__update_screenings_table_row($screening, $post_id, $agile_id) {
+  // error_log($post_id);
+  // error_log($agile_id);
+  // error_log($screening);
+
+  // Splitting screening into separate date and time strings
+  list($screening_date, $screening_time) = explode(" ", $screening);
+
+  // error_log($screening_date);
+  // error_log($screening_time);
+
+  global $wpdb;
+  $table_name = $wpdb->prefix . 'gi_screenings';
+
+  // Step 1: Check for a matching row
+  $exists = $wpdb->get_row($wpdb->prepare(
+    "SELECT * FROM $table_name WHERE post_id = %d AND film_id = %d AND screening = %s",
+    $post_id,
+    $agile_id,
+    $screening
+  ));
+
+  // Step 2: If found, update the row
+  if ($exists) {
+    $wpdb->update(
+        $table_name,
+        ['status' => 1], // column to update
+        [ // WHERE conditions
+            'post_id' => $post_id,
+            'film_id' => $agile_id,
+            'screening' => $screening
+        ],
+        ['%d'], // format of the value to update
+        ['%d', '%d', '%s'] // format of the conditions
+    );
+  } else {
+    // Step 3: If not found, insert a new row
+    $wpdb->insert(
+        $table_name,
+        [
+            'post_id' => $post_id,
+            'film_id' => $agile_id,
+            'screening' => $screening,
+            'screening_date' => $screening_date,
+            'screening_time' => $screening_time,
+            'status' => 1
+        ],
+        ['%d', '%d', '%s', '%s', '%s', '%d'] // format of each value
+    );
+  }
+}
 
 
 
@@ -133,10 +136,10 @@ function gicinema__remove_screenings($to_delete, $post_id) {
 
   global $wpdb;
 
-  error_log('-- remove screenings function --------------');
+  // error_log('-- remove screenings function --------------');
   $to_delete_string = print_r($to_delete, true);
-  error_log('$to_delete: ' . $to_delete_string);
-  error_log('--------------------------------------------');
+  // error_log('$to_delete: ' . $to_delete_string);
+  // error_log('--------------------------------------------');
 
   foreach ($to_delete as $screening_date) {
     // Prepare the query to avoid SQL injection

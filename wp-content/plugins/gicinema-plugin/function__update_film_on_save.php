@@ -6,7 +6,6 @@ defined('ABSPATH') or die('Unauthorized Access');
 require_once "function__sync_screenings_on_save.php";
 
 // Add action hooks
-add_action('current_screen', 'gicinema__grab_screenings_value');
 add_action('save_post', 'gicinema__check_and_run_update_film_on_save', 10, 3);
 add_action('admin_notices', 'display_film_saved_admin_notice', 100);
 
@@ -51,13 +50,14 @@ function gicinema__update_film_on_save($post_id) {
   if(get_post_type($post_id) !== 'film') return;
 
   // Retrieve the ACF fields
-  $agile_film_id = get_field('agile_film_id', $post_id);
+  $agile_id = get_field('agile_film_id', $post_id);
+  $acf_screenings_array = get_field('screenings', $post_id);
 
   // Now, call the sync screenings function
-  gicinema__sync_screenings_on_save($post_id, $on_save = true);
+  gicinema__sync_screenings_on_save($post_id, $agile_id, $acf_screenings_array);
 
   // Assemble the message to display on save.
-  $saved_message = 'The film ' . $post_id . ' (Agile ID ' . $agile_film_id . ') has been successfully saved.<br>';
+  $saved_message = 'The film ' . $post_id . ' (Agile ID ' . $agile_id . ') has been successfully saved.<br>';
 
   // Display saved message when we return to the admin screen.
   set_transient('film_saved_admin_notice', $saved_message, 60);
@@ -70,23 +70,5 @@ function display_film_saved_admin_notice() {
   if ($notice = get_transient('film_saved_admin_notice')) {
       echo "<div class='notice notice-success is-dismissible'><p>{$notice}</p></div>";
       delete_transient('film_saved_admin_notice');
-  }
-}
-
-
-
-function gicinema__grab_screenings_value($current_screen) {
-  // Check if we are on the post edit screen.
-  if ($current_screen->id == 'film' && $current_screen->base == 'post') {  
-    if (isset($_GET['post'])) {
-      $post_id = $_GET['post'];
-      $post = get_post($post_id);
-      // Check if the post type is 'film'.
-      if ($post->post_type == 'film') {
-        // Fetch and save the screenings repeater field value to a transient.
-        $screenings_value = get_field('screenings', $post_id);
-        set_transient('gicinema__screenings_value_' . $post_id, $screenings_value, 600);
-      }
-    }
   }
 }
