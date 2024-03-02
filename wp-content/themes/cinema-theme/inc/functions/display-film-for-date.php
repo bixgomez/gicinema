@@ -5,18 +5,18 @@ defined('ABSPATH') or die('Unauthorized Access');
 
 require_once get_template_directory() . '/inc/functions/function__validate_date.php';
 
-function displayFilmForDate ($film_id, $date) {
+function displayFilmForDate ($post_id, $date) {
 
   $args = array(
     'posts_per_page' => 1,
     'post_type' => 'film',
-    'meta_key' => 'agile_film_id',
-    'meta_value' => $film_id
+    'p' => $post_id,
+    'post_status' => 'publish',
   );
   $get_film_post = new WP_Query( $args );
 
   if ($get_film_post->have_posts())  {
-    echo '<button data-filmid="' . $film_id . '" class="film">';
+    echo '<button data-filmid="' . $post_id . '" class="film">';
     while ($get_film_post->have_posts()) {
       $get_film_post->the_post();
       $this_link = get_permalink();
@@ -27,7 +27,7 @@ function displayFilmForDate ($film_id, $date) {
       if (validateDate($date)) :
         global $wpdb;
         $scrs_table_name = $wpdb->prefix . 'gi_screenings';
-        $result = $wpdb->get_results("SELECT screening_time FROM $scrs_table_name WHERE film_id = '$film_id' AND screening_date = '$date' AND status = 1 ORDER BY screening_time");
+        $result = $wpdb->get_results("SELECT screening_time FROM $scrs_table_name WHERE post_id = '$post_id' AND screening_date = '$date' AND status = 1 ORDER BY screening_time");
         if ($result) :
           $allScreenings = '';
           $thisTime = '';

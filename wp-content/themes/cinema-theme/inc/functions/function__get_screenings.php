@@ -35,6 +35,7 @@ function getScreenings($post_id) {
 
         echo '<ul class="screenings-list">';
         foreach ($screeningsArray as $screening_date) {
+
           $dateTime = new DateTime($screening_date);
           // If the screening is current, only display screening from the most recent 2 months.
           // If it's an older screening, show all of the screenings.
@@ -51,6 +52,7 @@ function getScreenings($post_id) {
             endif;
             echo '<li class="screening '.$extraClass.'">' . $formattedDate . ', ' . $formattedTime . '</li>';
           }
+          
         }
         echo '</ul>';
 

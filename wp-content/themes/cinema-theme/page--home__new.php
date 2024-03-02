@@ -16,9 +16,9 @@ require_once get_template_directory() . '/inc/functions/film-card.php';
 
 get_header();
 
-error_log('');
-error_log('* * * * THIS IS THE HOME PAGE * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *');
-error_log('');
+// error_log('');
+// error_log('* * * * THIS IS THE HOME PAGE * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *');
+// error_log('');
 
 echo '<div class="home-page-content">';
 
@@ -51,7 +51,7 @@ foreach ($period as $day) {
 }
 $nowPlayingDaysAsString = implode (',', $nowPlayingDays);
 
-error_log($nowPlayingDaysAsString);
+// error_log($nowPlayingDaysAsString);
 
 // Get all the "now playing" movies that have screenings on those dates
 global $wpdb;
@@ -59,28 +59,34 @@ $screenings_table_name = $wpdb->prefix . 'gi_screenings';
 $nowPlayingScreeningsQuery = "SELECT post_id, film_id, screening
     FROM {$screenings_table_name} 
     WHERE screening_date IN ($nowPlayingDaysAsString)
+    AND film_id IS NOT NULL
     AND status = 1
     ORDER BY screening";
 
 $result = $wpdb->get_results($nowPlayingScreeningsQuery);
+
+// error_log(print_r($result, true));
+
 if ( count($result) ) :
-    $nowPlayingFilmIds = [];
+
+    $nowPlayingPostIds = [];
     foreach( $result as $key => $row) :
-        if (!in_array($row->film_id, $nowPlayingFilmIds)) :
-            $nowPlayingFilmIds[] = $row->film_id;
+        if (!in_array($row->post_id, $nowPlayingPostIds)) :
+            $nowPlayingPostIds[] = $row->post_id;
         endif;
     endforeach;
-
 endif;
+
+// error_log(print_r($nowPlayingPostIds, true));
 
 // Display their full teasers, in "next screening" order 
 echo '<div class="film-cards film-cards--now-playing">';
-foreach ($nowPlayingFilmIds as $nowPlayingFilmId) :
+foreach ($nowPlayingPostIds as $nowPlayingPostId) :
     $args = array (
         'post_type' => 'film',
         'posts_per_page' => '1',
-        'meta_key' => 'agile_film_id',
-        'meta_value' => $nowPlayingFilmId
+        'p' => $nowPlayingPostId,
+        'post_status' => 'publish',
     );
     $getThePostId = new WP_Query( $args );
     if ( $getThePostId->have_posts() ) :
@@ -113,23 +119,22 @@ $comingSoonDaysAsString = implode (',', $comingSoonDays);
 // Next, get all the "coming soon" movies that have screenings on those dates
 global $wpdb;
 $screenings_table_name = $wpdb->prefix . 'gi_screenings';
-$comingSoonScreeningsQuery = "
-    SELECT film_id, screening
+$comingSoonScreeningsQuery = "SELECT film_id, post_id, screening
     FROM {$screenings_table_name} 
     WHERE screening_date IN ($comingSoonDaysAsString)
+    AND film_id IS NOT NULL
     AND status = 1
-    ORDER BY screening
-";
+    ORDER BY screening";
 
 $result = $wpdb->get_results($comingSoonScreeningsQuery);
 if ( count($result) ) :
-    $comingSoonFilmIds = [];
+    $comingSoonPostIds = [];
     foreach( $result as $key => $row) :
-        if (!in_array($row->film_id, $comingSoonFilmIds)) :
-            $comingSoonFilmIds[] = $row->film_id;
+        if (!in_array($row->post_id, $comingSoonPostIds)) :
+            $comingSoonPostIds[] = $row->post_id;
         endif;
     endforeach;
-    $comingSoonFilmIds = array_diff($comingSoonFilmIds, $nowPlayingFilmIds);
+    $comingSoonPostIds = array_diff($comingSoonPostIds, $nowPlayingPostIds);
 
 endif;
 ?>
@@ -137,12 +142,12 @@ endif;
 <?php 
 // Display their "half teasers", in "next screening" order
 echo '<div class="film-cards film-cards--coming_soon">';
-foreach ($comingSoonFilmIds as $comingSoonFilmId) :
+foreach ($comingSoonPostIds as $comingSoonPostId) :
     $args = array (
         'post_type' => 'film',
         'posts_per_page' => '1',
-        'meta_key' => 'agile_film_id',
-        'meta_value' => $comingSoonFilmId
+        'p' => $comingSoonPostId,
+        'post_status' => 'publish',
     );
     $getThePostId = new WP_Query( $args );
     if ( $getThePostId->have_posts() ) :
@@ -157,8 +162,8 @@ echo '</div>';
 
 echo '</div>';
 
-error_log('');
-error_log('* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *');
-error_log('');
+// error_log('');
+// error_log('* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *');
+// error_log('');
 
 get_footer();

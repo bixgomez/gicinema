@@ -105,11 +105,11 @@ $this_month_display = date( 'F Y', strtotime( $the_month ) );
                 echo '<span class="date-display--day date-display--day__num">'.$curr_date_num.'</span>';
                 echo '</div>';
                 echo '<div class="films-display">';
-                $filmIds = filmsByDate($curr_date_a);
-                if ( is_array($filmIds) ) {
-                foreach ($filmIds as $filmId) :
+                $post_ids = filmsByDate($curr_date_a);
+                if ( is_array($post_ids) ) {
+                foreach ($post_ids as $post_id) :
                     displayFilmForDate(
-                        $film_id = $filmId,
+                        $film_id = $post_id,
                         $date = $curr_date_a
                     );
                 endforeach;
