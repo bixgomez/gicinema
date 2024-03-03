@@ -65,6 +65,7 @@ function gicinema__import_screenings_from_agile (
   // Get the current date and time
   $currentTime = time();
 
+  echo '<i>$wpTimeZone:</i> ' . $wpTimeZone . '<br>';
   echo '<i>$currentTime:</i> ' . $currentTime . '<br>';
   echo "Current time: " . date('Y-m-d H:i:s', $currentTime).'<br><br>';
 
