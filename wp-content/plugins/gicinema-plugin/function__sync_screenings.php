@@ -14,16 +14,7 @@ function gicinema__sync_screenings($post_id) {
 
   echo '<div>' . $post_id . '</div>';
 
-  $agile_id_from_post = gicinema__get_agile_id_from_post($post_id);
-
-  $screenings_from_post = gicinema__get_screenings_from_post($post_id);
-
-  echo '<div class="function-info">';
-  echo '<div>Array of screenings from ACF repeater field:</div>';
-  echo '<pre>';
-  print_r($screenings_from_post);
-  echo '</pre>';
-  echo '</div>';
+  // $agile_id_from_post = gicinema__get_agile_id_from_post($post_id);
 
   $screenings_from_table = gicinema__get_screenings_from_table($post_id);
 
@@ -31,6 +22,15 @@ function gicinema__sync_screenings($post_id) {
   echo '<div>Array of screenings from custom table:</div>';
   echo '<pre>';
   print_r($screenings_from_table);
+  echo '</pre>';
+  echo '</div>';
+
+  $screenings_from_post = gicinema__get_screenings_from_post($post_id);
+
+  echo '<div class="function-info">';
+  echo '<div>Array of screenings from ACF repeater field:</div>';
+  echo '<pre>';
+  print_r($screenings_from_post);
   echo '</pre>';
   echo '</div>';
 
@@ -44,7 +44,6 @@ function gicinema__sync_screenings($post_id) {
   echo '</div>';
 
   gicinema__replace_all_screenings_in_post($merged_screenings, $post_id);
-  gicinema__replace_all_screenings_in_table($merged_screenings, $post_id, $agile_id_from_post);
 
   echo '</div>';
 }
@@ -187,8 +186,8 @@ function gicinema__replace_all_screenings_in_post($new_screenings, $post_id) {
 
 
 
-
-
+/* We are no longer doing this. To be deleted in time. */
+/*
 function gicinema__replace_all_screenings_in_table($new_screenings, $post_id, $agile_id) {
 
   echo '<div class="function-info">';
@@ -243,3 +242,4 @@ function gicinema__replace_all_screenings_in_table($new_screenings, $post_id, $a
 
   echo '</div>';
 }
+*/
