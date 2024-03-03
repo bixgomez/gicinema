@@ -20,7 +20,8 @@ function gicinema__db_backup_and_cleanup() {
   }
 
   // Perform the database backup
-  $backupFilePath = $backupDirPath . '/gicinema-db--' . date('Y-m-d') . '.sql.gz';
+  $backupFilePath = $backupDirPath . '/gicinema-db--' . date('Y-m-d--H-i-s') . '.sql.gz';
+
   $command = sprintf(
       'mysqldump --user=%s --password=%s --host=%s %s | gzip > %s',
       escapeshellarg(DB_USER),
