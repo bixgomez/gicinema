@@ -27,9 +27,14 @@ require_once "page__sync_all_screenings.php";
 require_once "page__db_backup_and_cleanup.php";
 
 function gicinema_enqueue_styles() {
-  wp_enqueue_style('gicinema-custom-styles', plugins_url('gicinema-styles.css', __FILE__));
+  wp_enqueue_style('gicinema-custom-styles', plugins_url('css/gicinema-plugin.css', __FILE__));
 }
 add_action('admin_enqueue_scripts', 'gicinema_enqueue_styles');
+
+function gicinema_enqueue_js() {
+  wp_enqueue_script('gicinema-custom-js', plugins_url('js/gicinema-plugin.js', __FILE__), array('jquery'), null, true);
+}
+add_action('admin_enqueue_scripts', 'gicinema_enqueue_js');
 
 // Creates the custom screenings table.
 register_activation_hook(__FILE__, 'gicinema__create_custom_table');

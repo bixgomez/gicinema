@@ -123,3 +123,8 @@ pre {
   border-bottom-width: 3px;
   padding-right: 20px;
 }
+
+/* Hiding the screenings field add/remove buttons (using js for this) */
+/* .acf-field-617b2f8e4b8c4 .acf-row-handle.remove {
+  display: none;
+} */
