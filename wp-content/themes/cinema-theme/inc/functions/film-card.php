@@ -70,11 +70,11 @@ function filmCard($filmPostId, $classes='film') {
 
           <?php
           if ($format == null) {
-            $format = '[is null]';
+            $format = '';
           } elseif (is_string($format)) {
             $format = $format;
           } elseif (is_array($format)) {
-            $format = '[an array]';
+            $format = '';
           } else {
             $format = '';
           }
