@@ -5,7 +5,7 @@
  * Description: <strong><em>***ATTENTION: After upgrade the plugin may be deactivated due to a known issue, to workaround please refresh this page and activate plugin.***</em></strong> The Facebook pixel is an analytics tool that helps you measure the effectiveness of your advertising. You can use the Facebook pixel to understand the actions people are taking on your website and reach audiences you care about.
  * Author: Facebook
  * Author URI: https://www.facebook.com/
- * Version: 3.0.15
+ * Version: 3.0.16
  * Text Domain: official-facebook-pixel
  */
 
@@ -87,10 +87,6 @@ class FacebookForWordpress {
     }
   }
 
-  public function setup_openbridge_plugin_cookies() {
-    FacebookWordpressOpenBridge::generateExternalIdCookieIfNotExists();
-  }
-
   public function handle_events_request(){
     $request_uri = $_SERVER['REQUEST_URI'];
     if(
@@ -108,7 +104,6 @@ class FacebookForWordpress {
         exit();
     }
   }
-
 }
 
 $WP_FacebookForWordpress = new FacebookForWordpress();
