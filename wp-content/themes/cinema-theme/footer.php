@@ -63,6 +63,12 @@
                     <a href="mailto:info@grandillusioncinema.org" target="_blank">info@grandillusioncinema.org</a>
                   </p>
                 </div>
+                <div class="email">
+                  <h4>Rentals</h4>
+                  <p>
+                    <a href="mailto:rentals@grandillusioncinema.org" target="_blank">rentals@grandillusioncinema.org</a>
+                  </p>
+                </div>
                 <div class="mail">
                   <h4>Mail</h4>
                   <p>
