@@ -24,10 +24,6 @@
   }
 }
 
-.content-layout--header * {
-  // transition: font-size .05s linear;
-}
-
 .content-layout--header {
   display: grid;
   grid-template-columns: 1fr 1fr 4em;
@@ -100,14 +96,16 @@
   position: absolute;
   top: 0;
   right: 0;
+  font-size: .8em;
+  transition: .25s linear font-size;
 
   @include breakpoint($md) {
-    font-size: .8em;
+    font-size: .7em;
     right: 0;
   }
 
   @include breakpoint($lg) {
-    font-size: .9em;
+    font-size: .8em;
     right: 0;
   }
 }

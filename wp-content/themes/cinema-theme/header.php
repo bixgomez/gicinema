@@ -31,7 +31,8 @@
 
           <div class="content-layout content-layout--header">
 
-            <div class="title-area">
+            <div class="title-area header-area-fontsize">
+              <div class="logo"></div>
               <h1 class="site-title"><span class="article">The</span> Grand Illusion</h1>
               <h2 class="site-subtitle">
                 <span class="line-1">Seattle's oldest continuously</span>

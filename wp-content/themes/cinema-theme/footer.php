@@ -24,18 +24,13 @@
 
             <div class="column column--first">
               <div class="title-area title-area--footer">
+                <div class="logo"></div>
                 <h1 class="site-title"><span class="article">The</span> Grand Illusion</h1>
                 <h2 class="site-subtitle">
                   <span class="line-1">Seattle's oldest continuously</span>
                   <span class="line-2">running movie theater</span>
                 </h2>
                 <a href="/" class="home-link">The Grand Illusion: Seattle's oldest continuously running movie theater</a>
-              </div>
-            </div>
-
-            <div class="column column--second">
-              <div class="footer-menus">
-
               </div>
             </div>
 
