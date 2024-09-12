@@ -1,10 +1,23 @@
-.title-area {
+.header-area-fontsize {
   font-size: 2.125vw;
+  
+  @include breakpoint($md) {
+    font-size: .98rem;
+  }
+
+  @include breakpoint($lg) {
+    font-size: 1.25rem;
+  }
+}
+
+.title-area {
+  // background-color: rgba(#000, .25);
+  padding: 0;
+  margin: 0;
   width: 38.5em;
   overflow: hidden;
   display: grid;
   position: relative;
-  // background-color: rgba(#fff, .5);
   grid-template-areas:
     " title"
     " subtitle";
@@ -12,23 +25,13 @@
   column-gap: .75em;
   transition: .2s linear font-size, .2s linear margin;
 
-  @include breakpoint($sm) {
-    // background-color: rgba(#fff, .25);
-  }
-
   @include breakpoint($md) {
-    font-size: .98rem;
     width: 46.1em;
     // background-color: rgba(#fff, .125);
     grid-template-columns: 7em auto;
     grid-template-areas:
       "logo title"
       "logo subtitle";
-  }
-
-  @include breakpoint($lg) {
-    font-size: 1.25rem;
-    margin-top: .75em;
   }
 
   .logo {

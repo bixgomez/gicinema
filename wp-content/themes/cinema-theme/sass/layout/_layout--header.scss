@@ -42,6 +42,7 @@
   }
 
   .social-media-area {
+    // background-color: rgba(#000, .3);
     grid-area: social;
   }
 
@@ -54,18 +55,18 @@
   }
 
   .menu-area {
+    // background-color: rgba(#000, .3);
     grid-area: menu;
   }
 }
 
 .menu-area {
-  margin: 0;
   padding: 0;
 
   @include breakpoint($md) {
-    justify-content: center;
+    margin: .75em 0 0 7.75em;
+    justify-content: left;
     display: flex;
-    padding-bottom: 1em;
   }
 }
 
@@ -80,7 +81,7 @@
 
 .social-media-area {
   font-size: 1.5em;
-  margin: 0 0 .75em;
+  margin: 0 0 1.2em 0;
 
   @include breakpoint($sm) {
     font-size: .9em;
@@ -88,6 +89,7 @@
 
   @include breakpoint($md) {
     font-size: 1em;
+    margin-left: 7.75em;
   }
 }
 

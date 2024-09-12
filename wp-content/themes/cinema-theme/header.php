@@ -41,7 +41,7 @@
               <a href="/" class="home-link">The Grand Illusion: <?php bloginfo( 'description' ); ?></a>
             </div>
 
-            <div class="menu-area">
+            <div class="menu-area header-area-fontsize">
               <a class="toggle" href="#" role="button"><span>MENU</span></a>
               <nav class="main-navigation">
                 <?php
@@ -53,7 +53,7 @@
               </nav>
             </div>
 
-            <div class="social-media-area">
+            <div class="social-media-area header-area-fontsize">
               <nav class="social-navigation">
                 <?php
                 wp_nav_menu( array(
