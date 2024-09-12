@@ -1,25 +1,10 @@
 <?php
-/**
- * Copyright (c) 2015-present, Facebook, Inc. All rights reserved.
+ /*
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ * All rights reserved.
  *
- * You are hereby granted a non-exclusive, worldwide, royalty-free license to
- * use, copy, modify, and distribute this software in source code or binary
- * form for use in connection with the web services and APIs provided by
- * Facebook.
- *
- * As with any software that integrates with the Facebook platform, your use
- * of this software is subject to the Facebook Developer Principles and
- * Policies [http://developers.facebook.com/policy/]. This copyright notice
- * shall be included in all copies or substantial portions of the software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- *
+ * This source code is licensed under the license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 namespace FacebookAds\Object\Fields;
@@ -42,12 +27,10 @@ class AdsInsightsFields extends AbstractEnum {
   const ACCOUNT_NAME = 'account_name';
   const ACTION_VALUES = 'action_values';
   const ACTIONS = 'actions';
-  const AD_BID_VALUE = 'ad_bid_value';
   const AD_CLICK_ACTIONS = 'ad_click_actions';
   const AD_ID = 'ad_id';
   const AD_IMPRESSION_ACTIONS = 'ad_impression_actions';
   const AD_NAME = 'ad_name';
-  const ADSET_BID_VALUE = 'adset_bid_value';
   const ADSET_END = 'adset_end';
   const ADSET_ID = 'adset_id';
   const ADSET_NAME = 'adset_name';
@@ -68,6 +51,7 @@ class AdsInsightsFields extends AbstractEnum {
   const CATALOG_SEGMENT_VALUE_OMNI_PURCHASE_ROAS = 'catalog_segment_value_omni_purchase_roas';
   const CATALOG_SEGMENT_VALUE_WEBSITE_PURCHASE_ROAS = 'catalog_segment_value_website_purchase_roas';
   const CLICKS = 'clicks';
+  const CONVERSION_LEAD_RATE = 'conversion_lead_rate';
   const CONVERSION_RATE_RANKING = 'conversion_rate_ranking';
   const CONVERSION_VALUES = 'conversion_values';
   const CONVERSIONS = 'conversions';
@@ -78,6 +62,7 @@ class AdsInsightsFields extends AbstractEnum {
   const COST_PER_ACTION_TYPE = 'cost_per_action_type';
   const COST_PER_AD_CLICK = 'cost_per_ad_click';
   const COST_PER_CONVERSION = 'cost_per_conversion';
+  const COST_PER_CONVERSION_LEAD = 'cost_per_conversion_lead';
   const COST_PER_DDA_COUNTBY_CONVS = 'cost_per_dda_countby_convs';
   const COST_PER_ESTIMATED_AD_RECALLERS = 'cost_per_estimated_ad_recallers';
   const COST_PER_INLINE_LINK_CLICK = 'cost_per_inline_link_click';
@@ -94,6 +79,7 @@ class AdsInsightsFields extends AbstractEnum {
   const CPM = 'cpm';
   const CPP = 'cpp';
   const CREATED_TIME = 'created_time';
+  const CREATIVE_MEDIA_TYPE = 'creative_media_type';
   const CTR = 'ctr';
   const DATE_START = 'date_start';
   const DATE_STOP = 'date_stop';
@@ -114,12 +100,17 @@ class AdsInsightsFields extends AbstractEnum {
   const INLINE_LINK_CLICK_CTR = 'inline_link_click_ctr';
   const INLINE_LINK_CLICKS = 'inline_link_clicks';
   const INLINE_POST_ENGAGEMENT = 'inline_post_engagement';
+  const INSTAGRAM_UPCOMING_EVENT_REMINDERS_SET = 'instagram_upcoming_event_reminders_set';
   const INSTANT_EXPERIENCE_CLICKS_TO_OPEN = 'instant_experience_clicks_to_open';
   const INSTANT_EXPERIENCE_CLICKS_TO_START = 'instant_experience_clicks_to_start';
   const INSTANT_EXPERIENCE_OUTBOUND_CLICKS = 'instant_experience_outbound_clicks';
   const INTERACTIVE_COMPONENT_TAP = 'interactive_component_tap';
   const LABELS = 'labels';
   const LOCATION = 'location';
+  const MARKETING_MESSAGES_COST_PER_DELIVERED = 'marketing_messages_cost_per_delivered';
+  const MARKETING_MESSAGES_COST_PER_LINK_BTN_CLICK = 'marketing_messages_cost_per_link_btn_click';
+  const MARKETING_MESSAGES_SPEND = 'marketing_messages_spend';
+  const MARKETING_MESSAGES_WEBSITE_PURCHASE_VALUES = 'marketing_messages_website_purchase_values';
   const MOBILE_APP_PURCHASE_ROAS = 'mobile_app_purchase_roas';
   const OBJECTIVE = 'objective';
   const OPTIMIZATION_GOAL = 'optimization_goal';
@@ -129,14 +120,12 @@ class AdsInsightsFields extends AbstractEnum {
   const PURCHASE_ROAS = 'purchase_roas';
   const QUALIFYING_QUESTION_QUALIFY_ANSWER_RATE = 'qualifying_question_qualify_answer_rate';
   const QUALITY_RANKING = 'quality_ranking';
-  const QUALITY_SCORE_ECTR = 'quality_score_ectr';
-  const QUALITY_SCORE_ECVR = 'quality_score_ecvr';
-  const QUALITY_SCORE_ORGANIC = 'quality_score_organic';
   const REACH = 'reach';
   const SOCIAL_SPEND = 'social_spend';
   const SPEND = 'spend';
   const TOTAL_POSTBACKS = 'total_postbacks';
   const TOTAL_POSTBACKS_DETAILED = 'total_postbacks_detailed';
+  const TOTAL_POSTBACKS_DETAILED_V4 = 'total_postbacks_detailed_v4';
   const UNIQUE_ACTIONS = 'unique_actions';
   const UNIQUE_CLICKS = 'unique_clicks';
   const UNIQUE_CONVERSIONS = 'unique_conversions';
@@ -176,12 +165,10 @@ class AdsInsightsFields extends AbstractEnum {
       'account_name' => 'string',
       'action_values' => 'list<AdsActionStats>',
       'actions' => 'list<AdsActionStats>',
-      'ad_bid_value' => 'string',
       'ad_click_actions' => 'list<AdsActionStats>',
       'ad_id' => 'string',
       'ad_impression_actions' => 'list<AdsActionStats>',
       'ad_name' => 'string',
-      'adset_bid_value' => 'string',
       'adset_end' => 'string',
       'adset_id' => 'string',
       'adset_name' => 'string',
@@ -202,6 +189,7 @@ class AdsInsightsFields extends AbstractEnum {
       'catalog_segment_value_omni_purchase_roas' => 'list<AdsActionStats>',
       'catalog_segment_value_website_purchase_roas' => 'list<AdsActionStats>',
       'clicks' => 'string',
+      'conversion_lead_rate' => 'string',
       'conversion_rate_ranking' => 'string',
       'conversion_values' => 'list<AdsActionStats>',
       'conversions' => 'list<AdsActionStats>',
@@ -212,6 +200,7 @@ class AdsInsightsFields extends AbstractEnum {
       'cost_per_action_type' => 'list<AdsActionStats>',
       'cost_per_ad_click' => 'list<AdsActionStats>',
       'cost_per_conversion' => 'list<AdsActionStats>',
+      'cost_per_conversion_lead' => 'string',
       'cost_per_dda_countby_convs' => 'string',
       'cost_per_estimated_ad_recallers' => 'string',
       'cost_per_inline_link_click' => 'string',
@@ -228,6 +217,7 @@ class AdsInsightsFields extends AbstractEnum {
       'cpm' => 'string',
       'cpp' => 'string',
       'created_time' => 'string',
+      'creative_media_type' => 'string',
       'ctr' => 'string',
       'date_start' => 'string',
       'date_stop' => 'string',
@@ -248,12 +238,17 @@ class AdsInsightsFields extends AbstractEnum {
       'inline_link_click_ctr' => 'string',
       'inline_link_clicks' => 'string',
       'inline_post_engagement' => 'string',
+      'instagram_upcoming_event_reminders_set' => 'string',
       'instant_experience_clicks_to_open' => 'string',
       'instant_experience_clicks_to_start' => 'string',
       'instant_experience_outbound_clicks' => 'list<AdsActionStats>',
       'interactive_component_tap' => 'list<AdsActionStats>',
       'labels' => 'string',
       'location' => 'string',
+      'marketing_messages_cost_per_delivered' => 'string',
+      'marketing_messages_cost_per_link_btn_click' => 'string',
+      'marketing_messages_spend' => 'string',
+      'marketing_messages_website_purchase_values' => 'string',
       'mobile_app_purchase_roas' => 'list<AdsActionStats>',
       'objective' => 'string',
       'optimization_goal' => 'string',
@@ -263,14 +258,12 @@ class AdsInsightsFields extends AbstractEnum {
       'purchase_roas' => 'list<AdsActionStats>',
       'qualifying_question_qualify_answer_rate' => 'string',
       'quality_ranking' => 'string',
-      'quality_score_ectr' => 'string',
-      'quality_score_ecvr' => 'string',
-      'quality_score_organic' => 'string',
       'reach' => 'string',
       'social_spend' => 'string',
       'spend' => 'string',
       'total_postbacks' => 'string',
       'total_postbacks_detailed' => 'list<AdsActionStats>',
+      'total_postbacks_detailed_v4' => 'list<AdsActionStats>',
       'unique_actions' => 'list<AdsActionStats>',
       'unique_clicks' => 'string',
       'unique_conversions' => 'list<AdsActionStats>',
@@ -293,10 +286,10 @@ class AdsInsightsFields extends AbstractEnum {
       'video_p75_watched_actions' => 'list<AdsActionStats>',
       'video_p95_watched_actions' => 'list<AdsActionStats>',
       'video_play_actions' => 'list<AdsActionStats>',
-      'video_play_curve_actions' => 'list<Object>',
-      'video_play_retention_0_to_15s_actions' => 'list<Object>',
-      'video_play_retention_20_to_60s_actions' => 'list<Object>',
-      'video_play_retention_graph_actions' => 'list<Object>',
+      'video_play_curve_actions' => 'list<AdsHistogramStats>',
+      'video_play_retention_0_to_15s_actions' => 'list<AdsHistogramStats>',
+      'video_play_retention_20_to_60s_actions' => 'list<AdsHistogramStats>',
+      'video_play_retention_graph_actions' => 'list<AdsHistogramStats>',
       'video_thruplay_watched_actions' => 'list<AdsActionStats>',
       'video_time_watched_actions' => 'list<AdsActionStats>',
       'website_ctr' => 'list<AdsActionStats>',

@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'facebook/pixel-for-wordpress',
-        'pretty_version' => 'dev-default',
-        'version' => 'dev-default',
-        'reference' => NULL,
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '82566c3e75410046f5539319c51c3124c539a540',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,18 +11,18 @@
     ),
     'versions' => array(
         'facebook/php-business-sdk' => array(
-            'pretty_version' => '16.0.1',
-            'version' => '16.0.1.0',
-            'reference' => 'ce3e5d19dcb03c079567c3d9b66503180378a38a',
+            'pretty_version' => '19.0.3',
+            'version' => '19.0.3.0',
+            'reference' => 'f3eb099fa895ff6b5ddd98ba993982c2803b22d3',
             'type' => 'library',
             'install_path' => __DIR__ . '/../facebook/php-business-sdk',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
         'facebook/pixel-for-wordpress' => array(
-            'pretty_version' => 'dev-default',
-            'version' => 'dev-default',
-            'reference' => NULL,
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '82566c3e75410046f5539319c51c3124c539a540',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

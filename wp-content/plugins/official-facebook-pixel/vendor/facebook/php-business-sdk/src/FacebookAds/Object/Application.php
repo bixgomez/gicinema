@@ -1,25 +1,10 @@
 <?php
-/**
- * Copyright (c) 2015-present, Facebook, Inc. All rights reserved.
+ /*
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ * All rights reserved.
  *
- * You are hereby granted a non-exclusive, worldwide, royalty-free license to
- * use, copy, modify, and distribute this software in source code or binary
- * form for use in connection with the web services and APIs provided by
- * Facebook.
- *
- * As with any software that integrates with the Facebook platform, your use
- * of this software is subject to the Facebook Developer Principles and
- * Policies [http://developers.facebook.com/policy/]. This copyright notice
- * shall be included in all copies or substantial portions of the software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- *
+ * This source code is licensed under the license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 namespace FacebookAds\Object;
@@ -43,7 +28,6 @@ use FacebookAds\Object\Values\ApplicationPostMethodValues;
 use FacebookAds\Object\Values\ApplicationRequestTypeValues;
 use FacebookAds\Object\Values\ApplicationSupportedPlatformsValues;
 use FacebookAds\Object\Values\DACheckConnectionMethodValues;
-use FacebookAds\Object\Values\EventTypeValues;
 
 /**
  * This class is auto-generated.
@@ -207,10 +191,12 @@ class Application extends AbstractCrudObject {
       'page_id' => 'unsigned int',
       'page_scoped_user_id' => 'unsigned int',
       'receipt_data' => 'string',
+      'sdk_version' => 'string',
       'ud' => 'map',
       'url_schemes' => 'list<string>',
       'user_id' => 'string',
       'user_id_type' => 'user_id_type_enum',
+      'vendor_id' => 'string',
       'windows_attribution_id' => 'string',
     );
     $enums = array(
@@ -488,8 +474,10 @@ class Application extends AbstractCrudObject {
     $param_types = array(
       'app_id' => 'int',
       'is_aem_ready' => 'bool',
-      'is_aem_v2_ready' => 'bool',
+      'is_app_aem_install_ready' => 'bool',
+      'is_app_aem_ready' => 'bool',
       'is_skan_ready' => 'bool',
+      'message' => 'string',
     );
     $enums = array(
     );
@@ -911,25 +899,23 @@ class Application extends AbstractCrudObject {
     return $pending ? $request : $request->execute();
   }
 
-  public function getEvents(array $fields = array(), array $params = array(), $pending = false) {
+  public function getIapPurchases(array $fields = array(), array $params = array(), $pending = false) {
     $this->assureId();
 
     $param_types = array(
-      'include_canceled' => 'bool',
-      'type' => 'type_enum',
+      'order_id' => 'string',
     );
     $enums = array(
-      'type_enum' => EventTypeValues::getInstance()->getValues(),
     );
 
     $request = new ApiRequest(
       $this->api,
       $this->data['id'],
       RequestInterface::METHOD_GET,
-      '/events',
-      new Event(),
+      '/iap_purchases',
+      new AbstractCrudObject(),
       'EDGE',
-      Event::getFieldsEnum()->getValues(),
+      array(),
       new TypeChecker($param_types, $enums)
     );
     $request->addParams($params);
@@ -983,6 +969,29 @@ class Application extends AbstractCrudObject {
     return $pending ? $request : $request->execute();
   }
 
+  public function getLinkedDataset(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+    );
+    $enums = array(
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_GET,
+      '/linked_dataset',
+      new AbstractCrudObject(),
+      'EDGE',
+      array(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
+
   public function createMmpAuditing(array $fields = array(), array $params = array(), $pending = false) {
     $this->assureId();
 
@@ -994,6 +1003,7 @@ class Application extends AbstractCrudObject {
       'click_attr_window' => 'unsigned int',
       'custom_events' => 'list<Object>',
       'decline_reason' => 'string',
+      'engagement_type' => 'string',
       'event' => 'string',
       'event_reported_time' => 'unsigned int',
       'fb_ad_id' => 'unsigned int',
@@ -1114,6 +1124,29 @@ class Application extends AbstractCrudObject {
       $this->data['id'],
       RequestInterface::METHOD_GET,
       '/object_types',
+      new NullNode(),
+      'EDGE',
+      NullNode::getFieldsEnum()->getValues(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
+
+  public function getObjects(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+    );
+    $enums = array(
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_GET,
+      '/objects',
       new NullNode(),
       'EDGE',
       NullNode::getFieldsEnum()->getValues(),
@@ -1297,6 +1330,29 @@ class Application extends AbstractCrudObject {
       $this->data['id'],
       RequestInterface::METHOD_GET,
       '/roles',
+      new AbstractCrudObject(),
+      'EDGE',
+      array(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
+
+  public function getServerDomainInfos(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+    );
+    $enums = array(
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_GET,
+      '/server_domain_infos',
       new AbstractCrudObject(),
       'EDGE',
       array(),

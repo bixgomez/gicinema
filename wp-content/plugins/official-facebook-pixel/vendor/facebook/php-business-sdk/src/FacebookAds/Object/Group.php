@@ -1,25 +1,10 @@
 <?php
-/**
- * Copyright (c) 2015-present, Facebook, Inc. All rights reserved.
+ /*
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ * All rights reserved.
  *
- * You are hereby granted a non-exclusive, worldwide, royalty-free license to
- * use, copy, modify, and distribute this software in source code or binary
- * form for use in connection with the web services and APIs provided by
- * Facebook.
- *
- * As with any software that integrates with the Facebook platform, your use
- * of this software is subject to the Facebook Developer Principles and
- * Policies [http://developers.facebook.com/policy/]. This copyright notice
- * shall be included in all copies or substantial portions of the software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- *
+ * This source code is licensed under the license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 namespace FacebookAds\Object;
@@ -51,14 +36,12 @@ use FacebookAds\Object\Values\LiveVideoStreamTypeValues;
 use FacebookAds\Object\Values\PhotoBackdatedTimeGranularityValues;
 use FacebookAds\Object\Values\PhotoUnpublishedContentTypeValues;
 use FacebookAds\Object\Values\PostBackdatedTimeGranularityValues;
-use FacebookAds\Object\Values\PostCheckinEntryPointValues;
 use FacebookAds\Object\Values\PostFormattingValues;
 use FacebookAds\Object\Values\PostPlaceAttachmentSettingValues;
 use FacebookAds\Object\Values\PostPostSurfacesBlacklistValues;
 use FacebookAds\Object\Values\PostPostingToRedspaceValues;
 use FacebookAds\Object\Values\PostTargetSurfaceValues;
 use FacebookAds\Object\Values\PostUnpublishedContentTypeValues;
-use FacebookAds\Object\Values\ProfilePictureSourceBreakingChangeValues;
 use FacebookAds\Object\Values\ProfilePictureSourceTypeValues;
 
 /**
@@ -173,6 +156,7 @@ class Group extends AbstractCrudObject {
       'name' => 'string',
       'place' => 'Object',
       'privacy' => 'string',
+      'session_id' => 'string',
       'tags' => 'list<int>',
       'visible' => 'string',
     );
@@ -187,53 +171,6 @@ class Group extends AbstractCrudObject {
       new Album(),
       'EDGE',
       Album::getFieldsEnum()->getValues(),
-      new TypeChecker($param_types, $enums)
-    );
-    $request->addParams($params);
-    $request->addFields($fields);
-    return $pending ? $request : $request->execute();
-  }
-
-  public function getAttachmentSurfaces(array $fields = array(), array $params = array(), $pending = false) {
-    $this->assureId();
-
-    $param_types = array(
-    );
-    $enums = array(
-    );
-
-    $request = new ApiRequest(
-      $this->api,
-      $this->data['id'],
-      RequestInterface::METHOD_GET,
-      '/attachment_surfaces',
-      new AbstractCrudObject(),
-      'EDGE',
-      array(),
-      new TypeChecker($param_types, $enums)
-    );
-    $request->addParams($params);
-    $request->addFields($fields);
-    return $pending ? $request : $request->execute();
-  }
-
-  public function createAttachmentSurface(array $fields = array(), array $params = array(), $pending = false) {
-    $this->assureId();
-
-    $param_types = array(
-      'title' => 'map',
-    );
-    $enums = array(
-    );
-
-    $request = new ApiRequest(
-      $this->api,
-      $this->data['id'],
-      RequestInterface::METHOD_POST,
-      '/attachment_surfaces',
-      new AbstractCrudObject(),
-      'EDGE',
-      array(),
       new TypeChecker($param_types, $enums)
     );
     $request->addParams($params);
@@ -334,9 +271,10 @@ class Group extends AbstractCrudObject {
       'audience_exp' => 'bool',
       'backdated_time' => 'datetime',
       'backdated_time_granularity' => 'backdated_time_granularity_enum',
+      'breaking_news' => 'bool',
+      'breaking_news_expiration' => 'unsigned int',
       'call_to_action' => 'Object',
       'caption' => 'string',
-      'checkin_entry_point' => 'checkin_entry_point_enum',
       'child_attachments' => 'list<Object>',
       'client_mutation_id' => 'string',
       'composer_entry_picker' => 'string',
@@ -359,7 +297,6 @@ class Group extends AbstractCrudObject {
       'formatting' => 'formatting_enum',
       'fun_fact_prompt_id' => 'unsigned int',
       'fun_fact_toastee_id' => 'unsigned int',
-      'has_nickname' => 'bool',
       'height' => 'unsigned int',
       'holiday_card' => 'string',
       'home_checkin_city_id' => 'Object',
@@ -434,7 +371,6 @@ class Group extends AbstractCrudObject {
     );
     $enums = array(
       'backdated_time_granularity_enum' => PostBackdatedTimeGranularityValues::getInstance()->getValues(),
-      'checkin_entry_point_enum' => PostCheckinEntryPointValues::getInstance()->getValues(),
       'formatting_enum' => PostFormattingValues::getInstance()->getValues(),
       'place_attachment_setting_enum' => PostPlaceAttachmentSettingValues::getInstance()->getValues(),
       'post_surfaces_blacklist_enum' => PostPostSurfacesBlacklistValues::getInstance()->getValues(),
@@ -510,11 +446,11 @@ class Group extends AbstractCrudObject {
     $param_types = array(
       'admin' => 'int',
       'description' => 'string',
-      'group_icon_id' => 'Object',
+      'group_icon_id' => 'string',
       'group_type' => 'group_type_enum',
       'join_setting' => 'join_setting_enum',
       'name' => 'string',
-      'parent_id' => 'Object',
+      'parent_id' => 'string',
       'post_permissions' => 'post_permissions_enum',
       'post_requires_admin_approval' => 'bool',
       'privacy' => 'string',
@@ -734,7 +670,6 @@ class Group extends AbstractCrudObject {
       'proxied_app_id' => 'string',
       'published' => 'bool',
       'qn' => 'string',
-      'scheduled_publish_time' => 'unsigned int',
       'spherical_metadata' => 'map',
       'sponsor_id' => 'string',
       'sponsor_relationship' => 'unsigned int',
@@ -772,14 +707,12 @@ class Group extends AbstractCrudObject {
     $this->assureId();
 
     $param_types = array(
-      'breaking_change' => 'breaking_change_enum',
       'height' => 'int',
       'redirect' => 'bool',
       'type' => 'type_enum',
       'width' => 'int',
     );
     $enums = array(
-      'breaking_change_enum' => ProfilePictureSourceBreakingChangeValues::getInstance()->getValues(),
       'type_enum' => ProfilePictureSourceTypeValues::getInstance()->getValues(),
     );
 
@@ -791,37 +724,6 @@ class Group extends AbstractCrudObject {
       new ProfilePictureSource(),
       'EDGE',
       ProfilePictureSource::getFieldsEnum()->getValues(),
-      new TypeChecker($param_types, $enums)
-    );
-    $request->addParams($params);
-    $request->addFields($fields);
-    return $pending ? $request : $request->execute();
-  }
-
-  public function createShiftSetting(array $fields = array(), array $params = array(), $pending = false) {
-    $this->assureId();
-
-    $param_types = array(
-      'external_id' => 'string',
-      'shift_feature_setting' => 'shift_feature_setting_enum',
-    );
-    $enums = array(
-      'shift_feature_setting_enum' => array(
-        'ALL_FEATURES_OFF',
-        'ALL_FEATURES_ON',
-        'SHIFT_COVER_ONLY_ON',
-        'SHIFT_VIEWER_ONLY_ON',
-      ),
-    );
-
-    $request = new ApiRequest(
-      $this->api,
-      $this->data['id'],
-      RequestInterface::METHOD_POST,
-      '/shift_settings',
-      new AbstractCrudObject(),
-      'EDGE',
-      array(),
       new TypeChecker($param_types, $enums)
     );
     $request->addParams($params);
@@ -887,7 +789,6 @@ class Group extends AbstractCrudObject {
       'fun_fact_toastee_id' => 'unsigned int',
       'guide' => 'list<list<unsigned int>>',
       'guide_enabled' => 'bool',
-      'has_nickname' => 'bool',
       'holiday_card' => 'string',
       'initial_heading' => 'unsigned int',
       'initial_pitch' => 'unsigned int',
