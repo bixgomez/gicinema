@@ -30,11 +30,22 @@ if (defined('WP_LOCAL_DEV') && WP_LOCAL_DEV) {
         echo "<div class='notice notice-success'><p>{$result}</p></div>";
     } else {
         // Display warning and confirmation form
-        echo '<p><strong>Warning:</strong> This action will permanently truncate the screenings table. This action is irreversible.</p>';
-        echo '<form method="post">';
-        echo '<input type="hidden" name="confirm_truncation" value="yes">';
-        echo '<input type="submit" class="button button-primary" value="Confirm Truncation">';
-        echo '</form>';
+      ?>
+      <div class="info">
+        <p>
+          This one should also never be used in production.  This will, as 
+          it implies, <i>permanently truncate the custom screenings table</i>.  
+          This should only be used locally. This too is not available on the live site anyway.
+        </p>
+      </div>
+      <div class="warning">
+        <p><strong>Warning:</strong> This action will permanently truncate the screenings table. This action is irreversible.</p>
+      </div>
+      <form method="post">
+      <input type="hidden" name="confirm_truncation" value="yes">
+      <input type="submit" class="button button-primary" value="Confirm Truncation">
+      </form>
+      <?php
     }
     
     echo '</div>';

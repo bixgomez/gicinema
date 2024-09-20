@@ -124,7 +124,36 @@ pre {
   padding-right: 20px;
 }
 
-/* Hiding the screenings field add/remove buttons (using js for this) */
-/* .acf-field-617b2f8e4b8c4 .acf-row-handle.remove {
-  display: none;
-} */
+.wrap--gicinema h3 {
+  font-size: .9rem;
+}
+
+.wrap--gicinema h2, 
+.wrap--gicinema h3, 
+.wrap--gicinema h4 {
+  margin: 1.25rem 0 .25em;
+} 
+
+.wrap--gicinema p {
+  margin: 0 0 1.25rem;
+} 
+
+.wrap--gicinema p + p {
+  margin-top: -0.75rem;
+} 
+
+.wrap--gicinema p:last-child {
+  margin-bottom: 0;
+} 
+
+.wrap--gicinema > div {
+  background-color: #eee;
+  margin: 0 0 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+}
+
+.wrap--gicinema > div.warning {
+  border-color: red;
+}
+

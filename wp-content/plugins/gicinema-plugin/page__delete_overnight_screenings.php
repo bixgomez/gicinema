@@ -28,11 +28,28 @@ function gicinema_page_display__delete_overnight_screenings() {
       echo "<div class='notice notice-success'><p>{$result}</p></div>";
   } else {
       // Display warning and confirmation form
-      echo '<p><strong>Warning:</strong> This action will permanently delete all overnight film posts. This action is irreversible.</p>';
-      echo '<form method="post">';
-      echo '<input type="hidden" name="confirm_delete" value="yes">';
-      echo '<input type="submit" class="button button-primary" value="Confirm Deletion">';
-      echo '</form>';
+      ?>
+      <div class="info">
+        <p>
+          Occasionally, due to some weirdness regarding time zones, we end up with  
+          screenings being imported in their UTC time equivalents rather than local time.  
+          So, we end up with duplicate screenings that appear to occur 7-8 hours later 
+          than they actually do.  This function seeks to take care of most of these
+          occurrences, by deleting any screenings that appear to start between 10pm and 10am.
+        </p>
+        <p>
+          <i>Yes, it's kludgy, and yes, it must be a bug in the system.</i>  But, for now,
+          it works...  For the most part.
+        </p>
+      </div>
+      <div class="warning">
+        <p><strong>Warning:</strong> This action will permanently delete all overnight film posts. This action is irreversible.</p>
+      </div>
+      <form method="post">
+      <input type="hidden" name="confirm_delete" value="yes">
+      <input type="submit" class="button button-primary" value="Confirm Deletion">
+      </form>
+      <?php
   }
   
   echo '</div>';

@@ -8,7 +8,7 @@
 
 ## Installation
 
-1. Upload the folder _/gicinema/_ to the _/wp-content/plugins/_ directory
+1. Upload the folder _/gicinema-plugin/_ to the _/wp-content/plugins/_ directory
 2. Activate the plugin through the __Plugins__ menu in WordPress
 
 ## More info and documentation

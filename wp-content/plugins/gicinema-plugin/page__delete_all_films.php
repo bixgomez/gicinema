@@ -30,11 +30,22 @@ if (defined('WP_LOCAL_DEV') && WP_LOCAL_DEV) {
         echo "<div class='notice notice-success'><p>{$result}</p></div>";
     } else {
         // Display warning and confirmation form
-        echo '<p><strong>Warning:</strong> This action will permanently delete all film posts. This action is irreversible.</p>';
-        echo '<form method="post">';
-        echo '<input type="hidden" name="confirm_delete" value="yes">';
-        echo '<input type="submit" class="button button-primary" value="Confirm Deletion">';
-        echo '</form>';
+      ?>
+      <div class="info">
+        <p>
+          This one should almost never be used, especially in production.  This will, as 
+          it implies, <i>permanently delete all film posts</i>.  This should only be used locally. 
+          In fact, it's not even available on the live site!  So there ya go.
+        </p>
+      </div>
+      <div class="warning">
+        <p><strong>Warning:</strong> This action will permanently delete all film posts. This action is irreversible.</p>
+      </div>
+      <form method="post">
+      <input type="hidden" name="confirm_delete" value="yes">
+      <input type="submit" class="button button-primary" value="Confirm Deletion">
+      </form>
+      <?php
     }
     
     echo '</div>';

@@ -28,11 +28,20 @@ function gicinema_page_display__sync_all_screenings() {
     gicinema__sync_all_screenings();
   } else {
       // Display warning and confirmation form
-      echo '<p><strong>Warning:</strong> This action will update the screenings table AND the screenings field. This action is irreversible.</p>';
-      echo '<form method="post">';
-      echo '<input type="hidden" name="confirm_import" value="yes">';
-      echo '<input type="submit" class="button button-primary" value="Confirm sync all screenings">';
-      echo '</form>';
+      ?>
+      <div class="info">
+        <p>
+          This is the second of our two main cron jobs, which you can run manually if needed.
+        </p>
+      </div>
+      <div class="warning">
+        <p><strong>Warning:</strong> This action will update the screenings table AND the screenings field. This action is irreversible.</p>
+      </div>
+      <form method="post">
+      <input type="hidden" name="confirm_import" value="yes">
+      <input type="submit" class="button button-primary" value="Confirm sync all screenings">
+      </form>
+      <?php
   }
   
   echo '</div>';

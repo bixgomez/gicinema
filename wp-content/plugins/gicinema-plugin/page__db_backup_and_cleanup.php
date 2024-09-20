@@ -30,11 +30,24 @@ if (defined('WP_LOCAL_DEV') && WP_LOCAL_DEV) {
         echo "<div class='notice notice-success'><p>{$result}</p></div>";
     } else {
         // Display warning and confirmation form
-        echo '<p><strong>Warning:</strong> This action will back up the current database and delete all backups older than one week. This action is irreversible.</p>';
-        echo '<form method="post">';
-        echo '<input type="hidden" name="confirm_backup" value="yes">';
-        echo '<input type="submit" class="button button-primary" value="Confirm Database Backup and Cleanup">';
-        echo '</form>';
+      ?>
+      <div class="info">
+        <p>
+          This creates a backup of the database, and sticks it in a directory outside the 
+          web root (gicinema_dbs).
+          It also backs up any database backup older than one week.
+          This runs as a cron job once every 24 hours.
+          Currently not working locally for some reason; more research is needed.
+        </p>
+      </div>
+      <div class="warning">
+        <p><strong>Warning:</strong> This action will back up the current database and delete all backups older than one week. This action is irreversible.</p>
+      </div>
+      <form method="post">
+      <input type="hidden" name="confirm_backup" value="yes">
+      <input type="submit" class="button button-primary" value="Confirm Database Backup and Cleanup">
+      </form>
+      <?php
     }
     
     echo '</div>';
