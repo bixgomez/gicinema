@@ -81,22 +81,26 @@ endif;
 
 // Display their full teasers, in "next screening" order 
 echo '<div class="film-cards film-cards--now-playing">';
-foreach ($nowPlayingPostIds as $nowPlayingPostId) :
-    $args = array (
-        'post_type' => 'film',
-        'posts_per_page' => '1',
-        'p' => $nowPlayingPostId,
-        'post_status' => 'publish',
-    );
-    $getThePostId = new WP_Query( $args );
-    if ( $getThePostId->have_posts() ) :
-        while ( $getThePostId->have_posts() ) : $getThePostId->the_post();
-            $filmPostId = get_the_ID();
-            filmCard(filmPostId:$filmPostId, classes:'now-playing');
-        endwhile;
-    endif;
-    wp_reset_query();
-endforeach;
+if ( ! empty( $nowPlayingPostIds ) ) {
+    foreach ($nowPlayingPostIds as $nowPlayingPostId) :
+        $args = array (
+            'post_type' => 'film',
+            'posts_per_page' => '1',
+            'p' => $nowPlayingPostId,
+            'post_status' => 'publish',
+        );
+        $getThePostId = new WP_Query( $args );
+        if ( $getThePostId->have_posts() ) :
+            while ( $getThePostId->have_posts() ) : $getThePostId->the_post();
+                $filmPostId = get_the_ID();
+                filmCard(filmPostId:$filmPostId, classes:'now-playing');
+            endwhile;
+        endif;
+        wp_reset_query();
+    endforeach;
+} else {
+    echo 'No films found.';
+}
 echo '</div>';
 
 echo '<h2 class="section-title">Coming Soon</h2>';
@@ -142,28 +146,28 @@ endif;
 <?php 
 // Display their "half teasers", in "next screening" order
 echo '<div class="film-cards film-cards--coming_soon">';
-foreach ($comingSoonPostIds as $comingSoonPostId) :
-    $args = array (
-        'post_type' => 'film',
-        'posts_per_page' => '1',
-        'p' => $comingSoonPostId,
-        'post_status' => 'publish',
-    );
-    $getThePostId = new WP_Query( $args );
-    if ( $getThePostId->have_posts() ) :
-        while ( $getThePostId->have_posts() ) : $getThePostId->the_post();
-            $filmPostId = get_the_ID();
-            filmCard(filmPostId:$filmPostId, classes:'coming_soon');
-        endwhile;
-    endif;
-    wp_reset_query();
-endforeach;
+if ( ! empty( $comingSoonPostIds ) ) {
+    foreach ($comingSoonPostIds as $comingSoonPostId) :
+        $args = array (
+            'post_type' => 'film',
+            'posts_per_page' => '1',
+            'p' => $comingSoonPostId,
+            'post_status' => 'publish',
+        );
+        $getThePostId = new WP_Query( $args );
+        if ( $getThePostId->have_posts() ) :
+            while ( $getThePostId->have_posts() ) : $getThePostId->the_post();
+                $filmPostId = get_the_ID();
+                filmCard(filmPostId:$filmPostId, classes:'coming_soon');
+            endwhile;
+        endif;
+        wp_reset_query();
+    endforeach;
+} else {
+    echo 'No films found.';
+}
 echo '</div>';
 
 echo '</div>';
-
-// error_log('');
-// error_log('* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *');
-// error_log('');
 
 get_footer();
