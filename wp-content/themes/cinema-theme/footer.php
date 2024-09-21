@@ -78,7 +78,7 @@
 
                 <!-- Begin MailChimp Signup Form -->
                 <div id="mc_embed_signup">
-                  <form action="http://grandillusioncinema.us2.list-manage.com/subscribe/post?u=c68e502f1bdccca389af3a3a8&amp;id=5baa7ea5de" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
+                  <form action="https://grandillusioncinema.us2.list-manage.com/subscribe/post?u=c68e502f1bdccca389af3a3a8&amp;id=5baa7ea5de" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
                     <label for="mce-EMAIL"><h4>Subscribe to our mailing list</h4></label>
                     <input type="email" value="" name="EMAIL" class="email" id="mce-EMAIL" placeholder="email address" required>
                     <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
