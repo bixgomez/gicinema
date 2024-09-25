@@ -12,6 +12,7 @@
 
 .title-area {
   // background-color: rgba(#000, .25);
+  container-type: inline-size;
   padding: 0;
   margin: 0;
   width: 38.5em;
@@ -41,7 +42,7 @@
       grid-area: logo;
       display: block;
       aspect-ratio: 1/1;
-      width: 7em;
+      width: 15.25cqi;
       background-image: url(images/logos/gi-logo.png);
       background-size: contain;
       background-position: center;
@@ -76,16 +77,16 @@ h1.site-title {
   display: flex;
   flex-direction: column;
   line-height: 1.2;
-  font-size: 4.5em;
+  font-size: 9.5cqi;
   justify-content: flex-start;
   align-items: flex-start;
   font-weight: bold;
-  letter-spacing: .05em;
+  letter-spacing: .2125cqi;
   color: $c--white;
 
   .article {
-    font-size: .34em;
-    letter-spacing: .5em;
+    font-size: 3.5cqi;
+    letter-spacing: 1.25cqi;
     margin-top: -0.25em;
     margin-right: -.75em;
     margin-bottom: -.4em;
@@ -96,8 +97,8 @@ h1.site-title {
 h2.site-subtitle {
   margin: 0;
   line-height: 1.2;
-  font-size: .74em;
-  letter-spacing: .34em;
+  font-size: 1.75cqi;
+  letter-spacing: .35cqi;
   width: auto;
   color: $c--white;
   text-align: left;
@@ -105,12 +106,6 @@ h2.site-subtitle {
 }
 
 .title-area--footer {
-  // background-image: url("images/footer-graphic.png");
-  // background-size: contain;
-  // background-repeat: no-repeat;
-  // background-position: center;
-  // margin: 0;
-  // padding: 5.5em 0;
   font-size: 2vw;
 
   @include breakpoint($sm) {
