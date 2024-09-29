@@ -181,7 +181,8 @@ button.film {
   border-color: rgba(#aaa, 0.5);
   cursor: pointer;
 
-  &:hover {
+  &:hover,
+  &:focus {
     background-color: rgba(#fff, 0.4);
     border-color: rgba(#aaa, 0.9);
 

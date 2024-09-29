@@ -16,6 +16,7 @@ input[type="submit"] {
   padding: 6px 8px;
 
   &:hover,
+  &:focus,
   &:hover:visited {
     color: white;
     background: $c--primary--light;
@@ -30,6 +31,7 @@ a.film-button:visited {
   width: auto;
 
   &:hover,
+  &:focus,
   &:hover:visited {
     color: white;
     background: $c--primary--light;

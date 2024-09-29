@@ -4,14 +4,17 @@ a {
 	&:visited {
 		color: $c--link-visited;
 	}
+
 	&:hover,
 	&:focus,
 	&:active {
 		color: $c--link-hover;
 	}
+	
 	&:focus {
 		outline: thin dotted;
 	}
+	
 	&:hover,
 	&:active {
 		outline: 0;

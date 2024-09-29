@@ -40,7 +40,8 @@
   color: $c--link;
   text-align: unset;
 
-  &:hover {
+  &:hover,
+  &:focus {
     color: $c--link-hover;
   }
 }

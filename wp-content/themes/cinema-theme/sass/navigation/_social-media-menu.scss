@@ -20,7 +20,8 @@ ul#social-media-menu {
       background-color: $c--text-heading--light;
       mask-image: url("images/facebook.svg");
 
-      &:hover {
+      &:hover,
+      &:focus {
         background-color: $c--white;
       }
     }

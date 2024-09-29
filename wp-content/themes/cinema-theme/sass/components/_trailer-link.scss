@@ -8,7 +8,8 @@ a.trailer-link {
   text-decoration: none;
   line-height: 1.2;
 
-  &:hover {
+  &:hover,
+  &:focus {
     background-color: $c--link-hover;
     color: $c--white;
   }

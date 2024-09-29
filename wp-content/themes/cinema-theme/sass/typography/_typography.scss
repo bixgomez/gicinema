@@ -116,7 +116,8 @@ aside.sidebar {
 a {
   text-decoration: none;
 
-  &:hover {
+  &:hover,
+  &:focus {
     text-decoration: underline;
   }
 }
@@ -131,7 +132,8 @@ div.link a {
   line-height: 1;
   padding: 0.325rem 0.5rem;
 
-  &:hover {
+  &:hover,
+  &:focus {
     background-color: #c42d11;
     text-decoration: none;
   }
