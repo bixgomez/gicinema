@@ -15,8 +15,7 @@ $md: 783px;
 $lg: 1005px;
 $xl: 1100px;
 $xxl: 1200px;
-$xxxl: 1400px;
-$max-site-width: $xl;
+$max-site-width: $xxl;
 
 //Breakpoint variables
 $xxs-only: $xxs ($xs - 1);
@@ -43,9 +42,5 @@ $xl-only: $xl ($xxl - 1);
 $xl-up: $xl;
 $xl-down: 0 ($xxl - 1);
 
-$xxl-only: $xxl ($xxxl - 1);
+$xxl-only: $xxl;
 $xxl-up: $xxl;
-$xxl-down: 0 ($xxxl - 1);
-
-$xxxl-only: $xxxl;
-$xxxl-up: $xxxl;

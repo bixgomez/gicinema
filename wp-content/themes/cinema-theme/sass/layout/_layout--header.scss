@@ -64,7 +64,7 @@
   padding: 0;
 
   @include breakpoint($md) {
-    margin: .75em 0 0 7.75em;
+    margin: 1.25em 0 .5em 0;
     justify-content: left;
     display: flex;
   }
@@ -76,6 +76,8 @@
   @include breakpoint($md) {
     display: block;
     width: 40em;
+    container-name: main-menu;
+    container-type: inline-size;
   }
 }
 
@@ -123,7 +125,8 @@ a.donate-button {
   background-repeat: no-repeat;
   opacity: .9;
 
-  &:hover {
+  &:hover,
+  &:focus {
     opacity: 1;
   }
 }

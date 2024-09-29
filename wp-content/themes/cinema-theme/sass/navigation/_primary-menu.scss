@@ -21,7 +21,8 @@ ul#primary-menu {
       text-align: center;
       white-space: no-wrap;
 
-      &:hover {
+      &:hover,
+      &:focus {
         color: mix($c--text-heading--light, $c--red, 50%);
       }
     }
@@ -35,7 +36,8 @@ ul#primary-menu {
       color: $c--text-heading--light;
       cursor: default;
 
-      &:hover {
+      &:hover,
+      &:focus {
         color: $c--text-heading--light;
       }
     }
@@ -46,12 +48,20 @@ ul#primary-menu {
   }
 
   @include breakpoint($md) {
-    font-size: 1.25em;
+    display: flex;
+    font-size: 2cqi;
     flex-direction: row;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 auto;
+    gap: 2cqi;
 
     > li {
       width: auto;
+
+      > a {
+        margin: 0;
+      }
     }
   }
 }
