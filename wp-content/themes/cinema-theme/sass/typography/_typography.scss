@@ -138,3 +138,16 @@ div.link a {
     text-decoration: none;
   }
 }
+
+#content a {
+  &:not(.film-title):not(.film-button) {
+      text-decoration: underline;
+  }
+
+  &:hover,
+  &:focus,
+  &.film-title:hover,
+  &.film-title:focus {
+      text-decoration: underline;
+  }
+}
