@@ -1,5 +1,8 @@
 .modal-outer {
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   background-color: rgba(#000, 0.75);
   position: fixed;
   height: 100vh;
@@ -7,11 +10,10 @@
   top: 0;
   left: 0;
   z-index: 1000;
-  justify-content: center;
-  align-items: center;
   opacity: 0;
   pointer-events: none;
   z-index: 9999;
+  container-type: size;
 
   &.open {
     opacity: 1;
@@ -20,10 +22,11 @@
 }
 
 .modal-inner {
-  min-height: min-content;
-  max-height: 90vh;
-  width: 90vw;
+  height: min-content;
+  max-height: calc(100cqh - 20px);
+  width: calc(100cqw - 20px);
   max-width: 1200px;
+  overflow-y: scroll;
   background-color: rgba(#fff, 0.9);
   position: relative;
   box-shadow: 0 0 2em rgba(#000, 0.9);
@@ -35,11 +38,12 @@
   transition: width 50ms linear, height 50ms linear;
 
   @include breakpoint($md) {
-    width: 82vw;
+    max-height: 90cqh;
+    width: 82cqw;
   }
 
   @include breakpoint($lg) {
-    width: 75vw;
+    width: 75cqw;
   }
 }
 

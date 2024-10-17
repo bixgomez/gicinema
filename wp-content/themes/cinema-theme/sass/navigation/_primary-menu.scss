@@ -16,14 +16,18 @@ ul#primary-menu {
       margin: 0 .4em 0 0;
       line-height: 1;
       text-transform: uppercase;
-      color: $c--red;
+      color: $c--white;
       font-weight: bold;
       text-align: center;
       white-space: no-wrap;
+      opacity: 1;
 
       &:hover,
       &:focus {
-        color: mix($c--text-heading--light, $c--red, 50%);
+        color: #FFB3B3;
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: .5cqi;
       }
     }
 
@@ -33,12 +37,12 @@ ul#primary-menu {
      }
 
     &.current-menu-item a {
-      color: $c--text-heading--light;
+      color: #FFB3B3;
       cursor: default;
 
       &:hover,
       &:focus {
-        color: $c--text-heading--light;
+        color: #FFB3B3;
       }
     }
   }
