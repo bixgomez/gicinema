@@ -40,13 +40,13 @@ document.addEventListener("DOMContentLoaded", function() {
   function openModal() {
     modalContent.innerHTML = '';
     modalOuter.classList.add('open')
-    document.body.style.overflow = 'hidden'; // Disable scrolling
+    document.body.classList.add('no-scroll'); // Disable scrolling
   }
 
   function closeModal() {
     modalContent.innerHTML = '';
     modalOuter.classList.remove('open')
-    document.body.style.overflow = ''; // Re-enable scrolling
+    document.body.classList.remove('no-scroll'); // Re-enable scrolling
   }
 
   modalCloser.addEventListener('click', function() {
