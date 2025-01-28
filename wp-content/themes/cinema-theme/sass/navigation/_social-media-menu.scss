@@ -19,6 +19,8 @@ ul#social-media-menu {
       text-indent: -9999px;
       background-color: $c--text-heading--light;
       mask-image: url("images/facebook.svg");
+      mask-repeat: no-repeat;
+      mask-position: center;
 
       &:hover,
       &:focus {
@@ -36,6 +38,11 @@ ul#social-media-menu {
 
     &.menu-item--instagram > a {
       mask-image: url("images/instagram.svg");
+    }
+
+    &.menu-item--bluesky > a {
+      mask-image: url("images/bluesky.svg");
+      mask-size: 75%;
     }
   }
 }
