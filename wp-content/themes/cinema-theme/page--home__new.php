@@ -36,8 +36,6 @@ if ( have_posts() ) {
 } // end if
 wp_reset_query();
 
-echo '<h2 class="section-title">Now Playing</h2>';
-
 // Films showing in the next 7 days, one per line.
 // First, get 7 dates starting with today
 $nowPlayingDays = [];
@@ -67,8 +65,8 @@ $result = $wpdb->get_results($nowPlayingScreeningsQuery);
 
 // error_log(print_r($result, true));
 
+$nowPlayingPostIds = [];
 if ( count($result) ) :
-    $nowPlayingPostIds = [];
     foreach( $result as $key => $row) :
         if (!in_array($row->post_id, $nowPlayingPostIds)) :
             $nowPlayingPostIds[] = $row->post_id;
@@ -79,8 +77,9 @@ endif;
 // error_log(print_r($nowPlayingPostIds, true));
 
 // Display their full teasers, in "next screening" order 
-echo '<div class="film-cards film-cards--now-playing">';
 if ( ! empty( $nowPlayingPostIds ) ) {
+    echo '<h2 class="section-title">Now Playing</h2>';
+    echo '<div class="film-cards film-cards--now-playing">';
     foreach ($nowPlayingPostIds as $nowPlayingPostId) :
         $args = array (
             'post_type' => 'film',
@@ -97,12 +96,8 @@ if ( ! empty( $nowPlayingPostIds ) ) {
         endif;
         wp_reset_query();
     endforeach;
-} else {
-    echo 'No films found.';
+    echo '</div>';
 }
-echo '</div>';
-
-echo '<h2 class="section-title">Coming Soon</h2>';
 
 // Get all the movies that have upcoming screenings that are NOT in the first set
 // First, get 100 dates starting with today
@@ -143,8 +138,9 @@ endif;
 
 <?php 
 // Display their "half teasers", in "next screening" order
-echo '<div class="film-cards film-cards--coming_soon">';
 if ( ! empty( $comingSoonPostIds ) ) {
+    echo '<h2 class="section-title">Coming Soon</h2>';
+    echo '<div class="film-cards film-cards--coming_soon">';
     foreach ($comingSoonPostIds as $comingSoonPostId) :
         $args = array (
             'post_type' => 'film',
@@ -161,10 +157,8 @@ if ( ! empty( $comingSoonPostIds ) ) {
         endif;
         wp_reset_query();
     endforeach;
-} else {
-    echo 'No films found.';
+    echo '</div>';
 }
-echo '</div>';
 
 echo '</div>';
 
