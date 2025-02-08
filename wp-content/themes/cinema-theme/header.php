@@ -34,10 +34,10 @@
             <div class="title-area header-area-fontsize">
               <div class="logo"></div>
               <h1 class="site-title"><span class="article">The</span> Grand Illusion</h1>
-              <h2 class="site-subtitle">
+              <!-- <h2 class="site-subtitle">
                 <span class="line-1">Seattle's oldest continuously</span>
                 <span class="line-2">running movie theater</span>
-              </h2>
+              </h2> -->
               <a href="/" class="home-link">The Grand Illusion: <?php bloginfo( 'description' ); ?></a>
             </div>
 

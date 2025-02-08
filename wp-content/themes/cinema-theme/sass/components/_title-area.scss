@@ -20,10 +20,9 @@
   display: grid;
   position: relative;
   grid-template-areas:
-    " title"
-    " subtitle";
+    " title";
   grid-template-columns: auto;
-  column-gap: .75em;
+  column-gap: 1em;
   transition: .2s linear font-size, .2s linear margin;
 
   @include breakpoint($md) {
@@ -31,8 +30,7 @@
     // background-color: rgba(#fff, .125);
     grid-template-columns: 7em auto;
     grid-template-areas:
-      "logo title"
-      "logo subtitle";
+      "logo title";
   }
 
   .logo {

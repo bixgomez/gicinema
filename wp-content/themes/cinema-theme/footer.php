@@ -26,10 +26,10 @@
               <div class="title-area title-area--footer">
                 <div class="logo"></div>
                 <h1 class="site-title"><span class="article">The</span> Grand Illusion</h1>
-                <h2 class="site-subtitle">
+                <!-- <h2 class="site-subtitle">
                   <span class="line-1">Seattle's oldest continuously</span>
                   <span class="line-2">running movie theater</span>
-                </h2>
+                </h2> -->
                 <a href="/" class="home-link">The Grand Illusion: Seattle's oldest continuously running movie theater</a>
               </div>
             </div>
@@ -41,17 +41,6 @@
             <div class="region-inner region-inner__footer-second columns">
 
               <div class="column column--first">
-                <div class="location">
-                  <h4>Location</h4>
-                  <p>
-                    1403 NE 50th St.<br>
-                    Seattle, WA 98105<br>
-                    206.523.3935
-                  </p>
-                </div>
-              </div>
-
-              <div class="column column--second">
                 <div class="email">
                   <h4>Email</h4>
                   <p>
