@@ -28,6 +28,7 @@ function filmCard($filmPostId, $classes='film') {
       $director = get_field('film_director', $filmPostId);
       $format = get_field('format', $filmPostId);
       $length = get_field('film_length', $filmPostId);
+      $location = get_field('location', $filmPostId);
       $screenings = get_field('screenings', $filmPostId);
       $trailer = get_field('trailer_url', $filmPostId);
       $ticketPurchaseLink = get_field('ticket_purchase_link', $filmPostId);
@@ -130,11 +131,27 @@ function filmCard($filmPostId, $classes='film') {
         </div>
 
         <?php 
-        if (isset($screenings) && is_array($screenings) && count($screenings) > 0) : 
-          echo '<div class="film-card--screenings">';
-          echo '<div class="screenings">';
-          getScreenings($filmPostId);
-          echo '</div>';
+
+        if ( (isset($screenings) && is_array($screenings) && count($screenings) > 0) || ($location !== null) ) : 
+
+          echo '<div class="film-card--screening-info">';
+          
+            if (isset($screenings) && is_array($screenings) && count($screenings) > 0) :
+              echo '<div class="film-card--screenings">';
+              echo '    <div class="screenings">';
+              getScreenings($filmPostId);
+              echo '    </div>';
+              echo '</div>';
+            endif;
+          
+            if ($location !== null) : 
+              echo '<div class="film-card--screenings">';
+              echo '<div class="screenings">';
+              echo '<b>Please note:</b> This screening takes place at Northwest Film Forum - 1515 12th Ave, Seattle.';
+              echo '</div>';
+              echo '</div>';
+            endif;
+
           echo '</div>';
         endif;
         

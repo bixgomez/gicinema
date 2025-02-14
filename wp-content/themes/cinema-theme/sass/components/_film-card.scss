@@ -145,8 +145,14 @@
   }
 }
 
-.film-card--screenings {
+.film-card--screening-info {
   grid-area: screenings;
+  display: flex;
+  flex-direction: column;
+  gap: .5em;
+}
+
+.film-card--screenings {
   padding: 0.5em 0.75em;
   font-size: 1em;
   background-color: rgba(#fff, 0.75);
