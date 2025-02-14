@@ -147,7 +147,7 @@ function filmCard($filmPostId, $classes='film') {
             if ($location !== null) : 
               echo '<div class="film-card--screenings">';
               echo '<div class="screenings">';
-              echo '<b>Please note:</b> This screening takes place at Northwest Film Forum - 1515 12th Ave, Seattle.';
+              echo $location;
               echo '</div>';
               echo '</div>';
             endif;
