@@ -3,7 +3,7 @@
         'name' => 'facebook/pixel-for-wordpress',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '464d0f2bb098fb3a9a06120b3078004997c276c4',
+        'reference' => 'af8baf6a81862fe1a24695291665020233a23ac8',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -22,7 +22,7 @@
         'facebook/pixel-for-wordpress' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '464d0f2bb098fb3a9a06120b3078004997c276c4',
+            'reference' => 'af8baf6a81862fe1a24695291665020233a23ac8',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
