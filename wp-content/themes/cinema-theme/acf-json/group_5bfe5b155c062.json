@@ -160,6 +160,48 @@
             "placeholder": ""
         },
         {
+            "key": "field_6808a57184256",
+            "label": "Custom Ticket Purchase Links",
+            "name": "custom_ticket_purchase_links",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "table",
+            "pagination": 0,
+            "min": 0,
+            "max": 0,
+            "collapsed": "",
+            "button_label": "Add Row",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_6808a59984257",
+                    "label": "Link",
+                    "name": "custom_purchase_link",
+                    "aria-label": "",
+                    "type": "link",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "return_format": "array",
+                    "allow_in_bindings": 0,
+                    "parent_repeater": "field_6808a57184256"
+                }
+            ]
+        },
+        {
             "key": "field_617b2f8e4b8c4",
             "label": "Screenings",
             "name": "screenings",
@@ -264,5 +306,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 1,
-    "modified": 1709428021
+    "modified": 1745397512
 }
