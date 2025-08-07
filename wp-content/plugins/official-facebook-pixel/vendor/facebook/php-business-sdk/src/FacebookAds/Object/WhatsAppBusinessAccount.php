@@ -14,7 +14,11 @@ use FacebookAds\Cursor;
 use FacebookAds\Http\RequestInterface;
 use FacebookAds\TypeChecker;
 use FacebookAds\Object\Fields\WhatsAppBusinessAccountFields;
+use FacebookAds\Object\Values\WhatsAppBusinessAccountBusinessVerificationStatusValues;
 use FacebookAds\Object\Values\WhatsAppBusinessAccountCategoryValues;
+use FacebookAds\Object\Values\WhatsAppBusinessAccountDisplayFormatValues;
+use FacebookAds\Object\Values\WhatsAppBusinessAccountParameterFormatValues;
+use FacebookAds\Object\Values\WhatsAppBusinessAccountProviderNameValues;
 use FacebookAds\Object\Values\WhatsAppBusinessAccountSubCategoryValues;
 use FacebookAds\Object\Values\WhatsAppBusinessAccountTasksValues;
 
@@ -38,12 +42,39 @@ class WhatsAppBusinessAccount extends AbstractCrudObject {
 
   protected static function getReferencedEnums() {
     $ref_enums = array();
+    $ref_enums['BusinessVerificationStatus'] = WhatsAppBusinessAccountBusinessVerificationStatusValues::getInstance()->getValues();
     $ref_enums['Tasks'] = WhatsAppBusinessAccountTasksValues::getInstance()->getValues();
     $ref_enums['Category'] = WhatsAppBusinessAccountCategoryValues::getInstance()->getValues();
+    $ref_enums['DisplayFormat'] = WhatsAppBusinessAccountDisplayFormatValues::getInstance()->getValues();
+    $ref_enums['ParameterFormat'] = WhatsAppBusinessAccountParameterFormatValues::getInstance()->getValues();
     $ref_enums['SubCategory'] = WhatsAppBusinessAccountSubCategoryValues::getInstance()->getValues();
+    $ref_enums['ProviderName'] = WhatsAppBusinessAccountProviderNameValues::getInstance()->getValues();
     return $ref_enums;
   }
 
+
+  public function getActivities(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+    );
+    $enums = array(
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_GET,
+      '/activities',
+      new AbstractCrudObject(),
+      'EDGE',
+      array(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
 
   public function deleteAssignedUsers(array $fields = array(), array $params = array(), $pending = false) {
     $this->assureId();
@@ -142,6 +173,59 @@ class WhatsAppBusinessAccount extends AbstractCrudObject {
     return $pending ? $request : $request->execute();
   }
 
+  public function getCallAnalytics(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+      'country_codes' => 'list<string>',
+      'dimensions' => 'list<dimensions_enum>',
+      'directions' => 'list<directions_enum>',
+      'end' => 'unsigned int',
+      'granularity' => 'granularity_enum',
+      'metric_types' => 'list<metric_types_enum>',
+      'phone_numbers' => 'list<string>',
+      'start' => 'unsigned int',
+    );
+    $enums = array(
+      'dimensions_enum' => array(
+        'COUNTRY',
+        'DIRECTION',
+        'PHONE',
+        'UNKNOWN',
+      ),
+      'directions_enum' => array(
+        'BUSINESS_INITIATED',
+        'UNKNOWN',
+        'USER_INITIATED',
+      ),
+      'granularity_enum' => array(
+        'DAILY',
+        'HALF_HOUR',
+        'MONTHLY',
+      ),
+      'metric_types_enum' => array(
+        'AVERAGE_DURATION',
+        'COST',
+        'COUNT',
+        'UNKNOWN',
+      ),
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_GET,
+      '/call_analytics',
+      new AbstractCrudObject(),
+      'EDGE',
+      array(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
+
   public function getConversationAnalytics(array $fields = array(), array $params = array(), $pending = false) {
     $this->assureId();
 
@@ -161,11 +245,9 @@ class WhatsAppBusinessAccount extends AbstractCrudObject {
       'conversation_categories_enum' => array(
         'AUTHENTICATION',
         'AUTHENTICATION_INTERNATIONAL',
-        'FIXED_TEMPLATE_NOTIFY',
         'MARKETING',
-        'MARKETING_OPTIMIZED_DELIVERY',
+        'MARKETING_LITE',
         'SERVICE',
-        'UNKNOWN',
         'UTILITY',
       ),
       'conversation_directions_enum' => array(
@@ -214,7 +296,7 @@ class WhatsAppBusinessAccount extends AbstractCrudObject {
     return $pending ? $request : $request->execute();
   }
 
-  public function getDccConfig(array $fields = array(), array $params = array(), $pending = false) {
+  public function getDataset(array $fields = array(), array $params = array(), $pending = false) {
     $this->assureId();
 
     $param_types = array(
@@ -226,10 +308,34 @@ class WhatsAppBusinessAccount extends AbstractCrudObject {
       $this->api,
       $this->data['id'],
       RequestInterface::METHOD_GET,
-      '/dcc_config',
-      new AbstractCrudObject(),
+      '/dataset',
+      new Dataset(),
       'EDGE',
-      array(),
+      Dataset::getFieldsEnum()->getValues(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
+
+  public function createDataset(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+      'dataset_name' => 'string',
+    );
+    $enums = array(
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_POST,
+      '/dataset',
+      new Dataset(),
+      'EDGE',
+      Dataset::getFieldsEnum()->getValues(),
       new TypeChecker($param_types, $enums)
     );
     $request->addParams($params);
@@ -267,7 +373,9 @@ class WhatsAppBusinessAccount extends AbstractCrudObject {
       'categories' => 'list<categories_enum>',
       'clone_flow_id' => 'string',
       'endpoint_uri' => 'string',
+      'flow_json' => 'string',
       'name' => 'string',
+      'publish' => 'bool',
     );
     $enums = array(
       'categories_enum' => array(
@@ -276,6 +384,7 @@ class WhatsAppBusinessAccount extends AbstractCrudObject {
         'CUSTOMER_SUPPORT',
         'LEAD_GENERATION',
         'OTHER',
+        'SHOPPING',
         'SIGN_IN',
         'SIGN_UP',
         'SURVEY',
@@ -290,6 +399,31 @@ class WhatsAppBusinessAccount extends AbstractCrudObject {
       new AbstractCrudObject(),
       'EDGE',
       array(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
+
+  public function createGeneratePaymentConfigurationOauthLink(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+      'configuration_name' => 'string',
+      'redirect_url' => 'string',
+    );
+    $enums = array(
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_POST,
+      '/generate_payment_configuration_oauth_link',
+      new WhatsAppBusinessAccount(),
+      'EDGE',
+      WhatsAppBusinessAccount::getFieldsEnum()->getValues(),
       new TypeChecker($param_types, $enums)
     );
     $request->addParams($params);
@@ -401,6 +535,7 @@ class WhatsAppBusinessAccount extends AbstractCrudObject {
       ),
       'status_enum' => array(
         'APPROVED',
+        'ARCHIVED',
         'DELETED',
         'DISABLED',
         'IN_APPEAL',
@@ -435,15 +570,20 @@ class WhatsAppBusinessAccount extends AbstractCrudObject {
       'category' => 'category_enum',
       'components' => 'list<map>',
       'cta_url_link_tracking_opted_out' => 'bool',
+      'display_format' => 'display_format_enum',
       'language' => 'string',
+      'library_template_body_inputs' => 'map',
       'library_template_button_inputs' => 'list<map>',
       'library_template_name' => 'string',
       'message_send_ttl_seconds' => 'unsigned int',
       'name' => 'string',
+      'parameter_format' => 'parameter_format_enum',
       'sub_category' => 'sub_category_enum',
     );
     $enums = array(
       'category_enum' => WhatsAppBusinessAccountCategoryValues::getInstance()->getValues(),
+      'display_format_enum' => WhatsAppBusinessAccountDisplayFormatValues::getInstance()->getValues(),
+      'parameter_format_enum' => WhatsAppBusinessAccountParameterFormatValues::getInstance()->getValues(),
       'sub_category_enum' => WhatsAppBusinessAccountSubCategoryValues::getInstance()->getValues(),
     );
 
@@ -452,6 +592,31 @@ class WhatsAppBusinessAccount extends AbstractCrudObject {
       $this->data['id'],
       RequestInterface::METHOD_POST,
       '/message_templates',
+      new WhatsAppBusinessAccount(),
+      'EDGE',
+      WhatsAppBusinessAccount::getFieldsEnum()->getValues(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
+
+  public function createMigrateFlow(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+      'source_flow_names' => 'list<string>',
+      'source_waba_id' => 'string',
+    );
+    $enums = array(
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_POST,
+      '/migrate_flows',
       new WhatsAppBusinessAccount(),
       'EDGE',
       WhatsAppBusinessAccount::getFieldsEnum()->getValues(),
@@ -480,6 +645,108 @@ class WhatsAppBusinessAccount extends AbstractCrudObject {
       new WhatsAppBusinessAccount(),
       'EDGE',
       WhatsAppBusinessAccount::getFieldsEnum()->getValues(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
+
+  public function deletePaymentConfiguration(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+      'configuration_name' => 'string',
+    );
+    $enums = array(
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_DELETE,
+      '/payment_configuration',
+      new AbstractCrudObject(),
+      'EDGE',
+      array(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
+
+  public function getPaymentConfiguration(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+      'configuration_name' => 'string',
+    );
+    $enums = array(
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_GET,
+      '/payment_configuration',
+      new AbstractCrudObject(),
+      'EDGE',
+      array(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
+
+  public function createPaymentConfiguration(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+      'configuration_name' => 'string',
+      'data_endpoint_url' => 'string',
+      'merchant_category_code' => 'string',
+      'merchant_vpa' => 'string',
+      'provider_name' => 'provider_name_enum',
+      'purpose_code' => 'string',
+      'redirect_url' => 'string',
+    );
+    $enums = array(
+      'provider_name_enum' => WhatsAppBusinessAccountProviderNameValues::getInstance()->getValues(),
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_POST,
+      '/payment_configuration',
+      new WhatsAppBusinessAccount(),
+      'EDGE',
+      WhatsAppBusinessAccount::getFieldsEnum()->getValues(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
+
+  public function getPaymentConfigurations(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+    );
+    $enums = array(
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_GET,
+      '/payment_configurations',
+      new AbstractCrudObject(),
+      'EDGE',
+      array(),
       new TypeChecker($param_types, $enums)
     );
     $request->addParams($params);
@@ -528,6 +795,66 @@ class WhatsAppBusinessAccount extends AbstractCrudObject {
       $this->data['id'],
       RequestInterface::METHOD_POST,
       '/phone_numbers',
+      new AbstractCrudObject(),
+      'EDGE',
+      array(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
+
+  public function getPricingAnalytics(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+      'country_codes' => 'list<string>',
+      'dimensions' => 'list<dimensions_enum>',
+      'end' => 'unsigned int',
+      'granularity' => 'granularity_enum',
+      'metric_types' => 'list<metric_types_enum>',
+      'phone_numbers' => 'list<string>',
+      'pricing_categories' => 'list<pricing_categories_enum>',
+      'pricing_types' => 'list<pricing_types_enum>',
+      'start' => 'unsigned int',
+    );
+    $enums = array(
+      'dimensions_enum' => array(
+        'COUNTRY',
+        'PHONE',
+        'PRICING_CATEGORY',
+        'PRICING_TYPE',
+      ),
+      'granularity_enum' => array(
+        'DAILY',
+        'HALF_HOUR',
+        'MONTHLY',
+      ),
+      'metric_types_enum' => array(
+        'COST',
+        'VOLUME',
+      ),
+      'pricing_categories_enum' => array(
+        'AUTHENTICATION',
+        'AUTHENTICATION_INTERNATIONAL',
+        'MARKETING',
+        'MARKETING_LITE',
+        'SERVICE',
+        'UTILITY',
+      ),
+      'pricing_types_enum' => array(
+        'FREE_CUSTOMER_SERVICE',
+        'FREE_ENTRY_POINT',
+        'REGULAR',
+      ),
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_GET,
+      '/pricing_analytics',
       new AbstractCrudObject(),
       'EDGE',
       array(),
@@ -636,6 +963,7 @@ class WhatsAppBusinessAccount extends AbstractCrudObject {
     $this->assureId();
 
     $param_types = array(
+      'solution_id' => 'string',
     );
     $enums = array(
     );
@@ -645,6 +973,54 @@ class WhatsAppBusinessAccount extends AbstractCrudObject {
       $this->data['id'],
       RequestInterface::METHOD_POST,
       '/set_obo_mobility_intent',
+      new AbstractCrudObject(),
+      'EDGE',
+      array(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
+
+  public function createSetSolutionMigrationIntent(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+      'app_id' => 'string',
+      'solution_id' => 'string',
+    );
+    $enums = array(
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_POST,
+      '/set_solution_migration_intent',
+      new AbstractCrudObject(),
+      'EDGE',
+      array(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
+
+  public function getSolutions(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+    );
+    $enums = array(
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_GET,
+      '/solutions',
       new AbstractCrudObject(),
       'EDGE',
       array(),
@@ -733,6 +1109,7 @@ class WhatsAppBusinessAccount extends AbstractCrudObject {
       'end' => 'datetime',
       'granularity' => 'granularity_enum',
       'metric_types' => 'list<metric_types_enum>',
+      'product_type' => 'product_type_enum',
       'start' => 'datetime',
       'template_ids' => 'list<string>',
     );
@@ -742,9 +1119,15 @@ class WhatsAppBusinessAccount extends AbstractCrudObject {
       ),
       'metric_types_enum' => array(
         'CLICKED',
+        'COST',
         'DELIVERED',
         'READ',
+        'REPLIED',
         'SENT',
+      ),
+      'product_type_enum' => array(
+        'CLOUD_API',
+        'MARKETING_MESSAGES_LITE_API',
       ),
     );
 
@@ -753,6 +1136,94 @@ class WhatsAppBusinessAccount extends AbstractCrudObject {
       $this->data['id'],
       RequestInterface::METHOD_GET,
       '/template_analytics',
+      new AbstractCrudObject(),
+      'EDGE',
+      array(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
+
+  public function getTemplateGroupAnalytics(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+      'end' => 'datetime',
+      'granularity' => 'granularity_enum',
+      'metric_types' => 'list<metric_types_enum>',
+      'start' => 'datetime',
+      'template_group_ids' => 'list<string>',
+    );
+    $enums = array(
+      'granularity_enum' => array(
+        'DAILY',
+      ),
+      'metric_types_enum' => array(
+        'CLICKED',
+        'COST',
+        'DELIVERED',
+        'READ',
+        'REPLIED',
+        'SENT',
+      ),
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_GET,
+      '/template_group_analytics',
+      new AbstractCrudObject(),
+      'EDGE',
+      array(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
+
+  public function getTemplateGroups(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+    );
+    $enums = array(
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_GET,
+      '/template_groups',
+      new AbstractCrudObject(),
+      'EDGE',
+      array(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
+
+  public function createTemplateGroup(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+      'description' => 'string',
+      'name' => 'string',
+      'whatsapp_business_templates' => 'list<string>',
+    );
+    $enums = array(
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_POST,
+      '/template_groups',
       new AbstractCrudObject(),
       'EDGE',
       array(),
@@ -810,6 +1281,31 @@ class WhatsAppBusinessAccount extends AbstractCrudObject {
       new WhatsAppBusinessAccount(),
       'EDGE',
       WhatsAppBusinessAccount::getFieldsEnum()->getValues(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
+
+  public function getWelcomeMessageSequences(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+      'app_id' => 'string',
+      'sequence_id' => 'string',
+    );
+    $enums = array(
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_GET,
+      '/welcome_message_sequences',
+      new CTXPartnerAppWelcomeMessageFlow(),
+      'EDGE',
+      CTXPartnerAppWelcomeMessageFlow::getFieldsEnum()->getValues(),
       new TypeChecker($param_types, $enums)
     );
     $request->addParams($params);

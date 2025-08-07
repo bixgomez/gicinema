@@ -3,7 +3,7 @@
         'name' => 'facebook/pixel-for-wordpress',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'af8baf6a81862fe1a24695291665020233a23ac8',
+        'reference' => 'c7a552be4f817b70eb8bbe4fff83f16682dadeaa',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'facebook/php-business-sdk' => array(
-            'pretty_version' => '19.0.3',
-            'version' => '19.0.3.0',
-            'reference' => 'f3eb099fa895ff6b5ddd98ba993982c2803b22d3',
+            'pretty_version' => '22.0.0',
+            'version' => '22.0.0.0',
+            'reference' => 'c83b450089c557a1c64960103f3c658a429bb525',
             'type' => 'library',
             'install_path' => __DIR__ . '/../facebook/php-business-sdk',
             'aliases' => array(),
@@ -22,7 +22,7 @@
         'facebook/pixel-for-wordpress' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'af8baf6a81862fe1a24695291665020233a23ac8',
+            'reference' => 'c7a552be4f817b70eb8bbe4fff83f16682dadeaa',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

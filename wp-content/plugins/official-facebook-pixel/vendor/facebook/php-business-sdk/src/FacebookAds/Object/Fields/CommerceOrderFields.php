@@ -24,6 +24,7 @@ class CommerceOrderFields extends AbstractEnum {
 
   const BUYER_DETAILS = 'buyer_details';
   const CHANNEL = 'channel';
+  const CONTAINS_BOPIS_ITEMS = 'contains_bopis_items';
   const CREATED = 'created';
   const ESTIMATED_PAYMENT_DETAILS = 'estimated_payment_details';
   const ID = 'id';
@@ -32,6 +33,7 @@ class CommerceOrderFields extends AbstractEnum {
   const LAST_UPDATED = 'last_updated';
   const MERCHANT_ORDER_ID = 'merchant_order_id';
   const ORDER_STATUS = 'order_status';
+  const PRE_ORDER_DETAILS = 'pre_order_details';
   const SELECTED_SHIPPING_OPTION = 'selected_shipping_option';
   const SHIP_BY_DATE = 'ship_by_date';
   const SHIPPING_ADDRESS = 'shipping_address';
@@ -40,6 +42,7 @@ class CommerceOrderFields extends AbstractEnum {
     return array(
       'buyer_details' => 'Object',
       'channel' => 'string',
+      'contains_bopis_items' => 'bool',
       'created' => 'string',
       'estimated_payment_details' => 'Object',
       'id' => 'string',
@@ -48,6 +51,7 @@ class CommerceOrderFields extends AbstractEnum {
       'last_updated' => 'string',
       'merchant_order_id' => 'string',
       'order_status' => 'Object',
+      'pre_order_details' => 'Object',
       'selected_shipping_option' => 'Object',
       'ship_by_date' => 'string',
       'shipping_address' => 'Object',

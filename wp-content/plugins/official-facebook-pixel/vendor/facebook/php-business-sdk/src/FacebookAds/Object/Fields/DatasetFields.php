@@ -23,10 +23,12 @@ use FacebookAds\Enum\AbstractEnum;
 class DatasetFields extends AbstractEnum {
 
   const ID = 'id';
+  const NAME = 'name';
 
   public function getFieldTypes() {
     return array(
       'id' => 'string',
+      'name' => 'string',
     );
   }
 }

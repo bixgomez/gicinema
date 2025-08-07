@@ -121,13 +121,26 @@ function filmCard($filmPostId, $classes='film') {
                 <a class="film-button" href="<?php echo $trailer; ?>" target="_blank"><span>View </span>Trailer</a>
               </div>
             <?php endif; ?>
+
             <?php if ($ticketPurchaseLink != '') : ?>
               <div class="film-card--buy-tickets">
                 <a class="film-button" href="<?php echo $ticketPurchaseLink; ?>" target="_blank"><span>Buy </span>Tickets</a>
               </div>
             <?php endif; ?>
-          </div>
 
+            <?php if (have_rows('custom_ticket_purchase_links')) : ?>
+              <?php while (have_rows('custom_ticket_purchase_links')) : the_row(); 
+                $link = get_sub_field('custom_purchase_link'); 
+                if ($link) : ?>
+                  <div class="film-card--buy-tickets">
+                    <a class="film-button" href="<?php echo $link['url']; ?>" target="<?php echo $link['target']; ?>">
+                      <span><?php echo $link['title']; ?></span>
+                    </a>
+                  </div>
+                <?php endif; ?>
+              <?php endwhile; ?>
+            <?php endif; ?>
+          </div>
         </div>
 
         <?php 

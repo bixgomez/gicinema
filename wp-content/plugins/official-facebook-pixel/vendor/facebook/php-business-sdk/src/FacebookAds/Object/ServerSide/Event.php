@@ -52,6 +52,8 @@ class Event implements ArrayAccess {
     'app_data' => 'FacebookAds\Object\ServerSide\AppData',
     'advanced_measurement_table' => 'string',
     'messaging_channel' => 'string',
+    'original_event_data' => 'FacebookAds\Object\ServerSide\OriginalEventData',
+    'attribution_data' => 'FacebookAds\Object\ServerSide\AttributionData',
   );
   /**
    * Array of attributes where the key is the local name, and the value is the original name
@@ -72,6 +74,8 @@ class Event implements ArrayAccess {
     'app_data' => 'app_data',
     'advanced_measurement_table' => 'advanced_measurement_table',
     'messaging_channel' => 'messaging_channel',
+    'original_event_data' => 'original_event_data',
+    'attribution_data' => 'attribution_data',
   );
 
   /**
@@ -93,6 +97,8 @@ class Event implements ArrayAccess {
     'app_data' => 'setAppData',
     'advanced_measurement_table' => 'setAdvancedMeasurementTable',
     'messaging_channel' => 'setMessagingChannel',
+    'original_event_data' => 'setOriginalEventData',
+    'attribution_data' => 'setAttributionData',
   );
   /**
    * Array of attributes to getter functions (for serialization of requests)
@@ -113,6 +119,8 @@ class Event implements ArrayAccess {
     'app_data' => 'getAppData',
     'advanced_measurement_table' => 'getAdvancedMeasurementTable',
     'messaging_channel' => 'getMessagingChannel',
+    'original_event_data' => 'getOriginalEventData',
+    'attribution_data' => 'getAttributionData',
   );
   /**
    * Associative array for storing property values
@@ -124,7 +132,7 @@ class Event implements ArrayAccess {
    * Constructor
    * @param mixed[] $data Associated array of property value initializing the model
    */
-  public function __construct(array $data = null) {
+  public function __construct(?array $data = null) {
     $this->container['event_name'] = isset($data['event_name']) ? $data['event_name'] : null;
     $this->container['event_time'] = isset($data['event_time']) ? $data['event_time'] : null;
     $this->container['event_source_url'] = isset($data['event_source_url']) ? $data['event_source_url'] : null;
@@ -139,6 +147,8 @@ class Event implements ArrayAccess {
     $this->container['app_data'] = isset($data['app_data']) ? $data['app_data'] : null;
     $this->container['advanced_measurement_table'] = isset($data['advanced_measurement_table']) ? $data['advanced_measurement_table'] : null;
     $this->container['messaging_channel'] = isset($data['messaging_channel']) ? $data['messaging_channel'] : null;
+    $this->container['original_event_data'] = isset($data['original_event_data']) ? $data['original_event_data'] : null;
+    $this->container['attribution_data'] = isset($data['attribution_data']) ? $data['attribution_data'] : null;
   }
 
   public static function paramTypes() {
@@ -258,7 +268,7 @@ class Event implements ArrayAccess {
 
   /**
    * Sets UserData object that contains user data.
-   * @param FacebookAds\Object\ServerSide\UserData $user_data
+   * @param \FacebookAds\Object\ServerSide\UserData $user_data
    * @return $this
    */
   public function setUserData($user_data) {
@@ -269,7 +279,7 @@ class Event implements ArrayAccess {
 
   /**
    * Sets CustomData object that includes additional business data about the event.
-   * @param FacebookAds\Object\ServerSide\CustomData $custom_data
+   * @param \FacebookAds\Object\ServerSide\CustomData $custom_data
    * @return $this
    */
   public function setCustomData($custom_data) {
@@ -414,6 +424,8 @@ class Event implements ArrayAccess {
       $normalized_payload['opt_out'] = $this->getOptOut();
     }
     $normalized_payload['app_data'] = isset($this->container['app_data']) ? $this->getAppData()->normalize() : null;
+    $normalized_payload['original_event_data'] = isset($this->container['original_event_data']) ? $this->getOriginalEventData()->normalize() : null;
+    $normalized_payload['attribution_data'] = isset($this->container['attribution_data']) ? $this->getAttributionData()->normalize() : null;
     return $normalized_payload;
   }
 
@@ -461,7 +473,7 @@ class Event implements ArrayAccess {
 
   /**
    * Gets UserData object that contains user data
-   * @return FacebookAds\Object\ServerSide\UserData
+   * @return \FacebookAds\Object\ServerSide\UserData
    */
   public function getUserData() {
     return $this->container['user_data'];
@@ -469,7 +481,7 @@ class Event implements ArrayAccess {
 
   /**
    * Gets customData object that includes additional business data about the event.
-   * @return FacebookAds\Object\ServerSide\CustomData
+   * @return \FacebookAds\Object\ServerSide\CustomData
    */
   public function getCustomData() {
     return $this->container['custom_data'];
@@ -539,6 +551,40 @@ class Event implements ArrayAccess {
    */
   public function getMessagingChannel() {
     return $this->container['messaging_channel'];
+  }
+
+  /**
+   * Sets the original event data of the event.
+   * @return $this
+   */
+  public function setOriginalEventData($original_event_data) {
+    $this->container['original_event_data'] = $original_event_data;
+    return $this;
+  }
+
+  /**
+   * Return the original event data of the event.
+   * @return OriginalEventData
+   */
+  public function getOriginalEventData() {
+    return $this->container['original_event_data'];
+  }
+
+  /**
+   * Sets the attribution data of the event.
+   * @return $this
+   */
+  public function setAttributionData($attribute_data) {
+    $this->container['attribute_data'] = $attribute_data;
+    return $this;
+  }
+
+  /**
+   * Return the attribution data of the event.
+   * @return AttributionData
+   */
+  public function getAttributionData() {
+    return $this->container['attribution_data'];
   }
 
   /**

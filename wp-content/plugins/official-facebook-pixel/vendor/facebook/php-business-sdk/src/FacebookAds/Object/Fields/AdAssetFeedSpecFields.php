@@ -26,12 +26,15 @@ class AdAssetFeedSpecFields extends AbstractEnum {
   const ADDITIONAL_DATA = 'additional_data';
   const APP_PRODUCT_PAGE_ID = 'app_product_page_id';
   const ASSET_CUSTOMIZATION_RULES = 'asset_customization_rules';
+  const AUDIOS = 'audios';
   const AUTOTRANSLATE = 'autotranslate';
   const BODIES = 'bodies';
+  const CALL_ADS_CONFIGURATION = 'call_ads_configuration';
   const CALL_TO_ACTION_TYPES = 'call_to_action_types';
   const CALL_TO_ACTIONS = 'call_to_actions';
   const CAPTIONS = 'captions';
   const CAROUSELS = 'carousels';
+  const CTWA_CONSENT_DATA = 'ctwa_consent_data';
   const DESCRIPTIONS = 'descriptions';
   const EVENTS = 'events';
   const GROUPS = 'groups';
@@ -44,6 +47,7 @@ class AdAssetFeedSpecFields extends AbstractEnum {
   const REASONS_TO_SHOP = 'reasons_to_shop';
   const SHOPS_BUNDLE = 'shops_bundle';
   const TITLES = 'titles';
+  const UPCOMING_EVENTS = 'upcoming_events';
   const VIDEOS = 'videos';
 
   public function getFieldTypes() {
@@ -52,12 +56,15 @@ class AdAssetFeedSpecFields extends AbstractEnum {
       'additional_data' => 'AdAssetFeedAdditionalData',
       'app_product_page_id' => 'string',
       'asset_customization_rules' => 'list<AdAssetFeedSpecAssetCustomizationRule>',
+      'audios' => 'list<Object>',
       'autotranslate' => 'list<string>',
       'bodies' => 'list<AdAssetFeedSpecBody>',
+      'call_ads_configuration' => 'Object',
       'call_to_action_types' => 'list<CallToActionTypes>',
       'call_to_actions' => 'list<AdAssetFeedSpecCallToAction>',
       'captions' => 'list<AdAssetFeedSpecCaption>',
       'carousels' => 'list<AdAssetFeedSpecCarousel>',
+      'ctwa_consent_data' => 'list<Object>',
       'descriptions' => 'list<AdAssetFeedSpecDescription>',
       'events' => 'list<AdAssetFeedSpecEvents>',
       'groups' => 'list<AdAssetFeedSpecGroupRule>',
@@ -70,6 +77,7 @@ class AdAssetFeedSpecFields extends AbstractEnum {
       'reasons_to_shop' => 'bool',
       'shops_bundle' => 'bool',
       'titles' => 'list<AdAssetFeedSpecTitle>',
+      'upcoming_events' => 'list<Object>',
       'videos' => 'list<AdAssetFeedSpecVideo>',
     );
   }

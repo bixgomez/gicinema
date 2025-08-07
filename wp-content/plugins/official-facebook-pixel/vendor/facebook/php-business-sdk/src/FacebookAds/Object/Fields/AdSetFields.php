@@ -33,6 +33,7 @@ class AdSetFields extends AbstractEnum {
   const BID_INFO = 'bid_info';
   const BID_STRATEGY = 'bid_strategy';
   const BILLING_EVENT = 'billing_event';
+  const BRAND_SAFETY_CONFIG = 'brand_safety_config';
   const BUDGET_REMAINING = 'budget_remaining';
   const CAMPAIGN = 'campaign';
   const CAMPAIGN_ACTIVE_TIME = 'campaign_active_time';
@@ -53,7 +54,7 @@ class AdSetFields extends AbstractEnum {
   const FREQUENCY_CONTROL_SPECS = 'frequency_control_specs';
   const FULL_FUNNEL_EXPLORATION_MODE = 'full_funnel_exploration_mode';
   const ID = 'id';
-  const INSTAGRAM_ACTOR_ID = 'instagram_actor_id';
+  const INSTAGRAM_USER_ID = 'instagram_user_id';
   const IS_BUDGET_SCHEDULE_ENABLED = 'is_budget_schedule_enabled';
   const IS_DYNAMIC_CREATIVE = 'is_dynamic_creative';
   const ISSUES_INFO = 'issues_info';
@@ -62,6 +63,8 @@ class AdSetFields extends AbstractEnum {
   const LIFETIME_IMPS = 'lifetime_imps';
   const LIFETIME_MIN_SPEND_TARGET = 'lifetime_min_spend_target';
   const LIFETIME_SPEND_CAP = 'lifetime_spend_cap';
+  const MAX_BUDGET_SPEND_PERCENTAGE = 'max_budget_spend_percentage';
+  const MIN_BUDGET_SPEND_PERCENTAGE = 'min_budget_spend_percentage';
   const MULTI_OPTIMIZATION_GOAL_WEIGHT = 'multi_optimization_goal_weight';
   const NAME = 'name';
   const OPTIMIZATION_GOAL = 'optimization_goal';
@@ -70,6 +73,7 @@ class AdSetFields extends AbstractEnum {
   const PROMOTED_OBJECT = 'promoted_object';
   const RECOMMENDATIONS = 'recommendations';
   const RECURRING_BUDGET_SEMANTICS = 'recurring_budget_semantics';
+  const REGIONAL_REGULATED_CATEGORIES = 'regional_regulated_categories';
   const REGIONAL_REGULATION_IDENTITIES = 'regional_regulation_identities';
   const REVIEW_FEEDBACK = 'review_feedback';
   const RF_PREDICTION_ID = 'rf_prediction_id';
@@ -87,6 +91,7 @@ class AdSetFields extends AbstractEnum {
   const DAILY_IMPS = 'daily_imps';
   const DATE_FORMAT = 'date_format';
   const EXECUTION_OPTIONS = 'execution_options';
+  const IS_SAC_CFCA_TERMS_CERTIFIED = 'is_sac_cfca_terms_certified';
   const LINE_NUMBER = 'line_number';
   const RB_PREDICTION_ID = 'rb_prediction_id';
   const TIME_START = 'time_start';
@@ -107,6 +112,7 @@ class AdSetFields extends AbstractEnum {
       'bid_info' => 'map<string, unsigned int>',
       'bid_strategy' => 'BidStrategy',
       'billing_event' => 'BillingEvent',
+      'brand_safety_config' => 'BrandSafetyCampaignConfig',
       'budget_remaining' => 'string',
       'campaign' => 'Campaign',
       'campaign_active_time' => 'string',
@@ -127,7 +133,7 @@ class AdSetFields extends AbstractEnum {
       'frequency_control_specs' => 'list<AdCampaignFrequencyControlSpecs>',
       'full_funnel_exploration_mode' => 'string',
       'id' => 'string',
-      'instagram_actor_id' => 'string',
+      'instagram_user_id' => 'string',
       'is_budget_schedule_enabled' => 'bool',
       'is_dynamic_creative' => 'bool',
       'issues_info' => 'list<AdCampaignIssuesInfo>',
@@ -136,6 +142,8 @@ class AdSetFields extends AbstractEnum {
       'lifetime_imps' => 'int',
       'lifetime_min_spend_target' => 'string',
       'lifetime_spend_cap' => 'string',
+      'max_budget_spend_percentage' => 'string',
+      'min_budget_spend_percentage' => 'string',
       'multi_optimization_goal_weight' => 'string',
       'name' => 'string',
       'optimization_goal' => 'OptimizationGoal',
@@ -144,7 +152,8 @@ class AdSetFields extends AbstractEnum {
       'promoted_object' => 'AdPromotedObject',
       'recommendations' => 'list<AdRecommendation>',
       'recurring_budget_semantics' => 'bool',
-      'regional_regulation_identities' => 'Object',
+      'regional_regulated_categories' => 'list<string>',
+      'regional_regulation_identities' => 'RegionalRegulationIdentities',
       'review_feedback' => 'string',
       'rf_prediction_id' => 'string',
       'source_adset' => 'AdSet',
@@ -161,6 +170,7 @@ class AdSetFields extends AbstractEnum {
       'daily_imps' => 'unsigned int',
       'date_format' => 'string',
       'execution_options' => 'list<ExecutionOptions>',
+      'is_sac_cfca_terms_certified' => 'bool',
       'line_number' => 'unsigned int',
       'rb_prediction_id' => 'string',
       'time_start' => 'datetime',

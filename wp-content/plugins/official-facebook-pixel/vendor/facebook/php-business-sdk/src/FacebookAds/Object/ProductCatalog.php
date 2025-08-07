@@ -15,6 +15,7 @@ use FacebookAds\Http\RequestInterface;
 use FacebookAds\TypeChecker;
 use FacebookAds\Object\Fields\ProductCatalogFields;
 use FacebookAds\Object\Values\CheckBatchRequestStatusErrorPriorityValues;
+use FacebookAds\Object\Values\CreatorAssetCreativeModerationStatusValues;
 use FacebookAds\Object\Values\ProductCatalogAdditionalVerticalOptionValues;
 use FacebookAds\Object\Values\ProductCatalogCategoryCategorizationCriteriaValues;
 use FacebookAds\Object\Values\ProductCatalogDataSourceIngestionSourceTypeValues;
@@ -148,6 +149,7 @@ class ProductCatalog extends AbstractCrudObject {
       'business' => 'string',
       'permitted_roles' => 'list<permitted_roles_enum>',
       'permitted_tasks' => 'list<permitted_tasks_enum>',
+      'skip_defaults' => 'bool',
       'utm_settings' => 'map',
     );
     $enums = array(
@@ -300,7 +302,7 @@ class ProductCatalog extends AbstractCrudObject {
     $this->assureId();
 
     $param_types = array(
-      'page' => 'int',
+      'page' => 'string',
     );
     $enums = array(
     );
@@ -397,29 +399,6 @@ class ProductCatalog extends AbstractCrudObject {
     return $pending ? $request : $request->execute();
   }
 
-  public function getCollaborativeAdsEventStats(array $fields = array(), array $params = array(), $pending = false) {
-    $this->assureId();
-
-    $param_types = array(
-    );
-    $enums = array(
-    );
-
-    $request = new ApiRequest(
-      $this->api,
-      $this->data['id'],
-      RequestInterface::METHOD_GET,
-      '/collaborative_ads_event_stats',
-      new CatalogSegmentAllMatchCountLaser(),
-      'EDGE',
-      CatalogSegmentAllMatchCountLaser::getFieldsEnum()->getValues(),
-      new TypeChecker($param_types, $enums)
-    );
-    $request->addParams($params);
-    $request->addFields($fields);
-    return $pending ? $request : $request->execute();
-  }
-
   public function getCollaborativeAdsLsbImageBank(array $fields = array(), array $params = array(), $pending = false) {
     $this->assureId();
 
@@ -433,9 +412,9 @@ class ProductCatalog extends AbstractCrudObject {
       $this->data['id'],
       RequestInterface::METHOD_GET,
       '/collaborative_ads_lsb_image_bank',
-      new AbstractCrudObject(),
+      new CPASLsbImageBank(),
       'EDGE',
-      array(),
+      CPASLsbImageBank::getFieldsEnum()->getValues(),
       new TypeChecker($param_types, $enums)
     );
     $request->addParams($params);
@@ -482,9 +461,34 @@ class ProductCatalog extends AbstractCrudObject {
       $this->data['id'],
       RequestInterface::METHOD_POST,
       '/cpas_lsb_image_bank',
-      new AbstractCrudObject(),
+      new CPASLsbImageBank(),
       'EDGE',
-      array(),
+      CPASLsbImageBank::getFieldsEnum()->getValues(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
+
+  public function getCreatorAssetCreatives(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+      'moderation_status' => 'moderation_status_enum',
+    );
+    $enums = array(
+      'moderation_status_enum' => CreatorAssetCreativeModerationStatusValues::getInstance()->getValues(),
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_GET,
+      '/creator_asset_creatives',
+      new CreatorAssetCreative(),
+      'EDGE',
+      CreatorAssetCreative::getFieldsEnum()->getValues(),
       new TypeChecker($param_types, $enums)
     );
     $request->addParams($params);
@@ -930,6 +934,30 @@ class ProductCatalog extends AbstractCrudObject {
     return $pending ? $request : $request->execute();
   }
 
+  public function createMarketPlacePartnerSellersDetail(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+      'requests' => 'map',
+    );
+    $enums = array(
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_POST,
+      '/marketplace_partner_sellers_details',
+      new ProductCatalog(),
+      'EDGE',
+      ProductCatalog::getFieldsEnum()->getValues(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
+
   public function getPricingVariablesBatch(array $fields = array(), array $params = array(), $pending = false) {
     $this->assureId();
 
@@ -1219,7 +1247,6 @@ class ProductCatalog extends AbstractCrudObject {
 
     $param_types = array(
       'additional_image_urls' => 'list<string>',
-      'additional_uploaded_image_ids' => 'list<string>',
       'additional_variant_attributes' => 'map',
       'android_app_name' => 'string',
       'android_class' => 'string',
@@ -1274,6 +1301,11 @@ class ProductCatalog extends AbstractCrudObject {
       'origin_country' => 'origin_country_enum',
       'pattern' => 'string',
       'price' => 'unsigned int',
+      'product_priority_0' => 'float',
+      'product_priority_1' => 'float',
+      'product_priority_2' => 'float',
+      'product_priority_3' => 'float',
+      'product_priority_4' => 'float',
       'product_type' => 'string',
       'quantity_to_sell_on_facebook' => 'unsigned int',
       'retailer_id' => 'string',
@@ -1429,6 +1461,29 @@ class ProductCatalog extends AbstractCrudObject {
     return $pending ? $request : $request->execute();
   }
 
+  public function getVersionConfigs(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+    );
+    $enums = array(
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_GET,
+      '/version_configs',
+      new CatalogContentVersionConfig(),
+      'EDGE',
+      CatalogContentVersionConfig::getFieldsEnum()->getValues(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
+
   public function createVersionItemsBatch(array $fields = array(), array $params = array(), $pending = false) {
     $this->assureId();
 
@@ -1494,7 +1549,6 @@ class ProductCatalog extends AbstractCrudObject {
         'COLLAB_ADS',
         'COLLAB_ADS_FOR_MARKETPLACE_PARTNER',
         'COLLAB_ADS_SEGMENT_WITHOUT_SEGMENT_SYNCING',
-        'CREATORS_AS_SELLERS',
         'DIGITAL_CIRCULARS',
         'FB_LIVE_SHOPPING',
         'IG_SHOPPING',

@@ -2,17 +2,17 @@
     "packages": [
         {
             "name": "facebook/php-business-sdk",
-            "version": "19.0.3",
-            "version_normalized": "19.0.3.0",
+            "version": "22.0.0",
+            "version_normalized": "22.0.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/facebook/facebook-php-business-sdk.git",
-                "reference": "f3eb099fa895ff6b5ddd98ba993982c2803b22d3"
+                "reference": "c83b450089c557a1c64960103f3c658a429bb525"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/facebook/facebook-php-business-sdk/zipball/f3eb099fa895ff6b5ddd98ba993982c2803b22d3",
-                "reference": "f3eb099fa895ff6b5ddd98ba993982c2803b22d3",
+                "url": "https://api.github.com/repos/facebook/facebook-php-business-sdk/zipball/c83b450089c557a1c64960103f3c658a429bb525",
+                "reference": "c83b450089c557a1c64960103f3c658a429bb525",
                 "shasum": ""
             },
             "require": {
@@ -24,7 +24,7 @@
                 "phpunit/phpunit": "~9",
                 "symfony/finder": "~2.6"
             },
-            "time": "2024-04-15T18:22:25+00:00",
+            "time": "2025-02-13T21:08:40+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -45,7 +45,7 @@
             ],
             "support": {
                 "issues": "https://github.com/facebook/facebook-php-business-sdk/issues",
-                "source": "https://github.com/facebook/facebook-php-business-sdk/tree/19.0.3"
+                "source": "https://github.com/facebook/facebook-php-business-sdk/tree/22.0.0"
             },
             "install-path": "../facebook/php-business-sdk"
         },

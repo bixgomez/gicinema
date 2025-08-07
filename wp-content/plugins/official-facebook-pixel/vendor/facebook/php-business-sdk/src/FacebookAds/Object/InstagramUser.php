@@ -14,6 +14,8 @@ use FacebookAds\Cursor;
 use FacebookAds\Http\RequestInterface;
 use FacebookAds\TypeChecker;
 use FacebookAds\Object\Fields\InstagramUserFields;
+use FacebookAds\Object\Values\IGUpcomingEventNotificationSubtypesValues;
+use FacebookAds\Object\Values\IGUpcomingEventNotificationTargetTimeValues;
 
 /**
  * This class is auto-generated.
@@ -75,9 +77,9 @@ class InstagramUser extends AbstractCrudObject {
       $this->data['id'],
       RequestInterface::METHOD_GET,
       '/ar_effects',
-      new AbstractCrudObject(),
+      new AREffect(),
       'EDGE',
-      array(),
+      AREffect::getFieldsEnum()->getValues(),
       new TypeChecker($param_types, $enums)
     );
     $request->addParams($params);
@@ -162,10 +164,14 @@ class InstagramUser extends AbstractCrudObject {
 
     $param_types = array(
       'end_time' => 'datetime',
+      'notification_subtypes' => 'list<notification_subtypes_enum>',
+      'notification_target_time' => 'notification_target_time_enum',
       'start_time' => 'datetime',
       'title' => 'string',
     );
     $enums = array(
+      'notification_subtypes_enum' => IGUpcomingEventNotificationSubtypesValues::getInstance()->getValues(),
+      'notification_target_time_enum' => IGUpcomingEventNotificationTargetTimeValues::getInstance()->getValues(),
     );
 
     $request = new ApiRequest(
