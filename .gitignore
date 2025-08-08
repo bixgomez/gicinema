@@ -32,3 +32,4 @@ uploads-webpc
 .ddev
 wp-config-ddev.php
 wp-config-ddev*
+_resources
