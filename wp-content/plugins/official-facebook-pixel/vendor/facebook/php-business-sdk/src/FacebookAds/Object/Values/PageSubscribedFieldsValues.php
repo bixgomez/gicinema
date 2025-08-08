@@ -27,6 +27,7 @@ class PageSubscribedFieldsValues extends AbstractEnum {
   const AWARDS = 'awards';
   const BIO = 'bio';
   const BIRTHDAY = 'birthday';
+  const CALL_PERMISSION_REPLY = 'call_permission_reply';
   const CALLS = 'calls';
   const CATEGORY = 'category';
   const CHECKINS = 'checkins';
@@ -55,6 +56,7 @@ class PageSubscribedFieldsValues extends AbstractEnum {
   const LIVE_VIDEOS = 'live_videos';
   const LOCAL_DELIVERY = 'local_delivery';
   const LOCATION = 'location';
+  const MARKETING_MESSAGE_DELIVERY_FAILED = 'marketing_message_delivery_failed';
   const MCOM_INVOICE_CHANGE = 'mcom_invoice_change';
   const MEMBERS = 'members';
   const MENTION = 'mention';
@@ -66,6 +68,7 @@ class PageSubscribedFieldsValues extends AbstractEnum {
   const MESSAGE_MENTION = 'message_mention';
   const MESSAGE_REACTIONS = 'message_reactions';
   const MESSAGE_READS = 'message_reads';
+  const MESSAGE_TEMPLATE_STATUS_UPDATE = 'message_template_status_update';
   const MESSAGES = 'messages';
   const MESSAGING_ACCOUNT_LINKING = 'messaging_account_linking';
   const MESSAGING_APPOINTMENTS = 'messaging_appointments';
@@ -77,6 +80,7 @@ class PageSubscribedFieldsValues extends AbstractEnum {
   const MESSAGING_GAME_PLAYS = 'messaging_game_plays';
   const MESSAGING_HANDOVERS = 'messaging_handovers';
   const MESSAGING_IN_THREAD_LEAD_FORM_SUBMIT = 'messaging_in_thread_lead_form_submit';
+  const MESSAGING_INTEGRITY = 'messaging_integrity';
   const MESSAGING_OPTINS = 'messaging_optins';
   const MESSAGING_OPTOUTS = 'messaging_optouts';
   const MESSAGING_PAYMENTS = 'messaging_payments';
@@ -86,7 +90,6 @@ class PageSubscribedFieldsValues extends AbstractEnum {
   const MESSAGING_REFERRALS = 'messaging_referrals';
   const MISSION = 'mission';
   const NAME = 'name';
-  const OTP_VERIFICATION = 'otp_verification';
   const PAGE_ABOUT_STORY = 'page_about_story';
   const PAGE_CHANGE_PROPOSAL = 'page_change_proposal';
   const PAGE_UPCOMING_CHANGE = 'page_upcoming_change';

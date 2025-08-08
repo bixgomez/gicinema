@@ -42,6 +42,29 @@ class IGMedia extends AbstractCrudObject {
   }
 
 
+  public function getBoostAdsList(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+    );
+    $enums = array(
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_GET,
+      '/boost_ads_list',
+      new IGBoostMediaAd(),
+      'EDGE',
+      IGBoostMediaAd::getFieldsEnum()->getValues(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
+
   public function getBrandedContentPartnerPromote(array $fields = array(), array $params = array(), $pending = false) {
     $this->assureId();
 
@@ -212,12 +235,10 @@ class IGMedia extends AbstractCrudObject {
     return $pending ? $request : $request->execute();
   }
 
-  public function deleteProductTags(array $fields = array(), array $params = array(), $pending = false) {
+  public function deletePartnershipAdCode(array $fields = array(), array $params = array(), $pending = false) {
     $this->assureId();
 
     $param_types = array(
-      'child_index' => 'unsigned int',
-      'deleted_tags' => 'list<map>',
     );
     $enums = array(
     );
@@ -226,7 +247,30 @@ class IGMedia extends AbstractCrudObject {
       $this->api,
       $this->data['id'],
       RequestInterface::METHOD_DELETE,
-      '/product_tags',
+      '/partnership_ad_code',
+      new AbstractCrudObject(),
+      'EDGE',
+      array(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
+
+  public function createPartnershipAdCode(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+    );
+    $enums = array(
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_POST,
+      '/partnership_ad_code',
       new AbstractCrudObject(),
       'EDGE',
       array(),
@@ -289,6 +333,8 @@ class IGMedia extends AbstractCrudObject {
     $this->assureId();
 
     $param_types = array(
+      'ad_account_id' => 'unsigned int',
+      'business_id' => 'string',
       'primary_fb_page_id' => 'string',
       'primary_ig_user_id' => 'string',
       'secondary_fb_page_id' => 'string',

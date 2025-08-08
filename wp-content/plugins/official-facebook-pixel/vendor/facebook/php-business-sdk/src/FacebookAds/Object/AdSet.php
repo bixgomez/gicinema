@@ -30,6 +30,7 @@ use FacebookAds\Object\Values\AdSetMultiOptimizationGoalWeightValues;
 use FacebookAds\Object\Values\AdSetOperatorValues;
 use FacebookAds\Object\Values\AdSetOptimizationGoalValues;
 use FacebookAds\Object\Values\AdSetOptimizationSubEventValues;
+use FacebookAds\Object\Values\AdSetRegionalRegulatedCategoriesValues;
 use FacebookAds\Object\Values\AdSetStatusOptionValues;
 use FacebookAds\Object\Values\AdSetStatusValues;
 use FacebookAds\Object\Values\AdSetTuneForCategoryValues;
@@ -41,6 +42,8 @@ use FacebookAds\Object\Values\AdsInsightsDatePresetValues;
 use FacebookAds\Object\Values\AdsInsightsLevelValues;
 use FacebookAds\Object\Values\AdsInsightsSummaryActionBreakdownsValues;
 use FacebookAds\Object\Values\HighDemandPeriodBudgetValueTypeValues;
+use FacebookAds\Object\Values\MessageDeliveryEstimateOptimizationGoalValues;
+use FacebookAds\Object\Values\MessageDeliveryEstimatePacingTypeValues;
 use FacebookAds\Object\Traits\AdLabelAwareCrudObjectTrait;
 use FacebookAds\Object\Traits\ObjectValidation;
 
@@ -87,6 +90,7 @@ class AdSet extends AbstractArchivableCrudObject
     $ref_enums['FullFunnelExplorationMode'] = AdSetFullFunnelExplorationModeValues::getInstance()->getValues();
     $ref_enums['MultiOptimizationGoalWeight'] = AdSetMultiOptimizationGoalWeightValues::getInstance()->getValues();
     $ref_enums['OptimizationSubEvent'] = AdSetOptimizationSubEventValues::getInstance()->getValues();
+    $ref_enums['RegionalRegulatedCategories'] = AdSetRegionalRegulatedCategoriesValues::getInstance()->getValues();
     $ref_enums['TuneForCategory'] = AdSetTuneForCategoryValues::getInstance()->getValues();
     $ref_enums['Operator'] = AdSetOperatorValues::getInstance()->getValues();
     $ref_enums['StatusOption'] = AdSetStatusOptionValues::getInstance()->getValues();
@@ -517,6 +521,38 @@ class AdSet extends AbstractArchivableCrudObject
     return $pending ? $request : $request->execute();
   }
 
+  public function getMessageDeliveryEstimate(array $fields = array(), array $params = array(), $pending = false) {
+    $this->assureId();
+
+    $param_types = array(
+      'bid_amount' => 'unsigned int',
+      'lifetime_budget' => 'unsigned int',
+      'lifetime_in_days' => 'unsigned int',
+      'optimization_goal' => 'optimization_goal_enum',
+      'pacing_type' => 'pacing_type_enum',
+      'promoted_object' => 'Object',
+      'targeting_spec' => 'Targeting',
+    );
+    $enums = array(
+      'optimization_goal_enum' => MessageDeliveryEstimateOptimizationGoalValues::getInstance()->getValues(),
+      'pacing_type_enum' => MessageDeliveryEstimatePacingTypeValues::getInstance()->getValues(),
+    );
+
+    $request = new ApiRequest(
+      $this->api,
+      $this->data['id'],
+      RequestInterface::METHOD_GET,
+      '/message_delivery_estimate',
+      new MessageDeliveryEstimate(),
+      'EDGE',
+      MessageDeliveryEstimate::getFieldsEnum()->getValues(),
+      new TypeChecker($param_types, $enums)
+    );
+    $request->addParams($params);
+    $request->addFields($fields);
+    return $pending ? $request : $request->execute();
+  }
+
   public function getTargetingSentenceLines(array $fields = array(), array $params = array(), $pending = false) {
     $this->assureId();
 
@@ -640,10 +676,13 @@ class AdSet extends AbstractArchivableCrudObject
       'execution_options' => 'list<execution_options_enum>',
       'existing_customer_budget_percentage' => 'unsigned int',
       'full_funnel_exploration_mode' => 'full_funnel_exploration_mode_enum',
+      'is_sac_cfca_terms_certified' => 'bool',
       'lifetime_budget' => 'unsigned int',
       'lifetime_imps' => 'unsigned int',
       'lifetime_min_spend_target' => 'unsigned int',
       'lifetime_spend_cap' => 'unsigned int',
+      'max_budget_spend_percentage' => 'unsigned int',
+      'min_budget_spend_percentage' => 'unsigned int',
       'multi_optimization_goal_weight' => 'multi_optimization_goal_weight_enum',
       'name' => 'string',
       'optimization_goal' => 'optimization_goal_enum',
@@ -651,6 +690,8 @@ class AdSet extends AbstractArchivableCrudObject
       'pacing_type' => 'list<string>',
       'promoted_object' => 'Object',
       'rb_prediction_id' => 'string',
+      'regional_regulated_categories' => 'list<regional_regulated_categories_enum>',
+      'regional_regulation_identities' => 'map',
       'rf_prediction_id' => 'string',
       'start_time' => 'datetime',
       'status' => 'status_enum',
@@ -670,6 +711,7 @@ class AdSet extends AbstractArchivableCrudObject
       'multi_optimization_goal_weight_enum' => AdSetMultiOptimizationGoalWeightValues::getInstance()->getValues(),
       'optimization_goal_enum' => AdSetOptimizationGoalValues::getInstance()->getValues(),
       'optimization_sub_event_enum' => AdSetOptimizationSubEventValues::getInstance()->getValues(),
+      'regional_regulated_categories_enum' => AdSetRegionalRegulatedCategoriesValues::getInstance()->getValues(),
       'status_enum' => AdSetStatusValues::getInstance()->getValues(),
       'tune_for_category_enum' => AdSetTuneForCategoryValues::getInstance()->getValues(),
     );
