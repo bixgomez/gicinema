@@ -1,13 +1,15 @@
-<?php 
+<?php
 
 // If this file is called directly, abort!
 defined('ABSPATH') or die('Unauthorized Access');
 
 function gicinema__dedupe_screenings_table() {
-    // CSRF Protection - always required since this only runs from forms
-    if (!isset($_POST['dedupe_nonce']) || !wp_verify_nonce($_POST['dedupe_nonce'], 'dedupe_screenings_action')) {
-        echo '<div class="notice notice-error"><p>Security check failed</p></div>';
-        return;
+    // CSRF Protection - only when called directly via admin form
+    if (isset($_POST['confirm_dedupe'])) {
+        if (!isset($_POST['dedupe_nonce']) || !wp_verify_nonce($_POST['dedupe_nonce'], 'dedupe_screenings_action')) {
+            echo '<div class="notice notice-error"><p>Security check failed</p></div>';
+            return;
+        }
     }
 
     echo '<div class="function-info">';
@@ -15,9 +17,9 @@ function gicinema__dedupe_screenings_table() {
     echo '<h4>Deduping the custom screenings table</h4>';
 
     echo '<div class="function-info">';
-    
+
     echo '<div>Running <i>gicinema__dedupe_screenings_table()</i></div>';
-    
+
     echo '<div>Deduping custom screenings table.</div>';
 
     global $wpdb;
@@ -35,7 +37,7 @@ function gicinema__dedupe_screenings_table() {
     ";
 
     $rows_affected = $wpdb->query($query);
-  
+
     // Check if the deletion was successful
     if ($rows_affected !== false) {
         // If rows were affected, deletion was successful
@@ -51,5 +53,4 @@ function gicinema__dedupe_screenings_table() {
 
     echo "</div>";
     echo "</div>";
-
 }
