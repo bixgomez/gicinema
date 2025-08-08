@@ -1,7 +1,9 @@
 <?php
 
 // If this file is called directly, abort!
-defined('ABSPATH') or die('Unauthorized Access');
+if (!defined('ABSPATH')) {
+  exit;
+}
 
 require_once "function__truncate_screenings_table.php";
 

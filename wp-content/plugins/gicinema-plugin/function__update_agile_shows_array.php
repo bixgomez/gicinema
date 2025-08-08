@@ -1,7 +1,9 @@
 <?php
 
 // If this file is called directly, abort!
-defined('ABSPATH') or die('Unauthorized Access');
+if (!defined('ABSPATH')) {
+  exit;
+}
 
 // Function that fetches and stores the Agile data as a transient.
 function gicinema__update_agile_shows_array() {

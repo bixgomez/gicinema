@@ -1,7 +1,9 @@
 <?php
 
 // If this file is called directly, abort!
-defined('ABSPATH') or die('Unauthorized Access');
+if (!defined('ABSPATH')) {
+  exit;
+}
 
 if (defined('WP_LOCAL_DEV') && WP_LOCAL_DEV) {
 

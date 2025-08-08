@@ -1,7 +1,9 @@
-<?php 
+<?php
 
 // If this file is called directly, abort!
-defined('ABSPATH') or die('Unauthorized Access');
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 // Loading functions we'll be running as cron jobs.
 require_once "function__import_films_from_agile.php";

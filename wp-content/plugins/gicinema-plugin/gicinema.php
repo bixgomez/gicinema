@@ -10,7 +10,9 @@
  */
 
 // If this file is called directly, abort!
-defined('ABSPATH') or die('Unauthorized Access');
+if (!defined('ABSPATH')) {
+  exit;
+}
 
 // Imports all necessary functions and pages.
 require_once "function__create_custom_table.php";

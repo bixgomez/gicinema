@@ -1,7 +1,9 @@
 <?php
 
 // If this file is called directly, abort!
-defined('ABSPATH') or die('Unauthorized Access');
+if (!defined('ABSPATH')) {
+  exit;
+}
 
 // Define the function that imports screenings from agile for each film.
 function gicinema__import_screenings_from_agile (

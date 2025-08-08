@@ -1,7 +1,9 @@
-<?php 
+<?php
 
 // If this file is called directly, abort!
-defined('ABSPATH') or die('Unauthorized Access');
+if (!defined('ABSPATH')) {
+  exit;
+}
 
 function gicinema__sync_screenings_on_save($post_id, $agile_id, $acf_screenings_array) {
 

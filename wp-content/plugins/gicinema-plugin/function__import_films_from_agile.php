@@ -1,7 +1,9 @@
 <?php
 
 // If this file is called directly, abort!
-defined('ABSPATH') or die('Unauthorized Access');
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 // Import functions that will be needed in this template.
 require_once "function__import_screenings_from_agile.php";

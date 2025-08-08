@@ -1,7 +1,9 @@
 <?php
 
 // If this file is called directly, abort!
-defined('ABSPATH') or die('Unauthorized Access');
+if (!defined('ABSPATH')) {
+  exit;
+}
 
 function gicinema__delete_overnight_screenings() {
   // CSRF Protection - always required since this only runs from forms

@@ -1,7 +1,9 @@
 <?php
 
 // If this file is called directly, abort!
-defined('ABSPATH') or die('Unauthorized Access');
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 function gicinema__dedupe_screenings_table() {
     // CSRF Protection - only when called directly via admin form
