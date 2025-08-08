@@ -31,10 +31,5 @@ function gicinema_enqueue_styles() {
 }
 add_action('admin_enqueue_scripts', 'gicinema_enqueue_styles');
 
-function gicinema_enqueue_js() {
-  wp_enqueue_script('gicinema-custom-js', plugins_url('js/gicinema-plugin.js', __FILE__), array('jquery'), null, true);
-}
-add_action('admin_enqueue_scripts', 'gicinema_enqueue_js');
-
 // Creates the custom screenings table.
 register_activation_hook(__FILE__, 'gicinema__create_custom_table');
