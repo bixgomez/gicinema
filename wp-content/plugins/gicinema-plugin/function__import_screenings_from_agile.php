@@ -50,10 +50,8 @@ function gicinema__import_screenings_from_agile (
   foreach ($agile_screenings as $screening) {
 
     echo '<div class="function-info">';
+    echo '<i>Processing screening=' . $screening . ' for film_id=' . $agile_id . ' and post_id=' . $post_id . '</i>';
 
-    // Prepare the SQL query to check if the row exists
-    echo '<i>Checking the custom table for screening=' . $screening . ' and film_id($agile_id)=' . $agile_id . ' and post_id=' . $post_id . '</i>';
-    
     // Splitting screening into separate date and time strings
     list($screening_date, $screening_time) = explode(" ", $screening);
 
@@ -62,66 +60,21 @@ function gicinema__import_screenings_from_agile (
     echo '<b>Screening date: </b>' . $screening_date . '<br>';
     echo '<b>Screening time: </b>' . $screening_time;
     echo '</div>';
-    
-    $query = $wpdb->prepare(
-        "SELECT COUNT(*) 
-         FROM $table_name 
-         WHERE screening = %s
-         AND screening_date = %s
-         AND screening_time = %s
-         AND film_id = %d 
-         AND post_id = %d",
-        $screening,
-        $screening_date,
-        $screening_time,
-        $agile_id,
-        $post_id
-    );
 
-    // Execute the query
-    $exists = $wpdb->get_var($query);
+    // Single query replaces the SELECT + INSERT/UPDATE logic
+    $result = $wpdb->query($wpdb->prepare(
+      "INSERT INTO $table_name 
+         (screening, screening_date, screening_time, film_id, post_id, status) 
+         VALUES (%s, %s, %s, %d, %d, 1)
+         ON DUPLICATE KEY UPDATE status = 1",
+      $screening,
+      $screening_date,
+      $screening_time,
+      $agile_id,
+      $post_id
+    ));
 
-    // If the row doesn't exist, insert it
-    if ($exists == 0) {
-        echo '<i>The row doesn\'t exist; insert it.</i>';
-        $wpdb->insert(
-            $table_name,
-            array(
-              'screening' => $screening,
-              'screening_date' => $screening_date,
-              'screening_time' => $screening_time,
-              'film_id' => $agile_id,
-              'post_id' => $post_id
-            ),
-            array(
-              '%s', // placeholder for 'screening' field
-              '%s', // placeholder for 'screening_date' field
-              '%s', // placeholder for 'screening_time' field
-              '%d', // placeholder for 'film_id' field
-              '%d'  // placeholder for 'post_id' field
-            )
-        );
-    } else {
-      echo '<i>The row exists; set status to active (1).</i>';
-      $wpdb->update(
-        $table_name,
-        array(
-            'status' => 1,
-        ),
-        array( 
-            'screening' => $screening,
-            'post_id' => $post_id,
-        ),
-        array(
-            '%d',
-        ),
-        array(
-            '%s',
-            '%d'
-        )
-      );
-    }
-
+    echo '<i>Database operation completed.</i>';
     echo '</div>';
   }
 
