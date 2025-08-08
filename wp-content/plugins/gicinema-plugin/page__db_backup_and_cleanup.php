@@ -43,6 +43,7 @@ if (defined('WP_LOCAL_DEV') && WP_LOCAL_DEV) {
         <p><strong>Warning:</strong> This action will back up the current database and delete all backups older than one week. This action is irreversible.</p>
       </div>
       <form method="post">
+        <?php wp_nonce_field('backup_database_action', 'backup_nonce'); ?>
         <input type="hidden" name="confirm_backup" value="yes">
         <input type="submit" class="button button-primary" value="Confirm Database Backup and Cleanup">
       </form>
