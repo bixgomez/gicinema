@@ -7,6 +7,13 @@ require_once "function__dedupe_screenings_table.php";
 require_once "function__sync_screenings.php";
 
 function gicinema__sync_all_screenings() {
+  // CSRF Protection - only when called via admin form
+  if (isset($_POST['confirm_import'])) {
+    if (!isset($_POST['sync_nonce']) || !wp_verify_nonce($_POST['sync_nonce'], 'sync_screenings_action')) {
+      echo '<div class="notice notice-error"><p>Security check failed</p></div>';
+      return;
+    }
+  }
 
   gicinema__dedupe_screenings_table();
 
