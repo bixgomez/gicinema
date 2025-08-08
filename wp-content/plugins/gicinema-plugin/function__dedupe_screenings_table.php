@@ -4,6 +4,11 @@
 defined('ABSPATH') or die('Unauthorized Access');
 
 function gicinema__dedupe_screenings_table() {
+    // CSRF Protection - always required since this only runs from forms
+    if (!isset($_POST['dedupe_nonce']) || !wp_verify_nonce($_POST['dedupe_nonce'], 'dedupe_screenings_action')) {
+        echo '<div class="notice notice-error"><p>Security check failed</p></div>';
+        return;
+    }
 
     echo '<div class="function-info">';
 
