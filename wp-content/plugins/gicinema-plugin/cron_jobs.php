@@ -33,11 +33,7 @@ function gicinema__hook_interval($schedules) {
 }
 add_filter('cron_schedules', 'gicinema__hook_interval');
 
-// Cron job to sync all screenings.
-if (!wp_next_scheduled('cron__sync_all_screenings')) {
-    wp_schedule_event(time(), 'every_128_minutes', 'cron__sync_all_screenings');
-}
-add_action('cron__sync_all_screenings', 'gicinema__sync_all_screenings');
+// Cron job to sync all screenings - REMOVED: now done during import
 
 // Cron job to import films from Agile.
 if (!wp_next_scheduled('cron__import_films_from_agile')) {

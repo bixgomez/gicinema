@@ -219,6 +219,9 @@ function gicinema__import_films_from_agile() {
             $agile_film_id
         );
 
+        // Immediately sync screenings to ACF field so they're visible on frontend
+        gicinema__sync_screenings($post_ID);
+
         echo '</div>';
     }
 
