@@ -20,6 +20,7 @@ require_once "function__update_film_on_save.php";
 require_once "cron_jobs.php";
 require_once "page__admin.php";
 require_once "page__all_film_posts.php";
+require_once "page__update_agile_array.php";
 require_once "page__import_from_agile.php";
 require_once "page__sync_all_screenings.php";
 require_once "page__delete_overnight_screenings.php";
