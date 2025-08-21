@@ -16,8 +16,9 @@ It maintains a custom “screenings” database table, supports automated cron j
   - Syncs screenings automatically via cron or on-demand.
   - Deduplicates screenings to prevent duplicate entries.
 
-- **Admin Tools (under “Grand Illusion Cinema” in WP Admin)**
-  - **Import from Agile**: Manually trigger film and screening imports.
+- **Admin Tools (under "Grand Illusion Cinema" in WP Admin)**
+  - **Update Agile Shows Array**: Manually refreshes cached API data from Agile.
+  - **Import from Agile**: Manually trigger film and screening imports. Now includes immediate sync to ACF fields.
   - **Sync All Screenings**: Re-syncs all screenings from Agile.
   - **View All Film Posts**: Lists all film posts in the system.
   - **Deduplicate Screenings Table**: Removes duplicate screening rows.
@@ -27,18 +28,23 @@ It maintains a custom “screenings” database table, supports automated cron j
   - **Database Backup & Cleanup**: Backs up the screenings table and performs cleanup tasks.
 
 - **Automation**
-  - `cron_jobs.php` schedules regular syncs with Agile.
+  - `cron_jobs.php` schedules regular API data updates and imports.
+  - **Update Agile Shows Array** (every 23 minutes): Refreshes cached API data.
+  - **Import Films from Agile** (every 30 minutes): Imports films and immediately syncs screenings to ACF fields.
+  - **Database Backup & Cleanup** (daily at 9 PM): Backs up and maintains the database.
   - Ensures film and screening data stays current without manual intervention.
 
 ## Data Flow
 
 1. **Agile Ticketing API** →  
-   Raw film and screening data retrieved by `import_films_from_agile` and `import_screenings_from_agile`.
+   Raw film and screening data cached via `update_agile_shows_array`.
 2. **Film Processing** →  
-   Creates or updates WP posts of type `film`.
-3. **Screenings Table** →  
-   Populates or updates the custom MySQL table.
-4. **Sync & Cleanup** →  
+   `import_films_from_agile` creates or updates WP posts of type `film`.
+3. **Screenings Import** →  
+   Populates custom MySQL table with screening times.
+4. **Immediate Sync** →  
+   Screenings are immediately synced from database table to ACF repeater fields.
+5. **Cleanup & Maintenance** →  
    Cron jobs and admin tools handle deduplication, pruning, and backup.
 
 ## Installation
