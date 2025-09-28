@@ -72,24 +72,39 @@ function gicinema__render_matching_screenings($post_id) {
   // 4) Render HTML list
   $html = '';
   $html .= '<h4 style="margin:8px 0 6px;">Matching screenings:</h4>';
-  if (empty($matching)) {
-    $html .= '<p style="margin:0; color:#777;">None</p>';
-    return $html;
-  }
-
   $date_format = get_option('date_format') ?: 'M j, Y';
   $time_format = get_option('time_format') ?: 'g:i a';
-  $html .= '<ul style="margin:0 0 2px 18px; list-style:disc;">';
-  foreach ($matching as $val) {
-    $ts = strtotime($val);
-    if ($ts) {
-      $label = date_i18n($date_format . ' ' . $time_format, $ts);
-    } else {
-      $label = $val; // fallback raw
+  if (empty($matching)) {
+    $html .= '<p style="margin:0; color:#777;">None</p>';
+  } else {
+    $html .= '<ul style="margin:0 0 2px 18px; list-style:disc;">';
+    foreach ($matching as $val) {
+      $ts = strtotime($val);
+      if ($ts) {
+        $label = date_i18n($date_format . ' ' . $time_format, $ts);
+      } else {
+        $label = $val; // fallback raw
+      }
+      $html .= '<li>' . esc_html($label) . '</li>';
     }
-    $html .= '<li>' . esc_html($label) . '</li>';
+    $html .= '</ul>';
   }
-  $html .= '</ul>';
+
+  // 5) Analysis: count superfluous ACF screenings (not present in table)
+  $table_lookup = [];
+  foreach ($table_set as $t) { $table_lookup[$t] = true; }
+  $superfluous_count = 0;
+  foreach ($acf_screenings as $norm) {
+    if (!isset($table_lookup[$norm])) {
+      $superfluous_count++;
+    }
+  }
+
+  if ($superfluous_count > 0) {
+    $html .= '<p style="margin:6px 0 0; color:#b32d2e;"><strong>' . esc_html($superfluous_count) . ' ' . esc_html(_n('Superfluous Screening', 'Superfluous Screenings', $superfluous_count, 'gicinema')) . '</strong></p>';
+  } else {
+    $html .= '<p style="margin:6px 0 0; color:#008a20;"><strong>' . esc_html__('No Superfluous Screenings', 'gicinema') . '</strong></p>';
+  }
 
   return $html;
 }
@@ -135,4 +150,64 @@ function gicinema__render_table_screenings($post_id) {
   $html .= '</ul>';
 
   return $html;
+}
+
+/**
+ * Compute the number of superfluous ACF screenings for a film
+ * i.e., ACF `screenings` entries that are NOT present in the
+ * custom table active set for this post.
+ */
+function gicinema__count_superfluous_screenings($post_id) {
+  if (empty($post_id)) {
+    return 0;
+  }
+
+  global $wpdb;
+  $table_name = $wpdb->prefix . 'gi_screenings';
+  $table_exists = ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table_name)) === $table_name);
+
+  // Build table lookup
+  $table_lookup = [];
+  if ($table_exists) {
+    $rows = $wpdb->get_col($wpdb->prepare(
+      "SELECT screening FROM {$table_name} WHERE post_id = %d AND status = 1",
+      $post_id
+    ));
+    if (is_array($rows)) {
+      foreach ($rows as $r) {
+        if (!empty($r)) {
+          $table_lookup[$r] = true; // normalized already
+        }
+      }
+    }
+  }
+
+  // Collect ACF screenings and normalize
+  $acf_vals = [];
+  if (function_exists('get_field')) {
+    $acf_rows = get_field('screenings', $post_id);
+    if (is_array($acf_rows)) {
+      foreach ($acf_rows as $row) {
+        if (isset($row['screening']) && is_string($row['screening'])) {
+          $dt = DateTime::createFromFormat('m/d/Y g:i a', $row['screening']);
+          if ($dt instanceof DateTime) {
+            $acf_vals[] = $dt->format('Y-m-d H:i:s');
+          } else {
+            $ts = strtotime($row['screening']);
+            if ($ts) {
+              $acf_vals[] = date('Y-m-d H:i:s', $ts);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  $superfluous = 0;
+  foreach ($acf_vals as $norm) {
+    if (!isset($table_lookup[$norm])) {
+      $superfluous++;
+    }
+  }
+  return $superfluous;
 }
