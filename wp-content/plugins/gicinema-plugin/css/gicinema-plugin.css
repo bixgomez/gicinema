@@ -156,3 +156,10 @@ pre {
 .wrap--gicinema > div.warning {
   border-color: red;
 }
+
+/* Simple film edit top box */
+#gicinema-film-top-box.gicinema-admin-box {
+  background: #f8f9fa;
+  border: 1px solid #e2e4e7;
+  padding: 12px 14px;
+}
