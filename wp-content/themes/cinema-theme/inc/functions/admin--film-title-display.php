@@ -42,6 +42,10 @@ add_action('edit_form_after_title', function ($post) {
             'resize'   => false,
             'statusbar'=> false,
             'wp_autoresize_on' => false,
+            // Try to prevent paragraph insertion entirely
+            'forced_root_block' => '',
+            'force_p_newlines'  => false,
+            'force_br_newlines' => true,
         ),
     );
 
@@ -75,7 +79,19 @@ add_action('save_post', function ($post_id) {
     }
 
     $meta_key = 'title_display';
-    $new_val  = isset($_POST[$meta_key]) ? wp_kses_post($_POST[$meta_key]) : '';
+    $raw_val  = isset($_POST[$meta_key]) ? $_POST[$meta_key] : '';
+    if ($raw_val !== '') {
+        // Remove any <p> tags (with or without attributes)
+        $raw_val = preg_replace('#</?p[^>]*>#i', '', $raw_val);
+        // Replace <br>, <br/>, <br /> with a single space
+        $raw_val = preg_replace('#<br\s*/?>#i', ' ', $raw_val);
+        // Replace line breaks and carriage returns with a space
+        $raw_val = preg_replace("/(\r\n|\n|\r)+/", ' ', $raw_val);
+        // Collapse multiple whitespace to a single space and trim
+        $raw_val = preg_replace('/\s{2,}/', ' ', $raw_val);
+        $raw_val = trim($raw_val);
+    }
+    $new_val = $raw_val !== '' ? wp_kses_post($raw_val) : '';
 
     if ($new_val === '') {
         delete_post_meta($post_id, $meta_key);

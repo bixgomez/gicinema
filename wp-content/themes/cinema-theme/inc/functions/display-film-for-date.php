@@ -21,7 +21,14 @@ function displayFilmForDate ($post_id, $date) {
       $get_film_post->the_post();
       $this_link = get_permalink();
       $shortName = get_field('short_name');
-      $displayName = !is_null($shortName) && strlen($shortName) ? $shortName : get_the_title();
+      // Prefer the admin-only Display Title if it has meaningful content; otherwise fall back
+      $titleDisplayRaw = get_post_meta($post_id, 'title_display', true);
+      $titleDisplayStripped = is_string($titleDisplayRaw) ? trim( wp_strip_all_tags( $titleDisplayRaw ) ) : '';
+      if ( $titleDisplayStripped !== '' ) {
+        $displayName = $titleDisplayRaw; // contains limited inline HTML, sanitized on save
+      } else {
+        $displayName = !is_null($shortName) && strlen($shortName) ? $shortName : get_the_title();
+      }
 
       echo '<span class="film-title">' . $displayName . '</span>';
       if (validateDate($date)) :

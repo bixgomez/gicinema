@@ -23,7 +23,14 @@ function filmCard($filmPostId, $classes='film') {
       $filmCardQuery->the_post();
       $link = get_permalink($filmPostId);
       $shortName = get_field('short_name', $filmPostId);
-      $displayName = !is_null($shortName) && strlen($shortName) ? $shortName : get_the_title();
+      // Prefer the admin-only Display Title if it has meaningful content; otherwise fall back
+      $titleDisplayRaw = get_post_meta($filmPostId, 'title_display', true);
+      $titleDisplayStripped = is_string($titleDisplayRaw) ? trim( wp_strip_all_tags( $titleDisplayRaw ) ) : '';
+      if ( $titleDisplayStripped !== '' ) {
+        $displayName = $titleDisplayRaw; // contains limited inline HTML, sanitized on save
+      } else {
+        $displayName = !is_null($shortName) && strlen($shortName) ? $shortName : get_the_title();
+      }
       $country = get_field('country', $filmPostId);
       $director = get_field('film_director', $filmPostId);
       $format = get_field('format', $filmPostId);
