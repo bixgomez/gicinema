@@ -181,6 +181,20 @@ function get_alerts() {
 require_once get_template_directory() . '/inc/functions/admin--film-title-display.php';
 
 /**
+ * Admin: Bulk tools for ACF 'screenings' repeater on Film edit screen.
+ */
+function cinema_theme_admin_screenings_bulk_assets( $hook ) {
+  wp_enqueue_script(
+    'cinema-theme-admin-screenings-bulk',
+    get_template_directory_uri() . '/js/admin-screenings-bulk.js',
+    array('jquery','acf-input'),
+    filemtime( get_template_directory() . '/js/admin-screenings-bulk.js' ),
+    true
+  );
+}
+add_action( 'admin_enqueue_scripts', 'cinema_theme_admin_screenings_bulk_assets' );
+
+/**
  * Load Jetpack compatibility file.
  */
 if ( defined( 'JETPACK__VERSION' ) ) {
