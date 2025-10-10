@@ -176,6 +176,11 @@ function get_alerts() {
 }
 
 /**
+ * Admin: Film Title (Display) field below the main Title.
+ */
+require_once get_template_directory() . '/inc/functions/admin--film-title-display.php';
+
+/**
  * Load Jetpack compatibility file.
  */
 if ( defined( 'JETPACK__VERSION' ) ) {
