@@ -74,6 +74,20 @@ Templates
 - Single Film: `single-film.php`
   - Uses `filmCard()` to render a film detail view
 
+Display Title Field
+- Admin-only field: “Title (Display)” stored as post meta `title_display`
+- Location: Film edit screen, directly under the main Title (inside `#titlediv`)
+- Editor: compact WYSIWYG with Text/Quicktags; no links/format selector; custom `del` without `datetime`
+- Save normalization: strips `<p>` and `<br>` tags and any line breaks; collapses whitespace and trims
+- Usage precedence:
+  - `title_display` if non-empty after stripping tags/whitespace
+  - else ACF `short_name`
+  - else WordPress post title
+- Implemented in:
+  - `inc/functions/film-card.php`
+  - `inc/functions/display-film-for-date.php`
+- REST: not registered for REST; admin-only until needed
+
 Ajax
 - Action: `cinema_theme_ajax_call` (front + logged‑out)
 - Handler includes `inc/ajax--calendar.php`

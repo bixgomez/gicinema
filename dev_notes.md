@@ -10,6 +10,13 @@ Single source of truth for our collaboration notes. Keep entries concise and act
 
 ## Session Log
 
+### 2025-10-10 (later)
+- [decision] Add admin-only Film field “Title (Display)” (`title_display`) below the Title; compact WYSIWYG with code editing; no links/format selector.
+- [note] Save sanitization: strip `<p>`/`<br>` and line breaks; collapse whitespace; trim.
+- [note] Usage precedence for display names: `title_display` → ACF `short_name` → post title.
+- [note] Integrated into `inc/functions/film-card.php` and `inc/functions/display-film-for-date.php`.
+- [note] Admin-only (not exposed via REST) and not wired to front-end templates beyond those helpers yet.
+
 ### 2025-10-10
 - [note] Added Project Structure and Local Development sections; documented DDEV + Gulp workflow and common commands.
 
@@ -18,6 +25,7 @@ Single source of truth for our collaboration notes. Keep entries concise and act
 
 ## Decisions
 - 2025-09-28 [decision] Use this file as the canonical log for notes, decisions, and action items.
+- 2025-10-10 [decision] Prefer Film `title_display` meta as the display name when present; otherwise fall back to `short_name` then post title.
 
 ## TODO Backlog
 - [x] Capture project structure and basic run/build commands.
