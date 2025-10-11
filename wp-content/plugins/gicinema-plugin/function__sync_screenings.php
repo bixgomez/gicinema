@@ -103,22 +103,33 @@ function gicinema__get_screenings_from_post($post_id) {
           
           // Directly access sub-field values
           $screeningString = get_sub_field('screening');
-          
-          // Attempt to convert the date
-          $screeningDateTime = DateTime::createFromFormat('m/d/Y g:i a', $screeningString);
-          
-          // Check if the DateTime object was successfully created
-          if ($screeningDateTime !== false) {
-              // If successful, format the date
-              $formattedScreening = $screeningDateTime->format('Y-m-d H:i:s');
-          } else {
-              // Handle the error, such as logging or using a default value
-              error_log("Failed to convert screening date: " . $screeningString);
-              $formattedScreening = 'Invalid date'; // Example error handling
+
+          // Normalize to Y-m-d H:i:s in the WP timezone
+          $formatted = '';
+          if (is_string($screeningString) && $screeningString !== '') {
+            // If already normalized (Y-m-d H:i:s), keep as-is
+            if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $screeningString)) {
+              $formatted = $screeningString;
+            } else {
+              $tz = function_exists('wp_timezone') ? wp_timezone() : new DateTimeZone(get_option('timezone_string') ?: 'UTC');
+              $dt = DateTime::createFromFormat('m/d/Y g:i a', $screeningString, $tz);
+              if ($dt instanceof DateTime) {
+                // Ensure timezone is WP timezone
+                $dt->setTimezone($tz);
+                $formatted = $dt->format('Y-m-d H:i:s');
+              } else {
+                // Fallback parse
+                $ts = strtotime($screeningString);
+                if ($ts) {
+                  $formatted = date('Y-m-d H:i:s', $ts);
+                }
+              }
+            }
           }
-          
-          // Add the formatted 'screening' data to the array, or an error message
-          $screenings_data[] = $formattedScreening;
+
+          if ($formatted) {
+            $screenings_data[] = $formatted;
+          }
         }
       }
 
@@ -138,7 +149,7 @@ function gicinema__get_screenings_from_table($post_id) {
 
   // Prepare the SQL query to get all screening values for a given post ID.
   $query = $wpdb->prepare(
-    "SELECT screening FROM {$table_name} WHERE post_id = %d AND status = 1",
+    "SELECT DISTINCT screening FROM {$table_name} WHERE post_id = %d AND status = 1 ORDER BY screening ASC",
     $post_id
   );
 
@@ -151,17 +162,78 @@ function gicinema__get_screenings_from_table($post_id) {
 
 
 function gicinema__merge_screenings_arrays($array_1, $array_2) {
-  // Merge the two arrays
-  $merged_screenings = array_merge($array_1, $array_2);
+  // array_1: ACF screenings (normalized strings 'Y-m-d H:i:s' in WP timezone)
+  // array_2: Custom table screenings (normalized strings 'Y-m-d H:i:s' in WP timezone)
 
-  // Remove duplicates
-  $unique_screenings = array_unique($merged_screenings);
+  // Build a lookup set for the canonical (table) screenings.
+  $table_set = [];
+  foreach ((array) $array_2 as $val) {
+    if (is_string($val) && $val !== '') {
+      $table_set[$val] = true;
+    }
+  }
 
-  // Sort the dates
-  sort($unique_screenings);
+  // Timezone-shadow guard (defense-in-depth):
+  // If an ACF screening equals a table screening plus/minus the WP timezone
+  // offset at that date/time (e.g., +7h PDT or +8h PST), treat it as a
+  // timezone artifact and skip it. This prevents the recurring “phantom twin”
+  // showtimes at +/- 7/8 hours from being merged in repeatedly.
+  //
+  // Toggle: Set define('GICINEMA_TZ_SHADOW_GUARD', false) in wp-config.php to disable,
+  // or use filter add_filter('gicinema_enable_tz_shadow_guard', '__return_false').
+  $enable_guard = true;
+  if (defined('GICINEMA_TZ_SHADOW_GUARD') && GICINEMA_TZ_SHADOW_GUARD === false) {
+    $enable_guard = false;
+  }
+  if (function_exists('apply_filters')) {
+    $enable_guard = apply_filters('gicinema_enable_tz_shadow_guard', $enable_guard);
+  }
 
-  // Output the result
-  return $unique_screenings;
+  $tz = function_exists('wp_timezone') ? wp_timezone() : new DateTimeZone(get_option('timezone_string') ?: 'UTC');
+
+  $accepted_acf = [];
+  foreach ((array) $array_1 as $v) {
+    if (!is_string($v) || $v === '') {
+      continue;
+    }
+
+    // If exact match exists in table, keep it (no need to guard).
+    if (isset($table_set[$v])) {
+      $accepted_acf[] = $v;
+      continue;
+    }
+
+    // Guard against timezone-shadow duplicates only if enabled.
+    if ($enable_guard) {
+      $ts = strtotime($v);
+      if ($ts) {
+        try {
+          $dt = new DateTime($v, $tz);
+          $offset = $tz->getOffset($dt); // seconds (e.g., 25200 for PDT, 28800 for PST)
+        } catch (Exception $e) {
+          $offset = 0;
+        }
+        if ($offset) {
+          $plus  = date('Y-m-d H:i:s', $ts + $offset);
+          $minus = date('Y-m-d H:i:s', $ts - $offset);
+          if (isset($table_set[$plus]) || isset($table_set[$minus])) {
+            // Skip ACF value that is merely a timezone-shifted duplicate of a table value.
+            // To disable this behavior, see toggle notes above.
+            continue;
+          }
+        }
+      }
+    }
+
+    // Otherwise accept this ACF value.
+    $accepted_acf[] = $v;
+  }
+
+  // Merge canonical table values with accepted ACF values, unique, sort.
+  $merged = array_merge($accepted_acf, array_keys($table_set));
+  $unique = array_values(array_unique($merged));
+  sort($unique);
+  return $unique;
 }
 
 

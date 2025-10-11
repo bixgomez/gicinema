@@ -20,6 +20,121 @@ Single source of truth for our collaboration notes. Keep entries concise and act
 - [note] Verified plugin `README.md` already documents Cron Jobs; left as-is to avoid duplication.
 - [todo] Update admin page copy in `wp-content/plugins/gicinema-plugin/page__db_backup_and_cleanup.php` to reflect detailed retention policy and add optional audit `error_log` line for deletions.
 
+- [note] Timezone bug (critical): ACF screenings parsed/saved as UTC, causing ~7h offset (e.g., The Last Class entries displayed as 20:30/20:00/22:00 instead of local times). This mismatch between ACF (`screenings` repeater) and the custom table (`gi_screenings.screening`) caused the merge step to treat the same showtime as different values, doubling entries in “Array of merged screenings from both sources.”
+- [decision] Standardize all date-time handling to the WordPress timezone (WP Settings → General → Timezone). Normalize every timestamp to `Y-m-d H:i:s` in WP timezone before storage or comparison.
+- [note] Root cause analysis (detailed):
+  - ACF field stores human strings like `m/d/Y g:i a` with no timezone. Parsing via `DateTime::createFromFormat()` without specifying a timezone (or relying on PHP default) treated them as UTC on our system, shifting Pacific times by +7/+8 hours.
+  - Importer wrote Agile `StartDate` into the custom table using `strtotime()`/`date()` inconsistently with WP timezone assumptions. The mix led to ACF values and table values diverging by hours.
+  - Comparison/merge helpers then saw different strings (`2025-10-12 20:00:00` vs `2025-10-12 13:00:00`) and “merged” both, creating duplicates.
+- [fix] Implemented WP‑timezone normalization across all paths:
+  - Parse and store Agile times in WP timezone when populating the custom table.
+    - File: `wp-content/plugins/gicinema-plugin/function__import_screenings_from_agile.php`
+      - Use `wp_timezone()` (or `timezone_string` fallback) to create a `DateTimeZone`.
+      - `new DateTime($screening->StartDate, $tz)` then `$dt->setTimezone($tz)` and output `Y-m-d H:i:s`.
+      - Removed `date_default_timezone_set()` and replaced with diagnostic output of WP timezone only.
+  - Read/normalize ACF `screenings` consistently in WP timezone, preserving already-normalized values:
+    - File: `wp-content/plugins/gicinema-plugin/function__sync_screenings.php`
+      - In `gicinema__get_screenings_from_post()`, if value matches `^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$`, keep as-is; otherwise parse with `wp_timezone()` and format to `Y-m-d H:i:s`.
+    - File: `wp-content/plugins/gicinema-plugin/function__compare_screenings.php`
+      - Normalize ACF rows using WP timezone before intersecting with table values.
+    - File: `wp-content/plugins/gicinema-plugin/function__sync_screenings_on_save.php`
+      - In `gicinema__simplify_screenings_array()`, normalize each row with WP timezone, preserving pre‑normalized values.
+    - File: `wp-content/plugins/gicinema-plugin/function__delete_superfluous_screenings.php`
+      - Normalize ACF values to WP timezone before comparing to table; keep only matches.
+- [impact] After normalization, ACF array values and custom table values align in local time; the merged array no longer duplicates identical showtimes; “Matching screenings” in the edit panel reflects true intersections.
+- [verify] Steps to confirm fix:
+  - Admin page: `/wp-admin/admin.php?page=gicinema--import-films-from-agile` and run import for a film (e.g., “The Last Class”).
+    - Confirm “Array of screenings from ACF repeater field” shows local times (no +7h offset).
+    - Confirm “Array of merged screenings from both sources” contains unique, sorted local timestamps.
+  - CLI path (DDEV):
+    - `ddev wp cron event run cron__update_agile_shows_array --due-now`
+    - `ddev wp eval 'gicinema__import_films_from_agile();'`
+    - Optional per‑film sync: `ddev wp eval 'gicinema__sync_screenings(POST_ID);'`
+- [note] Data hygiene: existing ACF entries previously saved in UTC will be normalized on the next import/sync for each film. Use “Sync All Screenings” (`/wp-admin/admin.php?page=gicinema--sync-all-screenings`) once to normalize across all films.
+- [todo] Prefix safety: `function__sync_screenings_on_save.php` still references `wp_gi_screenings` in two places. Replace with `$wpdb->prefix . 'gi_screenings'` for multisite/prefix safety.
+- [decision] Duplicates in custom table output: Observed repeated timestamps in “Array of screenings from custom table”. Likely causes: historical duplicate rows (from period before unique constraints took effect) and lack of DISTINCT in readers. Mitigations applied:
+  - Retrieval now uses `SELECT DISTINCT ... ORDER BY screening` in `gicinema__get_screenings_from_table()` and in the admin panel’s table list to avoid echoing duplicates.
+  - Schema: added `UNIQUE KEY unique_screening_str (film_id, post_id, screening(19))` via `dbDelta` to enforce idempotency even if `screening_date/time` unique fails (TEXT keys require lengths). This complements existing unique on `(film_id, post_id, screening_date, screening_time)`.
+  - Cleanup: `gicinema__dedupe_screenings_table()` (already called after import) removes historical dupes by keeping the lowest `screening_id` per `(screening, film_id, post_id)`.
+  - Prefix safety fix: replaced hardcoded `wp_gi_screenings` with `$wpdb->prefix . 'gi_screenings'` in update/delete helpers.
+
+#### Defense-in-depth: timezone-shadow guard
+
+- Problem addressed: Post-normalization regressions could reintroduce ±7/±8 hour “phantom” showtimes due to timezone misparsing or DST edges.
+- Strategy: When merging ACF screenings into canonical table screenings, reject any ACF candidate that equals a table screening shifted by the WP timezone offset at that instant (accounts for PDT/PST via `wp_timezone()->getOffset()`).
+- Implementation details:
+  - Location: `wp-content/plugins/gicinema-plugin/function__sync_screenings.php`
+  - Function: `gicinema__merge_screenings_arrays()`
+  - Logic per ACF value `v` (already normalized):
+    - If `v` exists in table set → accept.
+    - Else compute `$offset = wp_timezone()->getOffset(new DateTime(v, wp_timezone()))`.
+    - If `v ± offset` matches any table value → skip `v` (treat as timezone-shadow duplicate).
+    - Else accept `v`.
+  - Merge accepted ACF values with table set; `array_unique` + sort.
+- Toggle/disable options:
+  - Constant: set `define('GICINEMA_TZ_SHADOW_GUARD', false);` in `wp-config.php` to disable entirely.
+  - Filter: `add_filter('gicinema_enable_tz_shadow_guard', '__return_false');` to disable from code.
+- Rationale: Only filters ACF candidates; never removes table rows, minimizing false positives (e.g., real 1:00 pm and 8:00 pm screenings on the same day are still allowed if they don’t align exactly with the timezone offset transformation).
+
+- [note] UX improvement: On the Import from Agile admin page, film titles are now clickable links to their edit pages.
+  - Change: In `function__import_films_from_agile.php`, delay rendering the `<h4>` title until after we determine `$post_ID`, then print `<h4><a href="EDIT_LINK">TITLE</a></h4>` with `target="_blank"` and proper escaping.
+
+#### Deep dive: timezones + duplicate screenings (root cause, fixes, verification)
+
+- Symptoms observed
+  - ACF repeater (“Array of screenings from ACF repeater field”) displayed datetimes ~7 hours ahead of actual showtimes (e.g., 20:30 instead of 13:30 PT), implying UTC parsing.
+  - Merged array (“Array of merged screenings from both sources”) doubled entries because the ACF side and the custom-table side didn’t match byte-for-byte.
+  - “Array of screenings from custom table” sometimes repeated identical timestamps (e.g., `2025-10-12 13:00:00` twice).
+
+- Root causes
+  - Timezone normalization gap:
+    - ACF values stored as human strings (`m/d/Y g:i a`) lack timezone. Prior parsing used PHP default timezone or naive `strtotime`, effectively treating inputs as UTC in this environment and reformatting them as UTC.
+    - Importer inserted Agile `StartDate` with `strtotime()/date()` without an explicit WP timezone, which could diverge from ACF conversions.
+    - Result: ACF normalized to UTC while the custom table held local (or mixed) times → strings didn’t match, so merges produced duplicates.
+  - Unenforced uniqueness on inserts:
+    - Table schema used `UNIQUE (film_id, post_id, screening_date, screening_time)` over TEXT columns. MySQL requires a prefix length on TEXT; without it, the index may not be created (“silently” during some dbDelta runs), leaving no unique constraint for `INSERT ... ON DUPLICATE KEY UPDATE` to latch onto.
+    - The importer’s write path uses `INSERT ... ON DUPLICATE KEY UPDATE status = 1`. Without a working unique index, identical rows were inserted repeatedly.
+
+- Fixes implemented (code and schema)
+  - Timezone normalization to WP timezone (consistently normalize to `Y-m-d H:i:s`):
+    - Importer: `function__import_screenings_from_agile.php`
+      - Use `wp_timezone()` (or `timezone_string` fallback) with `DateTime` to parse each Agile `StartDate`, convert to WP timezone, and format `Y-m-d H:i:s` before insert.
+      - Removed global `date_default_timezone_set()` side effects; only log the WP timezone used.
+    - ACF readers/parsers and comparisons:
+      - `function__sync_screenings.php` → `gicinema__get_screenings_from_post()` now:
+        - Preserves already-normalized `Y-m-d H:i:s` values.
+        - Otherwise parses `m/d/Y g:i a` in WP timezone and formats to `Y-m-d H:i:s`.
+      - `function__compare_screenings.php` normalizes ACF values with WP timezone before intersecting with table values; preserves normalized values.
+      - `function__sync_screenings_on_save.php` (`gicinema__simplify_screenings_array`) normalizes each row with WP timezone; preserves normalized values.
+      - `function__delete_superfluous_screenings.php` normalizes ACF values to WP timezone before comparing to table values.
+  - Database uniqueness/idempotency:
+    - Schema: `function__create_custom_table.php` adds `UNIQUE KEY unique_screening_str (film_id, post_id, screening(19))` via `dbDelta`.
+      - Rationale: `screening` is a `TEXT` formatted as `YYYY-MM-DD HH:MM:SS` (19 chars); indexing the first 19 characters is sufficient and valid for a unique constraint. This ensures `INSERT ... ON DUPLICATE KEY` de-duplicates on the normalized timestamp regardless of `screening_date/time` values.
+      - Existing unique on `(film_id, post_id, screening_date, screening_time)` is kept for compatibility where supported.
+    - Readers: use `SELECT DISTINCT` in both `gicinema__get_screenings_from_table()` and the admin list in `function__compare_screenings.php` to avoid presenting legacy dupes.
+    - Dedupe helper: `function__dedupe_screenings_table.php` deletes older duplicates, keeping the minimum `screening_id` for each `(screening, film_id, post_id)`.
+  - Prefix safety: Replaced hardcoded `wp_gi_screenings` with `$wpdb->prefix . 'gi_screenings'` in `function__sync_screenings_on_save.php` to respect custom prefixes/multisite.
+
+- Operational guidance / verification
+  - One-time cleanup after deploy:
+    1) Run “Deduplicate Screenings Table” in admin (or `ddev wp eval 'gicinema__dedupe_screenings_table();'`).
+    2) Run importer: refresh feed then import (`ddev wp cron event run cron__update_agile_shows_array --due-now` → `ddev wp eval 'gicinema__import_films_from_agile();'`). This re-normalizes and re-syncs.
+    3) Spot-check a film (e.g., “The Last Class”):
+       - “Array of screenings from ACF repeater field” shows correct local times; no +7h offset.
+       - “Array of screenings from custom table” shows unique, sorted timestamps; no repeated lines.
+       - “Array of merged screenings from both sources” contains unique values only.
+  - Ongoing behavior:
+    - New imports are idempotent due to the `unique_screening_str` constraint.
+    - Any admin-side save of ACF screenings normalizes to WP timezone before syncing to the table.
+  - If dbDelta cannot add the index (rare):
+    - Manual SQL fallback: `CREATE UNIQUE INDEX unique_screening_str ON <prefix>gi_screenings (film_id, post_id, screening(19));`
+    - Confirm with: `SHOW INDEX FROM <prefix>gi_screenings;`
+
+- Modified files (for traceability)
+  - Timezone normalization: `function__import_screenings_from_agile.php`, `function__sync_screenings.php`, `function__compare_screenings.php`, `function__sync_screenings_on_save.php`, `function__delete_superfluous_screenings.php`.
+  - Dedupe visibility/uniqueness: `function__sync_screenings.php` (DISTINCT), `function__compare_screenings.php` (DISTINCT), `function__create_custom_table.php` (unique index on `screening(19)`).
+  - Safety: `function__sync_screenings_on_save.php` (prefix-safe queries).
+
 ### 2025-10-10 (later)
 - [decision] Add admin-only Film field “Title (Display)” (`title_display`) below the Title; compact WYSIWYG with code editing; no links/format selector.
 - [note] Save sanitization: strip `<p>`/`<br>` and line breaks; collapse whitespace; trim.

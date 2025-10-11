@@ -95,22 +95,7 @@ function gicinema__import_films_from_agile() {
             }
         }
 
-        // Display all the values.
-        echo '<h4>' . $film_title . '</h4>';
-        echo '<div class="function-info scrolly">';
-        echo '<h5>The data from the API feed</h5>';
-        echo '<div>$film_title = ' . $film_title . '</div>';
-        echo '<div>$agile_film_id = ' . $agile_film_id . '</div>';
-        echo '<div>$short_description = ' . $short_description . '</div>';
-        echo '<div>$duration = ' .  $duration . '</div>';
-        echo '<div>$info_link = ' .  $info_link . '</div>';
-        echo '<div>$film_year = ' .  $film_year . '</div>';
-        echo '<div>$format = ' .  $format . '</div>';
-        echo '<div>$film_director = ' .  $film_director . '</div>';
-        echo '<div>$country = ' .  $country . '</div>';
-        echo '<div>$poster_url = ' .  $poster_url . '</div>';
-        echo '<div>$trailer_url = ' .  $trailer_url . '</div>';
-        echo '</div>';
+        // (H4 with link + API data block are rendered after we know the post ID)
 
         // Query to find the WordPress film posts with this Agile film id.
         echo '<div>Checking WordPress posts for film with Agile ID of ' . $agile_film_id . ')</div>';
@@ -149,6 +134,28 @@ function gicinema__import_films_from_agile() {
             $post_ID = $existingFilmPost[0]->ID;
             echo '<div class="success">Existing film found</div>';
         }
+
+        // Now that we have a post ID, render the title as a link to the edit screen, then show API data
+        $edit_link = get_edit_post_link($post_ID, '');
+        if ($edit_link) {
+            echo '<h4><a href="' . esc_url($edit_link) . '" target="_blank" rel="noopener noreferrer">' . esc_html($film_title) . '</a></h4>';
+        } else {
+            echo '<h4>' . esc_html($film_title) . '</h4>';
+        }
+        echo '<div class="function-info scrolly">';
+        echo '<h5>The data from the API feed</h5>';
+        echo '<div>$film_title = ' . esc_html($film_title) . '</div>';
+        echo '<div>$agile_film_id = ' . esc_html($agile_film_id) . '</div>';
+        echo '<div>$short_description = ' . esc_html($short_description) . '</div>';
+        echo '<div>$duration = ' .  esc_html($duration) . '</div>';
+        echo '<div>$info_link = ' .  esc_html($info_link) . '</div>';
+        echo '<div>$film_year = ' .  esc_html($film_year) . '</div>';
+        echo '<div>$format = ' .  esc_html($format) . '</div>';
+        echo '<div>$film_director = ' .  esc_html($film_director) . '</div>';
+        echo '<div>$country = ' .  esc_html($country) . '</div>';
+        echo '<div>$poster_url = ' .  esc_html($poster_url) . '</div>';
+        echo '<div>$trailer_url = ' .  esc_html($trailer_url) . '</div>';
+        echo '</div>';
 
         // Handle poster image (for both new and existing films)
         $current_poster_url = get_field('poster_url', $post_ID);

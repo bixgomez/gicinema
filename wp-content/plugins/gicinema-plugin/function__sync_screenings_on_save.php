@@ -61,9 +61,26 @@ function gicinema__get_saved_screenings_value($post_id) {
 
 function gicinema__simplify_screenings_array($originalArray) {
   $simplifiedArray = [];
+  $tz = function_exists('wp_timezone') ? wp_timezone() : new DateTimeZone(get_option('timezone_string') ?: 'UTC');
   foreach ($originalArray as $item) {
-      $date = DateTime::createFromFormat('m/d/Y g:i a', $item['screening']);
-      $simplifiedArray[] = $date->format('Y-m-d H:i:s');
+    if (!isset($item['screening']) || !is_string($item['screening'])) {
+      continue;
+    }
+    $label = $item['screening'];
+    if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $label)) {
+      $simplifiedArray[] = $label;
+      continue;
+    }
+    $dt = DateTime::createFromFormat('m/d/Y g:i a', $label, $tz);
+    if ($dt instanceof DateTime) {
+      $dt->setTimezone($tz);
+      $simplifiedArray[] = $dt->format('Y-m-d H:i:s');
+    } else {
+      $ts = strtotime($label);
+      if ($ts) {
+        $simplifiedArray[] = date('Y-m-d H:i:s', $ts);
+      }
+    }
   }
   return $simplifiedArray;
 }
@@ -73,7 +90,8 @@ function gicinema__simplify_screenings_array($originalArray) {
 
 function gicinema__disable_all_screenings($post_id) {
   global $wpdb;
-  $query = $wpdb->prepare("UPDATE wp_gi_screenings SET status = 0 WHERE post_id = %d", $post_id);
+  $table_name = $wpdb->prefix . 'gi_screenings';
+  $query = $wpdb->prepare("UPDATE {$table_name} SET status = 0 WHERE post_id = %d", $post_id);
   $wpdb->query($query);
 }
 
@@ -145,8 +163,9 @@ function gicinema__remove_screenings($to_delete, $post_id) {
 
   foreach ($to_delete as $screening_date) {
     // Prepare the query to avoid SQL injection
+    $table_name = $wpdb->prefix . 'gi_screenings';
     $query = $wpdb->prepare(
-        "DELETE FROM wp_gi_screenings WHERE post_id = %d AND screening = %s",
+        "DELETE FROM {$table_name} WHERE post_id = %d AND screening = %s",
         $post_id,
         $screening_date
     );

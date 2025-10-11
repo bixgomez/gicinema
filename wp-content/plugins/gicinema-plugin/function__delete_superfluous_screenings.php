@@ -55,13 +55,19 @@ function gicinema__delete_superfluous_acf_screenings($post_id) {
     $label = isset($row['screening']) ? $row['screening'] : '';
     $normalized = '';
     if (is_string($label) && $label !== '') {
-      $dt = DateTime::createFromFormat('m/d/Y g:i a', $label);
-      if ($dt instanceof DateTime) {
-        $normalized = $dt->format('Y-m-d H:i:s');
+      if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $label)) {
+        $normalized = $label;
       } else {
-        $ts = strtotime($label);
-        if ($ts) {
-          $normalized = date('Y-m-d H:i:s', $ts);
+        $tz = function_exists('wp_timezone') ? wp_timezone() : new DateTimeZone(get_option('timezone_string') ?: 'UTC');
+        $dt = DateTime::createFromFormat('m/d/Y g:i a', $label, $tz);
+        if ($dt instanceof DateTime) {
+          $dt->setTimezone($tz);
+          $normalized = $dt->format('Y-m-d H:i:s');
+        } else {
+          $ts = strtotime($label);
+          if ($ts) {
+            $normalized = date('Y-m-d H:i:s', $ts);
+          }
         }
       }
     }

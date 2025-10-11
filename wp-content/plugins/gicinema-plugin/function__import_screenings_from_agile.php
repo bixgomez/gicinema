@@ -24,23 +24,35 @@ function gicinema__import_screenings_from_agile (
   echo '<div class="function-info">';
 
   $agile_screenings = [];
+  // Normalize to WP timezone consistently
+  $tz = function_exists('wp_timezone') ? wp_timezone() : new DateTimeZone(get_option('timezone_string') ?: 'UTC');
 
   foreach( $agile_array as $screening ) :
-    $screening_datetime = date('Y-m-d H:i:s', strtotime($screening->StartDate));
-    $agile_screenings[] = $screening_datetime;
+    // Parse StartDate; if it contains a timezone, PHP respects it; then convert to WP timezone
+    try {
+      $dt = new DateTime($screening->StartDate, $tz);
+    } catch (Exception $e) {
+      $dt = false;
+    }
+    if ($dt instanceof DateTime) {
+      $dt->setTimezone($tz);
+      $screening_datetime = $dt->format('Y-m-d H:i:s');
+    } else {
+      // Fallback
+      $ts = strtotime($screening->StartDate);
+      $screening_datetime = $ts ? date('Y-m-d H:i:s', $ts) : '';
+    }
+    if ($screening_datetime) {
+      $agile_screenings[] = $screening_datetime;
+    }
   endforeach;
 
   echo '<i>$agile_screenings:</i><pre>';
   print_r($agile_screenings);
   echo '</pre>';
 
-  // Get the time zone setting from WordPress options
-  $wpTimeZone = get_option('timezone_string');
-  
-  // Set the time zone
-  date_default_timezone_set($wpTimeZone);
-
-  echo '<i>$wpTimeZone:</i> ' . $wpTimeZone . '<br>';
+  // Document the WP timezone used for normalization
+  echo '<i>$wpTimeZone:</i> ' . (function_exists('wp_timezone_string') ? wp_timezone_string() : get_option('timezone_string')) . '<br>';
 
   // Now it is time to update the custom screenings table (which we still need).
   echo '<i>Now, check the custom table for screening data!</i>';

@@ -45,15 +45,22 @@ function gicinema__render_matching_screenings($post_id) {
     if (is_array($acf_value)) {
       foreach ($acf_value as $row) {
         if (isset($row['screening']) && is_string($row['screening'])) {
-          // ACF stores e.g. m/d/Y g:i a (per existing code). Normalize to Y-m-d H:i:s
-          $dt = DateTime::createFromFormat('m/d/Y g:i a', $row['screening']);
-          if ($dt instanceof DateTime) {
-            $acf_screenings[] = $dt->format('Y-m-d H:i:s');
+          $label = $row['screening'];
+          // If already normalized (Y-m-d H:i:s), keep as-is
+          if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $label)) {
+            $acf_screenings[] = $label;
           } else {
-            // Fallback: try parsing via strtotime
-            $ts = strtotime($row['screening']);
-            if ($ts) {
-              $acf_screenings[] = date('Y-m-d H:i:s', $ts);
+            // Normalize to Y-m-d H:i:s in WP timezone
+            $tz = function_exists('wp_timezone') ? wp_timezone() : new DateTimeZone(get_option('timezone_string') ?: 'UTC');
+            $dt = DateTime::createFromFormat('m/d/Y g:i a', $label, $tz);
+            if ($dt instanceof DateTime) {
+              $dt->setTimezone($tz);
+              $acf_screenings[] = $dt->format('Y-m-d H:i:s');
+            } else {
+              $ts = strtotime($label);
+              if ($ts) {
+                $acf_screenings[] = date('Y-m-d H:i:s', $ts);
+              }
             }
           }
         }
@@ -130,7 +137,7 @@ function gicinema__render_table_screenings($post_id) {
   }
 
   $rows = $wpdb->get_col($wpdb->prepare(
-    "SELECT screening FROM {$table_name} WHERE post_id = %d AND status = 1 ORDER BY screening ASC",
+    "SELECT DISTINCT screening FROM {$table_name} WHERE post_id = %d AND status = 1 ORDER BY screening ASC",
     $post_id
   ));
 
