@@ -80,3 +80,62 @@ It maintains a custom “screenings” database table, supports automated cron j
   - `css/gicinema-plugin.css` — Styling for admin pages.
 - Keep logic in `function__*.php` files and only minimal display code in `page__*.php` files.
 - Designed for maintainability: each admin action is isolated in its own page and function file.
+
+## Cron Jobs
+
+The custom plugin `gicinema-plugin` schedules several automated tasks. These run via WP‑Cron and can also be triggered with WP‑CLI.
+
+- Agile shows feed refresh
+  - Hook: `cron__update_agile_shows_array`
+  - Schedule: every 23 minutes
+  - Function: `gicinema__update_agile_shows_array`
+  - Purpose: Fetches the Agile Ticketing JSON feed and stores it as the transient `agile_shows_array` (12h TTL).
+
+- Import films from Agile
+  - Hook: `cron__import_films_from_agile`
+  - Schedule: every 30 minutes
+  - Function: `gicinema__import_films_from_agile`
+  - Purpose: Creates/updates Film posts and screenings from the transient; downloads poster images; syncs screenings and runs dedupe. If the transient is missing, it refreshes it first.
+
+- Database backup and cleanup
+  - Hook: `cron__db_backup_and_cleanup`
+  - Schedule: daily at 21:00 (server time)
+  - Function: `gicinema__db_backup_and_cleanup`
+  - Output: backups written outside the web root to `../gicinema_dbs`
+  - Filename: `gicinema-db--YYYY-MM-DD--HH-MM-SS.sql.gz`
+  - Retention policy:
+    - Keep all backups newer than 7 days
+    - Keep first backup of each week for 30 days
+    - Keep first backup of each month for 1 year
+    - Keep first backup of each year indefinitely
+
+### WP‑CLI (DDEV) examples
+
+- List scheduled events: `ddev wp cron event list`
+- Run a specific job now: `ddev wp cron event run cron__update_agile_shows_array --due-now`
+- Run all due events: `ddev wp cron event run --due-now --all`
+- Check next runs for plugin jobs: `ddev wp cron event list | rg cron__`
+
+### Local development: forcing runs
+
+If an event exists but isn’t yet due, make it due or run the callback directly.
+
+- Ensure environment and plugin
+  - Start DDEV: `ddev start`
+  - Activate plugin: `ddev wp plugin activate gicinema-plugin`
+  - Load schedules (first page hit): open `https://gicinema.ddev.site/`
+
+- Make an event due, then run
+  - Import: `ddev wp cron event schedule cron__import_films_from_agile 'now -1 minute' --schedule=every_30_minutes`
+  - Feed: `ddev wp cron event schedule cron__update_agile_shows_array 'now -1 minute' --schedule=every_23_minutes`
+  - Backup: `ddev wp cron event schedule cron__db_backup_and_cleanup 'now -1 minute' --schedule=daily`
+  - Execute: `ddev wp cron event run <hook> --due-now`
+
+- Run callbacks directly (bypass scheduling)
+  - Feed refresh: `ddev wp eval 'gicinema__update_agile_shows_array();'`
+  - Import films: `ddev wp eval 'gicinema__import_films_from_agile();'`
+  - Via hook: `ddev wp eval 'do_action("cron__import_films_from_agile");'`
+
+- Troubleshooting tips
+  - Re-list events: `ddev wp cron event list --fields=hook,next_run,recurrence | grep cron__`
+  - Ensure `DISABLE_WP_CRON` is not true in `wp-config.php` if expecting automatic WP‑Cron on requests. For dev, using WP‑CLI as above is sufficient.
