@@ -59,9 +59,11 @@ function cleanup_old_backups($backupDirPath) {
   // Parse backup files
   $allBackups = [];
   foreach ($files as $file) {
-    if (preg_match('/gicinema-db--(\d{4}-\d{2}-\d{2})--\d{2}-\d{2}-\d{2}\.sql/', basename($file), $matches)) {
-      $date = $matches[1];
-      $timestamp = strtotime($date);
+    // Support both .sql and .sql.gz; capture full timestamp
+    if (preg_match('/^gicinema-db--(\d{4}-\d{2}-\d{2})--(\d{2})-(\d{2})-(\d{2})\.sql(?:\.gz)?$/', basename($file), $m)) {
+      $date = $m[1];
+      $hh = $m[2]; $mm = $m[3]; $ss = $m[4];
+      $timestamp = strtotime("{$date} {$hh}:{$mm}:{$ss}");
 
       $allBackups[] = [
         'file' => $file,
@@ -70,6 +72,11 @@ function cleanup_old_backups($backupDirPath) {
         'age_days' => ($now - $timestamp) / (24 * 60 * 60)
       ];
     }
+  }
+
+  // Safety guard: if nothing matched expected naming, do not delete anything
+  if (empty($allBackups)) {
+    return 0;
   }
 
   // Track what we're keeping
@@ -94,8 +101,14 @@ function cleanup_old_backups($backupDirPath) {
     }
   }
 
-  // Sort by date
+  // Sort older backups by date ascending for deterministic selection
   ksort($olderBackups);
+  foreach ($olderBackups as $date => &$dayBackups) {
+    usort($dayBackups, function ($a, $b) {
+      return $a['timestamp'] <=> $b['timestamp'];
+    });
+  }
+  unset($dayBackups);
 
   // Find first backup of each year (keep forever)
   $yearsSeen = [];
@@ -103,7 +116,7 @@ function cleanup_old_backups($backupDirPath) {
     $year = date('Y', strtotime($date));
     if (!isset($yearsSeen[$year])) {
       $yearsSeen[$year] = true;
-      $keepFiles[] = $dayBackups[0]['file']; // Keep first backup of this day
+      $keepFiles[] = $dayBackups[0]['file']; // Earliest for that day (sorted above)
     }
   }
 
@@ -185,8 +198,11 @@ function create_database_backup($backupFilePath, $wpdb) {
       $rows = $wpdb->get_results("SELECT * FROM `$tableName`", ARRAY_A);
       if (!empty($rows)) {
         foreach ($rows as $row) {
-          $values = array_map([$wpdb, 'prepare'], array_fill(0, count($row), '%s'), array_values($row));
-          gzwrite($file, "INSERT INTO `$tableName` VALUES (" . implode(',', $values) . ");\n");
+          // Quote/escape values; preserve NULL as literal NULL
+          $escapedValues = array_map(function ($v) use ($wpdb) {
+            return is_null($v) ? 'NULL' : $wpdb->prepare('%s', $v);
+          }, array_values($row));
+          gzwrite($file, "INSERT INTO `$tableName` VALUES (" . implode(',', $escapedValues) . ");\n");
         }
         gzwrite($file, "\n");
       }
