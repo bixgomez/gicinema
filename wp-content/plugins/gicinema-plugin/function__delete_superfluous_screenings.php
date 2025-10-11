@@ -14,8 +14,15 @@ if (!defined('ABSPATH')) {
  * - 'kept'     => kept count
  * - 'deleted'  => deleted count
  */
-function gicinema__delete_superfluous_acf_screenings($post_id) {
-  $result = ['original' => 0, 'kept' => 0, 'deleted' => 0];
+/**
+ * Delete superfluous screenings from ACF repeater for a single film.
+ *
+ * DRY: This is the single source of truth used by both the per‑film red button
+ * and the global batch tool. To support "dry run" previews, pass $dry_run=true
+ * to compute counts without updating ACF.
+ */
+function gicinema__delete_superfluous_acf_screenings($post_id, $dry_run = false) {
+  $result = ['original' => 0, 'kept' => 0, 'deleted' => 0, 'dry_run' => (bool) $dry_run];
 
   if (empty($post_id) || !function_exists('get_field') || !function_exists('update_field')) {
     return $result;
@@ -77,8 +84,10 @@ function gicinema__delete_superfluous_acf_screenings($post_id) {
     }
   }
 
-  // Update ACF with the kept rows
-  update_field('screenings', $kept_rows, $post_id);
+  // Update ACF with the kept rows unless this is a dry run
+  if (!$dry_run) {
+    update_field('screenings', $kept_rows, $post_id);
+  }
 
   $result['kept'] = count($kept_rows);
   $result['deleted'] = $result['original'] - $result['kept'];
@@ -122,3 +131,35 @@ function gicinema_handle_delete_superfluous_screenings() {
 }
 
 add_action('admin_post_gicinema_delete_superfluous_screenings', 'gicinema_handle_delete_superfluous_screenings');
+
+/**
+ * AJAX handler: delete superfluous screenings for a single film (by post_id).
+ * Returns JSON with counts and basic film info for UI logging.
+ */
+function gicinema_ajax_delete_superfluous_batch() {
+  if ( ! current_user_can('manage_options') ) {
+    wp_send_json_error(['message' => 'forbidden'], 403);
+  }
+  check_ajax_referer('gicinema_delete_all_superfluous');
+
+  $post_id = isset($_POST['post_id']) ? absint($_POST['post_id']) : 0;
+  if (!$post_id) {
+    wp_send_json_error(['message' => 'invalid post_id'], 400);
+  }
+
+  $dry_run = !empty($_POST['dry_run']);
+  $res = gicinema__delete_superfluous_acf_screenings($post_id, $dry_run);
+  $title = get_the_title($post_id);
+  $edit  = get_edit_post_link($post_id, '');
+
+  wp_send_json_success([
+    'post_id' => $post_id,
+    'title'   => $title,
+    'edit_link' => $edit,
+    'original' => isset($res['original']) ? (int)$res['original'] : 0,
+    'kept'     => isset($res['kept']) ? (int)$res['kept'] : 0,
+    'deleted'  => isset($res['deleted']) ? (int)$res['deleted'] : 0,
+    'dry_run'  => !empty($res['dry_run']),
+  ]);
+}
+add_action('wp_ajax_gicinema_delete_superfluous_batch', 'gicinema_ajax_delete_superfluous_batch');

@@ -130,6 +130,21 @@ Single source of truth for our collaboration notes. Keep entries concise and act
     - Manual SQL fallback: `CREATE UNIQUE INDEX unique_screening_str ON <prefix>gi_screenings (film_id, post_id, screening(19));`
     - Confirm with: `SHOW INDEX FROM <prefix>gi_screenings;`
 
+- New admin utility
+  - Delete Superfluous Screenings (All Films): `wp-content/plugins/gicinema-plugin/page__delete_all_superfluous_screenings.php`
+    - Submenu label: “Delete Superfluous (All Films)”.
+    - Batch UI with running log: processes one film at a time via AJAX and updates a live log and counters on screen.
+    - DRY run supported (no changes) via checkbox; entries are prefixed with [dry].
+    - Dry-run summary phrasing: "Processed N / N films — Would delete X; Would keep Y of Z total." (adjusts dynamically based on the checkbox).
+    - AJAX endpoint: `wp_ajax_gicinema_delete_superfluous_batch` in `function__delete_superfluous_screenings.php`.
+    - Security: `manage_options` capability check + nonce `gicinema_delete_all_superfluous`.
+    - Flow: page preloads Film IDs; clicking Start iterates over them, calls the AJAX handler, logs per‑film results (title + link), and aggregates totals.
+    - Uses the same timezone‑aware normalization and comparison logic as the per‑film button; safe after fixes above.
+    - Code reuse: Both per‑film and batch paths call the same core function `gicinema__delete_superfluous_acf_screenings($post_id, $dry_run=false)` to avoid logic drift.
+    - UX tweak: Do not list films that have zero ACF screenings (original==0) in the running log to reduce noise.
+    - Ordering: Processes films in reverse chronological order (newest posts first) using `orderby => 'date', order => 'DESC'`.
+    - Per‑film log phrasing: If any deletions would occur, show “would delete X of Y (keeping Z)” in bold red during dry runs; for live runs use “deleted X of Y (kept Z)”; neutral style when zero to delete.
+
 - Modified files (for traceability)
   - Timezone normalization: `function__import_screenings_from_agile.php`, `function__sync_screenings.php`, `function__compare_screenings.php`, `function__sync_screenings_on_save.php`, `function__delete_superfluous_screenings.php`.
   - Dedupe visibility/uniqueness: `function__sync_screenings.php` (DISTINCT), `function__compare_screenings.php` (DISTINCT), `function__create_custom_table.php` (unique index on `screening(19)`).
