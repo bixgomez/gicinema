@@ -14,21 +14,21 @@ if (defined('WP_LOCAL_DEV') && WP_LOCAL_DEV) {
     echo '<h2>Backup The Database!</h2>';
     gicinema_render_admin_nav( isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'gicinema--backup-database' );
 
-    // Check if the form was submitted
+    // Check if the form was submitted (render notice immediately after nav)
     if (isset($_POST['confirm_backup']) && $_POST['confirm_backup'] == 'yes') {
       $result = gicinema__db_backup_and_cleanup();
       echo "<div class='notice notice-success'><p>{$result}</p></div>";
-    } else {
+    }
+
+    // Always render page info + cron after nav (and after any notice)
+    gicinema_render_page_info('gicinema--backup-database');
+    gicinema_render_cron_info('gicinema--backup-database');
+
+    // If not submitted, render the confirmation form
+    if (!isset($_POST['confirm_backup']) || $_POST['confirm_backup'] != 'yes') {
       // Display warning and confirmation form
 ?>
-      <div class="info">
-        <p>
-          This creates a backup of the database, and sticks it in a directory outside the
-          web root (gicinema_dbs).
-          It also backs up any database backup older than one week.
-          This runs as a cron job once every 24 hours.
-        </p>
-      </div>
+      
       <div class="warning">
         <p><strong>Warning:</strong> This action will back up the current database and delete all backups older than one week. This action is irreversible.</p>
       </div>

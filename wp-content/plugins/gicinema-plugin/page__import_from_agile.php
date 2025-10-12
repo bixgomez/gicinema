@@ -12,19 +12,20 @@ function gicinema_page_display__import_films_from_agile() {
   echo '<div class="wrap wrap--gicinema">';
   echo '<h2>Import from Agile</h2>';
   gicinema_render_admin_nav( isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'gicinema--import-films-from-agile' );
+  gicinema_render_page_info('gicinema--import-films-from-agile');
+  gicinema_render_cron_info('gicinema--import-films-from-agile');
 
   // Check if the form was submitted
   if (isset($_POST['confirm_import']) && $_POST['confirm_import'] == 'yes') {
     require_once "function__import_films_from_agile.php";
+    ob_start();
     gicinema__import_films_from_agile();
+    $html = ob_get_clean();
+    echo "<div class='notice notice-success'><p><strong>Import from Agile finished.</strong></p><div class='gicinema-notice-content' style='max-height:420px; overflow:auto;'>{$html}</div></div>";
   } else {
     // Display warning and confirmation form
 ?>
-    <div class="info">
-      <p>
-        This is the first of our two main cron jobs, which you can run manually if needed.
-      </p>
-    </div>
+
     <div class="warning">
       <p><strong>Warning:</strong> This action will import all film posts from Agile. This action is irreversible.</p>
     </div>

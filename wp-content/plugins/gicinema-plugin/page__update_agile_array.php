@@ -12,19 +12,19 @@ function gicinema_page_display__update_agile_array() {
   echo '<div class="wrap wrap--gicinema">';
   echo '<h2>Update Agile Shows Array</h2>';
   gicinema_render_admin_nav( isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'gicinema--update-agile-array' );
+  gicinema_render_page_info('gicinema--update-agile-array');
+  gicinema_render_cron_info('gicinema--update-agile-array');
 
   // Check if the form was submitted
   if (isset($_POST['confirm_update']) && $_POST['confirm_update'] == 'yes') {
     require_once "function__update_agile_shows_array.php";
+    ob_start();
     gicinema__update_agile_shows_array();
+    $html = ob_get_clean();
+    echo "<div class='notice notice-success'><p><strong>Agile feed update finished.</strong></p><div class='gicinema-notice-content'>{$html}</div></div>";
   } else {
     // Display warning and confirmation form
 ?>
-    <div class="info">
-      <p>
-        This will fetch the latest film and show data from the Agile API and cache it for 12 hours.
-      </p>
-    </div>
     <div class="warning">
       <p><strong>Note:</strong> This updates the cached API data that is used by the film import process.</p>
     </div>

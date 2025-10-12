@@ -22,15 +22,17 @@ if (defined('WP_LOCAL_DEV') && WP_LOCAL_DEV) {
     // The Query
     $query = new WP_Query($args);
 
-    // Check if there are any posts to delete
-    if ($query->have_posts()) {
-      // Loop through the posts and delete them
-      foreach ($query->posts as $post_id) {
-        wp_delete_post($post_id, true); // Set to true to bypass trash and permanently delete
-      }
-      return "All 'film' posts have been deleted.";
-    } else {
+    $total = is_array($query->posts) ? count($query->posts) : 0;
+    if ($total === 0) {
       return "No 'film' posts found to delete.";
     }
+
+    $deleted = 0;
+    foreach ($query->posts as $post_id) {
+      $res = wp_delete_post($post_id, true); // true: bypass trash
+      if ($res) { $deleted++; }
+    }
+    $failed = $total - $deleted;
+    return "Deleted {$deleted} of {$total} 'film' post" . ($total === 1 ? '' : 's') . ($failed > 0 ? "; {$failed} failed" : '') . ".";
   }
 }

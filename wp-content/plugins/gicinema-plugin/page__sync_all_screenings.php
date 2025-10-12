@@ -14,18 +14,18 @@ function gicinema_page_display__sync_all_screenings() {
   echo '<div class="wrap wrap--gicinema">';
   echo '<h2>Sync All Screenings</h2>';
   gicinema_render_admin_nav( isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'gicinema--sync-all-screenings' );
+  gicinema_render_page_info('gicinema--sync-all-screenings');
 
   // Check if the form was submitted
   if (isset($_POST['confirm_import']) && $_POST['confirm_import'] == 'yes') {
+    ob_start();
     gicinema__sync_all_screenings();
+    $html = ob_get_clean();
+    echo "<div class='notice notice-success'><p><strong>Sync all screenings finished.</strong></p><div class='gicinema-notice-content' style='max-height:420px; overflow:auto;'>{$html}</div></div>";
   } else {
     // Display warning and confirmation form
 ?>
-    <div class="info">
-      <p>
-        This is the second of our two main cron jobs, which you can run manually if needed.
-      </p>
-    </div>
+
     <div class="warning">
       <p><strong>Warning:</strong> This action will update the screenings table AND the screenings field. This action is irreversible.</p>
     </div>

@@ -12,30 +12,51 @@ if (defined('WP_LOCAL_DEV') && WP_LOCAL_DEV) {
   function gicinema_page_display__truncate_screenings_table() {
     echo '<div class="wrap wrap--gicinema">';
     echo '<h2>Truncate Screenings Table!</h2>';
-    gicinema_render_admin_nav( isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'gicinema--truncate-screenings-table' );
+    gicinema_render_admin_nav(isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'gicinema--truncate-screenings-table');
 
-    // Check if the form was submitted
+    // Check if the form was submitted (render notice immediately after nav)
     if (isset($_POST['confirm_truncation']) && $_POST['confirm_truncation'] == 'yes') {
       $result = gicinema__truncate_screenings_table();
       echo "<div class='notice notice-success'><p>{$result}</p></div>";
-    } else {
+    }
+
+    // Always render page info after nav (and after any notice)
+    gicinema_render_page_info('gicinema--truncate-screenings-table');
+
+    // If not submitted, show confirmation form
+    if (!isset($_POST['confirm_truncation']) || $_POST['confirm_truncation'] != 'yes') {
       // Display warning and confirmation form
 ?>
-      <div class="info">
-        <p>
-          This one should also never be used in production. This will, as
-          it implies, <i>permanently truncate the custom screenings table</i>.
-          This should only be used locally. This too is not available on the live site anyway.
-        </p>
-      </div>
+
       <div class="warning">
-        <p><strong>Warning:</strong> This action will permanently truncate the screenings table. This action is irreversible.</p>
+        <p><strong>Warning:</strong> This will permanently truncate the custom screenings table. It cannot be undone. Film posts remain; all screenings rows will be removed.</p>
       </div>
+      <?php
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'gi_screenings';
+        $approx_rows = (int) $wpdb->get_var("SELECT COUNT(*) FROM `$table_name`");
+      ?>
       <form method="post">
         <?php wp_nonce_field('truncate_table_action', 'truncate_nonce'); ?>
         <input type="hidden" name="confirm_truncation" value="yes">
-        <input type="submit" class="button button-primary" value="Confirm Truncation">
+        <input type="submit" id="gicinema-truncate-table-btn" class="button button-primary" value="Confirm Truncation">
       </form>
+      <script>
+        (function(){
+          var btn = document.getElementById('gicinema-truncate-table-btn');
+          if (btn) {
+            btn.addEventListener('click', function(ev){
+              var rows = <?php echo (int) $approx_rows; ?>;
+              var msg = 'This will remove ' + rows + ' row' + (rows===1?'':'s') + ' from the custom screenings table (<?php echo esc_js($table_name); ?>).\n\n'
+                      + 'This cannot be undone. Ensure you have a recent backup.\n\n'
+                      + 'Are you absolutely sure you want to proceed?';
+              if (!window.confirm(msg)) {
+                ev.preventDefault();
+              }
+            });
+          }
+        })();
+      </script>
 <?php
     }
 

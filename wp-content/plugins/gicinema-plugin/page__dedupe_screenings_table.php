@@ -13,22 +13,18 @@ function gicinema_page_display__dedupe_screenings_table() {
   echo '<div class="wrap wrap--gicinema">';
   echo '<h2>Dedupe Screenings Table!</h2>';
   gicinema_render_admin_nav( isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'gicinema--dedupe-screenings-page' );
+  gicinema_render_page_info('gicinema--dedupe-screenings-page');
 
   // Check if the form was submitted
   if (isset($_POST['confirm_dedupe']) && $_POST['confirm_dedupe'] == 'yes') {
+    ob_start();
     gicinema__dedupe_screenings_table();
+    $html = ob_get_clean();
+    echo "<div class='notice notice-success'><p><strong>Dedupe finished.</strong></p><div class='gicinema-notice-content'>{$html}</div></div>";
   } else {
     // Display warning and confirmation form
 ?>
-    <div class="info">
-      <p>
-        Every so often (usually locally, during development and testing) we end up with
-        duplicate records
-        -- not in our WordPress film posts, but in the custom screenings table.
-        This procedure finds and
-        deletes dupes.
-      </p>
-    </div>
+    
     <div class="warning">
       <p><strong>Warning:</strong> This action will dedupe the screenings table. This action is irreversible.</p>
     </div>

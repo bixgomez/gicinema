@@ -29,14 +29,7 @@ function gicinema_page_display__delete_overnight_screenings() {
   } else {
     // Display warning and confirmation form
 ?>
-    <div class="info">
-      <p>
-        This tool identifies “overnight” screenings in the custom screenings table by
-        naive time-of-day windows (22:00–23:59:59 and 00:00–10:00), plus a small set of
-        legacy cleanup rules. Use the Dry run option below to preview exactly what would be
-        deleted before proceeding.
-      </p>
-    </div>
+
     <div class="warning">
       <p><strong>Warning:</strong> This action permanently deletes matching screening rows from the custom table. It does not update the ACF field automatically.</p>
     </div>

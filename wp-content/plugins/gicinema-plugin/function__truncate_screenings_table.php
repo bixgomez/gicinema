@@ -15,16 +15,18 @@ if (defined('WP_LOCAL_DEV') && WP_LOCAL_DEV) {
     }
     global $wpdb;
     $table_name = $wpdb->prefix . 'gi_screenings';
+    // Count rows before truncation for reporting
+    $before = (int) $wpdb->get_var("SELECT COUNT(*) FROM `$table_name`");
 
+    // Truncate the table
     $sql = "TRUNCATE TABLE `$table_name`";
-
     $wpdb->query($sql);
 
     // Optional: Check if the operation was successful
     if ($wpdb->last_error !== '') {
       return "An error occurred: " . $wpdb->last_error;
     } else {
-      return "Table '$table_name' has been successfully truncated.";
+      return "Truncated table '$table_name'; removed {$before} row" . ($before === 1 ? '' : 's') . ".";
     }
   }
 }
