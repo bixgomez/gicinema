@@ -24,6 +24,7 @@ function gicinema_page_display__update_agile_array() {
 
   echo '<div class="wrap wrap--gicinema">';
   echo '<h2>Update Agile Shows Array</h2>';
+  gicinema_render_admin_nav( isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'gicinema--update-agile-array' );
 
   // Check if the form was submitted
   if (isset($_POST['confirm_update']) && $_POST['confirm_update'] == 'yes') {

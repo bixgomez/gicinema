@@ -23,6 +23,7 @@ add_action('admin_menu', 'gicinema_page_add__dedupe_screenings_table');
 function gicinema_page_display__dedupe_screenings_table() {
   echo '<div class="wrap wrap--gicinema">';
   echo '<h2>Dedupe Screenings Table!</h2>';
+  gicinema_render_admin_nav( isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'gicinema--dedupe-screenings-page' );
 
   // Check if the form was submitted
   if (isset($_POST['confirm_dedupe']) && $_POST['confirm_dedupe'] == 'yes') {

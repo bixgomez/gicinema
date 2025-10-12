@@ -24,6 +24,7 @@ function gicinema_page_display__sync_all_screenings() {
 
   echo '<div class="wrap wrap--gicinema">';
   echo '<h2>Sync All Screenings</h2>';
+  gicinema_render_admin_nav( isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'gicinema--sync-all-screenings' );
 
   // Check if the form was submitted
   if (isset($_POST['confirm_import']) && $_POST['confirm_import'] == 'yes') {

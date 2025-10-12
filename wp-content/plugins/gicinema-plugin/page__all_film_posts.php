@@ -27,6 +27,7 @@ function gicinema_page_display__all_film_posts() {
   ?>
   <div class="wrap wrap--gicinema">
     <h2>All Film Posts</h2>
+    gicinema_render_admin_nav( isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'gicinema--all-film-posts' );
     <div class="info">
       <p>
         This simply displays all the WordPress films posts in reverse order of date posted.

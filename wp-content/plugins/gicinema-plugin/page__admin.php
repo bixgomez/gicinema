@@ -23,6 +23,8 @@ function gicinema_admin_page_display() {
   ?>
   <div class="wrap wrap--gicinema">
       <h2>GI Cinema Plugin</h2>
+      <?php /* This file already outputs HTML within PHP; render nav via PHP call, not short-open tags. */ ?>
+      <?php gicinema_render_admin_nav( isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'gicinema--admin' ); ?>
       <p>
         This plugin integrates with Agile Ticketing to keep Film posts and their Screenings
         up to date. Imports normalize all dates/times to the site’s WordPress timezone and

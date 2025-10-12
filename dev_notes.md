@@ -165,6 +165,12 @@ Single source of truth for our collaboration notes. Keep entries concise and act
   - Updated descriptions for accuracy: importer behavior, timezone normalization, sync semantics, dedupe’s purpose, backup retention policy and schedule, and clarified destructive tools.
   - Marked “Delete Overnight Screenings” as Deprecated (no link) with guidance to use “Delete Superfluous (All Films)” instead and a link to that page.
 
+- DRY top navigation
+  - Added `inc/admin-nav.php` with `gicinema_render_admin_nav($current_slug)` and a shared list of pages (including local-only tools).
+  - Injected top nav across plugin pages: admin hub, All Film Posts, Update Agile Shows Array, Import from Agile, Sync All Screenings, Delete Superfluous (All Films), Dedupe Screenings, Backup Database (local), Delete All Films (local), Truncate Screenings (local).
+  - Deprecated “Delete Overnight” appears disabled with an explanation by default (can be re-enabled via `gicinema_enable_overnight_tool` filter).
+  - Navigation order now matches the sidebar submenu order (Home, All Film Posts, Update Agile Array, Import, Sync, Deprecated Overnight, Dedupe, local tools, then Delete Superfluous).
+
 ### 2025-10-11
 - [note] (No additional notes; items for this working session were moved to 2025-10-12.)
 
