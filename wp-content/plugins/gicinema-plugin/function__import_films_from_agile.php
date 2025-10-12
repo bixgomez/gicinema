@@ -233,8 +233,4 @@ function gicinema__import_films_from_agile() {
     }
 
     echo '</div>';
-
-    echo '<div class="function-info">';
-    gicinema__dedupe_screenings_table();
-    echo '</div>';
 }

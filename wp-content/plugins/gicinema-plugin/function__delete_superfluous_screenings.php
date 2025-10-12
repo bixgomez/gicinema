@@ -56,7 +56,18 @@ function gicinema__delete_superfluous_acf_screenings($post_id, $dry_run = false)
   }
 
   $result['original'] = count($acf_rows);
+
+  // Safety: If no active screenings exist in the custom table for this post,
+  // do not delete anything from ACF. Treat everything as kept to avoid wiping
+  // user-entered data when the canonical set is empty/stale.
+  if (empty($table_set)) {
+    $result['kept'] = $result['original'];
+    $result['deleted'] = 0;
+    return $result;
+  }
+
   $kept_rows = [];
+  $tz = function_exists('wp_timezone') ? wp_timezone() : new DateTimeZone(get_option('timezone_string') ?: 'UTC');
 
   foreach ($acf_rows as $row) {
     $label = isset($row['screening']) ? $row['screening'] : '';
@@ -79,7 +90,31 @@ function gicinema__delete_superfluous_acf_screenings($post_id, $dry_run = false)
       }
     }
 
+    $keep = false;
     if ($normalized && isset($table_set[$normalized])) {
+      $keep = true;
+    } elseif ($normalized) {
+      // Defense-in-depth: consider timezone-shadow equivalents as matches
+      // to avoid false deletions if an offset mismatch slips in.
+      $ts = strtotime($normalized);
+      if ($ts) {
+        try {
+          $dt = new DateTime($normalized, $tz);
+          $offset = $tz->getOffset($dt); // seconds (e.g., 25200/28800)
+        } catch (Exception $e) {
+          $offset = 0;
+        }
+        if ($offset) {
+          $plus  = date('Y-m-d H:i:s', $ts + $offset);
+          $minus = date('Y-m-d H:i:s', $ts - $offset);
+          if (isset($table_set[$plus]) || isset($table_set[$minus])) {
+            $keep = true;
+          }
+        }
+      }
+    }
+
+    if ($keep) {
       $kept_rows[] = $row; // keep only matching screenings
     }
   }

@@ -24,93 +24,88 @@ function gicinema_admin_page_display() {
   <div class="wrap wrap--gicinema">
       <h2>GI Cinema Plugin</h2>
       <p>
-        This plugin contains all the code necessary to import films from Agile, create new film posts
-        and update existing film posts as needed.
+        This plugin integrates with Agile Ticketing to keep Film posts and their Screenings
+        up to date. Imports normalize all dates/times to the site’s WordPress timezone and
+        write canonical screening times to a custom table, with an ACF “Screenings” field kept
+        in sync for editor visibility.
       </p>
       <p>
-        It consists of the following (use the links in the sidebar):
+        Use the tools below to run key tasks manually. Most are also scheduled via WP‑Cron.
       </p>
       <ul>
 
         <li>
-          <h3>All Film Posts</h3>
+          <h3><a href="<?php echo esc_url( admin_url('admin.php?page=gicinema--all-film-posts') ); ?>">All Film Posts</a></h3>
           <p>
-            This simply displays all the WordPress films posts in reverse order of date posted.
-            It will check the custom table to see if we have an Agile ID associated with the film,
-            and let you know if we find one... or not!
-          </p>
-          <p>
-            <b>Please note:</b> For films posted prior to 10/20/2022, it is 
-            unlikely that we have a matching record in the custom table.
+            Lists all Film posts (newest first). For each film it indicates whether a matching
+            Agile ID is present in the custom screenings table. Older films (prior to 2022‑10‑20)
+            may not have a corresponding Agile ID recorded.
           </p>
         </li>
 
         <li>
-          <h3>Import from Agile</h3>
+          <h3><a href="<?php echo esc_url( admin_url('admin.php?page=gicinema--import-films-from-agile') ); ?>">Import from Agile</a></h3>
           <p>
-            This is the first of our two main cron jobs, which you can run manually if needed.
+            Runs the importer that reads the Agile Ticketing JSON feed (refreshes the cached feed
+            if needed), then creates or updates Film posts. It updates metadata, downloads poster
+            images, imports screenings into the custom table, and immediately syncs the ACF
+            “Screenings” field. All screening times are normalized to the site timezone.
+            Scheduled every 30 minutes; safe to run manually any time.
           </p>
         </li>
 
         <li>
-          <h3>Sync All Screenings</h3>
+          <h3><a href="<?php echo esc_url( admin_url('admin.php?page=gicinema--sync-all-screenings') ); ?>">Sync All Screenings</a></h3>
           <p>
-            This is the second of our two main cron jobs, which you can run manually if needed.
+            Re-syncs screenings for every Film: reads canonical times from the custom table and
+            merges with any ACF‑only entries, using a timezone‑aware guard to avoid ±7/±8 hour
+            duplicates. Useful after manual edits. Newest films are processed first.
           </p>
         </li>
 
         <li>
-          <h3>Delete Overnight Screenings</h3>
+          <h3>Delete Overnight Screenings <span style="color:#b32d2e; font-weight:600;">(Deprecated)</span></h3>
           <p>
-            Occasionally, due to some weirdness regarding time zones, we end up with  
-            screenings being imported in their UTC time equivalents rather than local time.  
-            So, we end up with duplicate screenings that appear to occur 7-8 hours later 
-            than they actually do.  This function seeks to take care of most of these
-            occurrences, by deleting any screenings that appear to start between 10pm and 10am.
-          </p>
-          <p>
-            <i>Yes, it's kludgy, and yes, it must be a bug in the system.</i>  But, for now,
-            it works...  For the most part.
+            Deprecated. Timezone‑normalized imports resolved the former UTC shift issue; this tool
+            used naive time windows (22:00–10:00) that could remove legitimate shows. It is hidden
+            by default. Prefer the safer cleanup: “Delete Superfluous (All Films)” →
+            <a href="<?php echo esc_url( admin_url('admin.php?page=gicinema--delete-all-superfluous-screenings') ); ?>">open tool</a>.
           </p>
         </li>
 
         <li>
-          <h3>Dedupe Screenings</h3>
+          <h3><a href="<?php echo esc_url( admin_url('admin.php?page=gicinema--dedupe-screenings-page') ); ?>">Dedupe Screenings</a></h3>
           <p>
-            Every so often (usually locally, during development and testing) we end up with 
-            duplicate records
-            -- not in our WordPress film posts, but in the custom screenings table.  
-            This procedure finds and 
-            deletes dupes.
+            Removes exact duplicate rows from the custom screenings table, keeping the earliest
+            row per (screening, film_id, post_id). With the unique index on the normalized timestamp
+            in place, duplicates should not recur; use this mainly for historical cleanup.
           </p>
         </li>
 
         <li>
-          <h3>Backup Database</h3>
+          <h3><a href="<?php echo esc_url( admin_url('admin.php?page=gicinema--backup-database') ); ?>">Backup Database</a></h3>
           <p>
-            This creates a backup of the database, and sticks it in a directory outside the 
-            web root (gicinema_dbs).
-            It also backs up any database backup older than one week.
-            This runs as a cron job once every 24 hours.
-            Currently not working locally for some reason; more research is needed.
+            Creates a compressed SQL backup of the entire database to a directory outside the web
+            root (`../gicinema_dbs`). Filenames include a timestamp (YYYY‑MM‑DD‑‑HH‑MM‑SS.sql.gz).
+            Retention: keep all backups < 7 days; keep weekly for 30 days; keep monthly for 1 year;
+            keep the first backup of each year indefinitely. Scheduled daily at 21:00 (server time).
+            You can run it here on demand.
           </p>
         </li>
 
         <li>
-          <h3>Delete All Films</h3>
+          <h3><a href="<?php echo esc_url( admin_url('admin.php?page=gicinema--delete-all-films') ); ?>">Delete All Films</a></h3>
           <p>
-            This one should almost never be used, especially in production.  This will, as 
-            it implies, <i>permanently delete all film posts</i>.  This should only be used locally. 
-            In fact, it's not even available on the live site!  So there ya go.
+            Permanently deletes all Film posts. Intended for local development only; not available
+            on production. Make a backup first.
           </p>
         </li>
 
         <li>
-          <h3>Truncate Screenings Table</h3>
+          <h3><a href="<?php echo esc_url( admin_url('admin.php?page=gicinema--truncate-screenings-table') ); ?>">Truncate Screenings Table</a></h3>
           <p>
-            This one should also never be used in production.  This will, as 
-            it implies, <i>permanently truncate the custom screenings table</i>.  
-            This should only be used locally. This too is not available on the live site anyway.
+            Permanently truncates the custom screenings table. Intended for local development only;
+            not available on production. Make a backup first.
           </p>
         </li>
 

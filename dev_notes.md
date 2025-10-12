@@ -10,7 +10,7 @@ Single source of truth for our collaboration notes. Keep entries concise and act
 
 ## Session Log
 
-### 2025-10-11
+### 2025-10-12
 - [note] Investigated reported cron issue: tailed `wp-content/debug.log`; found repeated fatal errors from Official Facebook Pixel (invalid token) unrelated to our plugin crons.
 - [note] Audited `gicinema-plugin` cron setup and backup routine; confirmed schedules in `cron_jobs.php` and daily DB backup to `../gicinema_dbs`.
 - [decision] Fixed backup retention bug: recognize `.sql` and `.sql.gz` files; parse full `YYYY-MM-DD--HH-MM-SS` timestamp; deterministically sort; add safety guard (no deletion if filenames don’t match expected pattern).
@@ -144,6 +144,29 @@ Single source of truth for our collaboration notes. Keep entries concise and act
     - UX tweak: Do not list films that have zero ACF screenings (original==0) in the running log to reduce noise.
     - Ordering: Processes films in reverse chronological order (newest posts first) using `orderby => 'date', order => 'DESC'`.
     - Per‑film log phrasing: If any deletions would occur, show “would delete X of Y (keeping Z)” in bold red during dry runs; for live runs use “deleted X of Y (kept Z)”; neutral style when zero to delete.
+    - Safety: The per‑film deletion logic now skips deletion entirely if the custom table has zero active screenings for that film (prevents wiping ACF when canonical set is empty/stale). It also treats timezone-shadow equivalents as matches to avoid false deletions.
+
+- Overnight cleanup tool revisited
+  - Page: `page__delete_overnight_screenings.php`; Function: `function__delete_overnight_screenings.php`
+  - Added Dry run mode (default) that previews exactly which screening rows match the current naive time windows and would be deleted.
+  - Preview lists per-row details (film title, date/time, screening_id) and offers a “Proceed to delete” confirmation.
+  - Actual deletion now deletes the exact previewed rows by `screening_id` (chunked), rather than broad time-window deletes, to keep preview and result aligned.
+  - Updated warning text to reflect that it deletes screening rows (not posts) and does not update ACF automatically.
+  - Note: This tool remains a blunt instrument; long-term we can replace it with precise timezone-shadow cleanup using the same normalization logic introduced elsewhere.
+  - Deprecated by default: Hidden from the menu and short-circuited via `apply_filters('gicinema_enable_overnight_tool', false)`. It can be temporarily re-enabled by hooking the filter to return true if needed.
+
+- Dedupe automation removed
+  - Removed automatic calls to `gicinema__dedupe_screenings_table()` at the end of the importer (`function__import_films_from_agile.php`) and at the start/end of the “Sync All Screenings” job (`function__sync_all_screenings.php`).
+  - Rationale: With timezone normalization + the unique index on `screening(19)`, duplicates should not be introduced going forward. Keep the manual admin tool for one-shot cleanup or emergencies.
+
+- Admin hub page polish
+  - File: `page__admin.php`
+  - Converted section titles to links to their respective subpages (All Film Posts, Import from Agile, Sync All Screenings, Dedupe Screenings, Backup Database, Delete All Films, Truncate Screenings Table).
+  - Updated descriptions for accuracy: importer behavior, timezone normalization, sync semantics, dedupe’s purpose, backup retention policy and schedule, and clarified destructive tools.
+  - Marked “Delete Overnight Screenings” as Deprecated (no link) with guidance to use “Delete Superfluous (All Films)” instead and a link to that page.
+
+### 2025-10-11
+- [note] (No additional notes; items for this working session were moved to 2025-10-12.)
 
 - Modified files (for traceability)
   - Timezone normalization: `function__import_screenings_from_agile.php`, `function__sync_screenings.php`, `function__compare_screenings.php`, `function__sync_screenings_on_save.php`, `function__delete_superfluous_screenings.php`.

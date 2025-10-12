@@ -17,8 +17,6 @@ function gicinema__sync_all_screenings() {
     }
   }
 
-  gicinema__dedupe_screenings_table();
-
   echo '<div class="function-info">';
   echo '<div class="function-name">gicinema__sync_all_screenings()</div>';
 
@@ -73,6 +71,5 @@ function gicinema__sync_all_screenings() {
 
   echo '</div>';
 
-  gicinema__dedupe_screenings_table();
 
 }
