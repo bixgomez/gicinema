@@ -6,26 +6,7 @@ if (!defined('ABSPATH')) {
 }
 
 require_once "function__delete_overnight_screenings.php";
-
-function gicinema_page_add__delete_overnight_screenings() {
-  // Deprecated tool: hidden from menu by default. Re-enable via filter if needed.
-  $enabled = false;
-  if (function_exists('apply_filters')) {
-    $enabled = apply_filters('gicinema_enable_overnight_tool', false);
-  }
-  if (! $enabled) {
-    return;
-  }
-  add_submenu_page(
-    'gicinema--admin',
-    'Delete Overnight Screenings',
-    'Delete Overnight Screenings',
-    'manage_options',
-    'gicinema--delete-overnight-screenings',
-    'gicinema_page_display__delete_overnight_screenings'
-  );
-}
-add_action('admin_menu', 'gicinema_page_add__delete_overnight_screenings');
+// Submenu registration is centralized in inc/admin-nav.php
 
 function gicinema_page_display__delete_overnight_screenings() {
   echo '<div class="wrap wrap--gicinema">';

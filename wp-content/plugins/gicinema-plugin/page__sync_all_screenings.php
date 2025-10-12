@@ -7,18 +7,7 @@ if (!defined('ABSPATH')) {
 
 require_once "function__sync_all_screenings.php";
 
-function gicinema_page_add__sync_all_screenings() {
-  // Add sub-menu page
-  add_submenu_page(
-    'gicinema--admin', // The slug name for the parent menu
-    'Sync All Screenings', // The text to be displayed in the title tags of the page when the menu is selected
-    'Sync All Screenings', // The text to be used for the menu
-    'manage_options', // The capability required for this menu to be displayed to the user
-    'gicinema--sync-all-screenings', // The slug name to refer to this submenu by (should be unique for this submenu)
-    'gicinema_page_display__sync_all_screenings' // The function to be called to output the content for this page
-  );
-}
-add_action('admin_menu', 'gicinema_page_add__sync_all_screenings');
+// Submenu registration is centralized in inc/admin-nav.php
 
 function gicinema_page_display__sync_all_screenings() {
 

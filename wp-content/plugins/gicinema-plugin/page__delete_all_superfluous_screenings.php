@@ -7,18 +7,7 @@ if (!defined('ABSPATH')) {
 
 require_once "function__delete_superfluous_screenings.php";
 
-function gicinema_page_add__delete_all_superfluous_screenings() {
-  // Add sub-menu page under the main plugin menu
-  add_submenu_page(
-    'gicinema--admin',
-    'Delete All Superfluous Screenings',
-    'Delete Superfluous (All Films)',
-    'manage_options',
-    'gicinema--delete-all-superfluous-screenings',
-    'gicinema_page_display__delete_all_superfluous_screenings'
-  );
-}
-add_action('admin_menu', 'gicinema_page_add__delete_all_superfluous_screenings');
+// Submenu registration is centralized in inc/admin-nav.php
 
 function gicinema_page_display__delete_all_superfluous_screenings() {
   echo '<div class="wrap wrap--gicinema">';

@@ -5,20 +5,7 @@ if (!defined('ABSPATH')) {
   exit;
 }
 
-function gicinema_page_add__import_films_from_agile() {
-  // Main menu page is added here
-
-  // Add sub-menu page
-  add_submenu_page(
-    'gicinema--admin', // The slug name for the parent menu
-    'Import Films from Agile', // The text to be displayed in the title tags of the page when the menu is selected
-    'Import Films from Agile', // The text to be used for the menu
-    'manage_options', // The capability required for this menu to be displayed to the user
-    'gicinema--import-films-from-agile', // The slug name to refer to this submenu by (should be unique for this submenu)
-    'gicinema_page_display__import_films_from_agile' // The function to be called to output the content for this page
-  );
-}
-add_action('admin_menu', 'gicinema_page_add__import_films_from_agile');
+// Submenu registration is centralized in inc/admin-nav.php
 
 function gicinema_page_display__import_films_from_agile() {
 

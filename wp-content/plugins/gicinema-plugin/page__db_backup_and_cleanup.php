@@ -8,20 +8,7 @@ if (!defined('ABSPATH')) {
 require_once "function__db_backup_and_cleanup.php";
 
 if (defined('WP_LOCAL_DEV') && WP_LOCAL_DEV) {
-
-  function gicinema_page_add__db_backup_and_cleanup() {
-    // Add sub-menu page
-    add_submenu_page(
-      'gicinema--admin',
-      'Backup Database',
-      'Backup Database',
-      'manage_options',
-      'gicinema--backup-database',
-      'gicinema_page_display__db_backup_and_cleanup'
-    );
-  }
-  add_action('admin_menu', 'gicinema_page_add__db_backup_and_cleanup');
-
+  // Submenu registration is centralized in inc/admin-nav.php
   function gicinema_page_display__db_backup_and_cleanup() {
     echo '<div class="wrap wrap--gicinema">';
     echo '<h2>Backup The Database!</h2>';

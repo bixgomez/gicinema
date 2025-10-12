@@ -5,20 +5,7 @@ if (!defined('ABSPATH')) {
   exit;
 }
 
-function gicinema_page_add__update_agile_array() {
-  // Main menu page is added here
-
-  // Add sub-menu page
-  add_submenu_page(
-    'gicinema--admin', // The slug name for the parent menu
-    'Update Agile Shows Array', // The text to be displayed in the title tags of the page when the menu is selected
-    'Update Agile Shows Array', // The text to be used for the menu
-    'manage_options', // The capability required for this menu to be displayed to the user
-    'gicinema--update-agile-array', // The slug name to refer to this submenu by (should be unique for this submenu)
-    'gicinema_page_display__update_agile_array' // The function to be called to output the content for this page
-  );
-}
-add_action('admin_menu', 'gicinema_page_add__update_agile_array');
+// Submenu registration is centralized in inc/admin-nav.php
 
 function gicinema_page_display__update_agile_array() {
 
