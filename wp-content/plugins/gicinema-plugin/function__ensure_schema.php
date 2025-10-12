@@ -32,27 +32,32 @@ function gicinema__ensure_screenings_unique_index() {
   }
 
   // Add unique index if missing
+  $added_index = false;
   if (!$has_unique) {
     // Use a prefix length of 19 to cover 'YYYY-MM-DD HH:MM:SS'
     $wpdb->query("ALTER TABLE `{$table}` ADD UNIQUE KEY unique_screening_str (film_id, post_id, screening(19))");
+    $added_index = true;
   }
 
-  // One-time dedupe historical duplicates, keeping the lowest screening_id
-  // for each (screening, film_id, post_id)
-  $dedupe_sql = "
-    DELETE t1
-    FROM {$table} AS t1
-    LEFT JOIN (
-      SELECT MIN(screening_id) AS min_id
-      FROM {$table}
-      GROUP BY screening, film_id, post_id
-    ) AS t2 ON t1.screening_id = t2.min_id
-    WHERE t2.min_id IS NULL
-  ";
-  $wpdb->query($dedupe_sql);
+  // Run the dedupe at most once, or when index is newly added, unless forced.
+  $ran_version = get_option('gicinema_screenings_schema_v1');
+  $force = apply_filters('gicinema_force_schema_ensure', false) ? true : false;
+  if ($force || $added_index || empty($ran_version)) {
+    $dedupe_sql = "
+      DELETE t1
+      FROM {$table} AS t1
+      LEFT JOIN (
+        SELECT MIN(screening_id) AS min_id
+        FROM {$table}
+        GROUP BY screening, film_id, post_id
+      ) AS t2 ON t1.screening_id = t2.min_id
+      WHERE t2.min_id IS NULL
+    ";
+    $wpdb->query($dedupe_sql);
+    update_option('gicinema_screenings_schema_v1', 'done');
+  }
 }
 
-// Run on admin init and front-end init to catch both paths without slowing requests.
-add_action('admin_init', 'gicinema__ensure_screenings_unique_index');
-add_action('init', 'gicinema__ensure_screenings_unique_index');
-
+// Note: We intentionally do NOT hook this globally.
+// The importer calls gicinema__ensure_screenings_unique_index() directly so it only runs
+// when needed (manual or cron import).

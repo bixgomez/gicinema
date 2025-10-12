@@ -12,6 +12,11 @@ require_once "function__update_agile_shows_array.php";
 
 function gicinema__import_films_from_agile() {
 
+    // Ensure DB schema/index is in place even when running via WP-Cron
+    if (function_exists('gicinema__ensure_screenings_unique_index')) {
+        gicinema__ensure_screenings_unique_index();
+    }
+
     // CSRF Protection - only when called via admin form
     if (isset($_POST['confirm_import'])) {
         if (!isset($_POST['import_nonce']) || !wp_verify_nonce($_POST['import_nonce'], 'import_films_action')) {
