@@ -32,6 +32,7 @@ require_once "page__delete_all_films.php";
 require_once "page__truncate_screenings_table.php";
 require_once "page__delete_all_superfluous_screenings.php";
 require_once "inc/admin-nav.php";
+require_once "function__ensure_schema.php";
 
 function gicinema_enqueue_styles() {
   wp_enqueue_style('gicinema-custom-styles', plugins_url('css/gicinema-plugin.css', __FILE__));
