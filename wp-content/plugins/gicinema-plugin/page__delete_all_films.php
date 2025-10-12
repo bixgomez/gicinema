@@ -11,8 +11,6 @@ if (defined('WP_LOCAL_DEV') && WP_LOCAL_DEV) {
   // Submenu registration is centralized in inc/admin-nav.php
   function gicinema_page_display__delete_all_films() {
     echo '<div class="wrap wrap--gicinema">';
-    echo '<h2>Delete All Films!</h2>';
-    gicinema_render_admin_nav(isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'gicinema--delete-all-films');
 
     // Check if the form was submitted (render notice immediately after nav)
     if (isset($_POST['confirm_delete']) && $_POST['confirm_delete'] == 'yes') {

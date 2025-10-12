@@ -10,8 +10,6 @@ if (!defined('ABSPATH')) {
 function gicinema_page_display__import_films_from_agile() {
 
   echo '<div class="wrap wrap--gicinema">';
-  echo '<h2>Import from Agile</h2>';
-  gicinema_render_admin_nav( isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'gicinema--import-films-from-agile' );
   gicinema_render_page_info('gicinema--import-films-from-agile');
   gicinema_render_cron_info('gicinema--import-films-from-agile');
 

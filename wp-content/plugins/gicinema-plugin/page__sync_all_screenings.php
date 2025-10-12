@@ -12,8 +12,6 @@ require_once "function__sync_all_screenings.php";
 function gicinema_page_display__sync_all_screenings() {
 
   echo '<div class="wrap wrap--gicinema">';
-  echo '<h2>Sync All Screenings</h2>';
-  gicinema_render_admin_nav( isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'gicinema--sync-all-screenings' );
   gicinema_render_page_info('gicinema--sync-all-screenings');
 
   // Check if the form was submitted

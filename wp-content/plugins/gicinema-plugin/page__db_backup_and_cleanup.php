@@ -11,8 +11,6 @@ if (defined('WP_LOCAL_DEV') && WP_LOCAL_DEV) {
   // Submenu registration is centralized in inc/admin-nav.php
   function gicinema_page_display__db_backup_and_cleanup() {
     echo '<div class="wrap wrap--gicinema">';
-    echo '<h2>Backup The Database!</h2>';
-    gicinema_render_admin_nav( isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'gicinema--backup-database' );
 
     // Check if the form was submitted (render notice immediately after nav)
     if (isset($_POST['confirm_backup']) && $_POST['confirm_backup'] == 'yes') {

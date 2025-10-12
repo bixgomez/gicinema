@@ -11,8 +11,6 @@ require_once "function__delete_superfluous_screenings.php";
 
 function gicinema_page_display__delete_all_superfluous_screenings() {
   echo '<div class="wrap wrap--gicinema">';
-  echo '<h2>Delete Superfluous Screenings (All Films)</h2>';
-  gicinema_render_admin_nav( isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'gicinema--delete-all-superfluous-screenings' );
   gicinema_render_page_info('gicinema--delete-all-superfluous-screenings');
 
   // Build a list of Film IDs up-front for the JS runner.

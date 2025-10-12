@@ -174,7 +174,7 @@ function gicinema_render_admin_nav($current_slug = '') {
   $items = gicinema_get_admin_nav_items();
   $base = admin_url('admin.php?page=');
 
-  echo '<div class="gicinema-admin-nav" style="margin:10px 0 16px; padding:6px;">';
+  echo '<div class="gicinema-admin-nav" style="margin:10px 0 16px; padding:0;">';
   echo '<ul style="display:flex; flex-wrap:wrap; gap:4px; margin:0; padding:0; list-style:none;">';
   foreach ($items as $it) {
     if (empty($it['show'])) { continue; }
@@ -202,9 +202,25 @@ function gicinema_render_admin_nav($current_slug = '') {
   echo '</div>';
 }
 
-// Ensure the nav appears immediately after the page title and before notices.
-// Note: We render the nav within each page immediately after the <h2> title
-// to ensure it appears below the title and above any page notices.
+// Render page title + nav in the admin header so it appears before notices.
+function gicinema_render_page_header() {
+  if (!is_admin()) return;
+  $slug = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
+  if (!$slug) return;
+  $items = gicinema_get_admin_nav_items();
+  $map = [];
+  foreach ($items as $it) {
+    $map[$it['slug']] = $it;
+  }
+  if (!isset($map[$slug])) return;
+  $it = $map[$slug];
+  $title = isset($it['title']) && $it['title'] ? $it['title'] : (isset($it['label']) ? $it['label'] : '');
+  if ($title) {
+    echo '<h2>' . esc_html($title) . '</h2>';
+  }
+  gicinema_render_admin_nav($slug);
+}
+add_action('in_admin_header', 'gicinema_render_page_header', 20);
 
 function gicinema_render_page_blurb($slug, $full = false) {
   $items = gicinema_get_admin_nav_items();

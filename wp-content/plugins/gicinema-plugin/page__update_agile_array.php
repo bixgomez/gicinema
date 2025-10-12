@@ -10,8 +10,6 @@ if (!defined('ABSPATH')) {
 function gicinema_page_display__update_agile_array() {
 
   echo '<div class="wrap wrap--gicinema">';
-  echo '<h2>Update Agile Shows Array</h2>';
-  gicinema_render_admin_nav( isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'gicinema--update-agile-array' );
   gicinema_render_page_info('gicinema--update-agile-array');
   gicinema_render_cron_info('gicinema--update-agile-array');
 

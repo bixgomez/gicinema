@@ -11,8 +11,6 @@ require_once "function__dedupe_screenings_table.php";
 
 function gicinema_page_display__dedupe_screenings_table() {
   echo '<div class="wrap wrap--gicinema">';
-  echo '<h2>Dedupe Screenings Table!</h2>';
-  gicinema_render_admin_nav( isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'gicinema--dedupe-screenings-page' );
   gicinema_render_page_info('gicinema--dedupe-screenings-page');
 
   // Check if the form was submitted
