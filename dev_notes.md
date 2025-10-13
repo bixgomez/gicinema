@@ -171,6 +171,40 @@ Single source of truth for our collaboration notes. Keep entries concise and act
   - Deprecated “Delete Overnight” appears disabled with an explanation by default (can be re-enabled via `gicinema_enable_overnight_tool` filter).
   - Navigation order now matches the sidebar submenu order (Home, All Film Posts, Update Agile Array, Import, Sync, Deprecated Overnight, Dedupe, local tools, then Delete Superfluous).
 
+- Centralized descriptions (+ Cron metadata)
+  - Each page now has centralized `short` and `long` blurbs in `gicinema_get_admin_nav_items()`; individual pages render both inside a single `.info` box via `gicinema_render_page_info($slug)`.
+  - Added cron metadata per page and `gicinema_render_cron_info($slug)` to render a “Cron” section with hook, frequency, and notes (Update Agile, Import, Backup DB).
+
+- Title + menu placement (header)
+  - Implemented `gicinema_render_page_header()` hooked to `in_admin_header` to render the page title (from `title` or `label`) followed immediately by the horizontal menu; this ensures Title → Menu precedes all notices.
+  - Removed in-page `<h2>` titles and duplicate menu renders to prevent duplication.
+
+- Standardized notice placement (after menu)
+  - For tools that previously printed inline output, we now buffer and wrap results into WP admin notices printed after the header (menu) and before page info:
+    - Update Agile (`page__update_agile_array.php`)
+    - Import from Agile (`page__import_from_agile.php`)
+    - Sync All Screenings (`page__sync_all_screenings.php`)
+    - Dedupe Screenings (`page__dedupe_screenings_table.php`)
+  - Existing notices for Backup DB, Delete All Films, Truncate Screenings also now appear below the header menu.
+
+- Destructive actions: confirmations + result details
+  - Delete All Films (`page__delete_all_films.php`): pre-submit JS confirm dialog shows an exact count of Film posts to be deleted; result message now reports “Deleted X of Y; Z failed”
+  - Truncate Screenings (`page__truncate_screenings_table.php`): pre-submit JS confirm shows the current row count and table name; result message reports rows removed
+
+- Batch cleanup UI (global Delete Superfluous) improvements
+  - Added DRY-run toggle, live log, skip listing films with zero ACF screenings, reverse chronological processing, red/bold emphasis for deletions, and phrasing polish (“would delete … (keeping …)” vs “deleted … (kept …)”).
+  - Added AJAX endpoint `wp_ajax_gicinema_delete_superfluous_batch`; both batch and per‑film button share `gicinema__delete_superfluous_acf_screenings($post_id, $dry_run=false)`.
+  - Safety: skip deletions when the canonical table has zero active screenings; treat timezone-shadow equivalents as matches (avoid false deletions).
+
+- Overnight cleanup deprecated + preview-only
+  - Deprecated tool hidden from menu by default; added dry-run preview listing exact rows and precise deletion by `screening_id` when explicitly re-enabled; updated page copy.
+
+- Importer idempotency (duplicate screenings prevention)
+  - Added `function__ensure_schema.php`: ensures a proper unique index on the normalized `screening` string and performs a one-time dedupe of historical duplicates (keeps the lowest `screening_id`).
+  - Limited scope: We call `gicinema__ensure_screenings_unique_index()` at the start of `gicinema__import_films_from_agile()` so it only runs during Agile imports (manual or WP‑Cron), not on every request.
+  - With the unique index in place, `INSERT ... ON DUPLICATE KEY UPDATE` prevents duplicate rows for the same (film_id, post_id, screening).
+  - Added an option flag `gicinema_screenings_schema_v1` so dedupe runs at most once unless explicitly forced via the `gicinema_force_schema_ensure` filter.
+
 ### 2025-10-11
 - [note] (No additional notes; items for this working session were moved to 2025-10-12.)
 
