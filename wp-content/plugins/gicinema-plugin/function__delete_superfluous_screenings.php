@@ -92,23 +92,36 @@ function gicinema__delete_superfluous_acf_screenings($post_id, $dry_run = false)
 
     $keep = false;
     if ($normalized && isset($table_set[$normalized])) {
+      // Exact match to canonical table → keep
       $keep = true;
     } elseif ($normalized) {
-      // Defense-in-depth: consider timezone-shadow equivalents as matches
-      // to avoid false deletions if an offset mismatch slips in.
-      $ts = strtotime($normalized);
-      if ($ts) {
-        try {
-          $dt = new DateTime($normalized, $tz);
-          $offset = $tz->getOffset($dt); // seconds (e.g., 25200/28800)
-        } catch (Exception $e) {
-          $offset = 0;
-        }
-        if ($offset) {
-          $plus  = date('Y-m-d H:i:s', $ts + $offset);
-          $minus = date('Y-m-d H:i:s', $ts - $offset);
-          if (isset($table_set[$plus]) || isset($table_set[$minus])) {
-            $keep = true;
+      // Optional guard: treat timezone-shadow equivalents (± WP offset) as matches.
+      // Default is DISABLED for delete operations so that phantom ±7/±8 hour twins
+      // are removed. Can be re-enabled via constant or filter if needed.
+      $enable_guard = false;
+      if (defined('GICINEMA_TZ_SHADOW_GUARD') && GICINEMA_TZ_SHADOW_GUARD === true) {
+        $enable_guard = true;
+      }
+      if (function_exists('apply_filters')) {
+        $enable_guard = apply_filters('gicinema_enable_tz_shadow_guard', $enable_guard);
+        // Specific hook for delete path, takes precedence if provided.
+        $enable_guard = apply_filters('gicinema_enable_tz_shadow_guard_delete', $enable_guard);
+      }
+      if ($enable_guard) {
+        $ts = strtotime($normalized);
+        if ($ts) {
+          try {
+            $dt = new DateTime($normalized, $tz);
+            $offset = $tz->getOffset($dt); // seconds (e.g., 25200/28800)
+          } catch (Exception $e) {
+            $offset = 0;
+          }
+          if ($offset) {
+            $plus  = date('Y-m-d H:i:s', $ts + $offset);
+            $minus = date('Y-m-d H:i:s', $ts - $offset);
+            if (isset($table_set[$plus]) || isset($table_set[$minus])) {
+              $keep = true;
+            }
           }
         }
       }

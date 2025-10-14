@@ -97,13 +97,14 @@ function gicinema__render_matching_screenings($post_id) {
     $html .= '</ul>';
   }
 
-  // 5) Analysis: count superfluous ACF screenings (not present in table)
-  $table_lookup = [];
-  foreach ($table_set as $t) { $table_lookup[$t] = true; }
+  // 5) Analysis: count superfluous ACF screenings using the exact same logic as the
+  // bulk tool (DRY). We invoke the per‑film deleter in dry‑run mode so the
+  // calculation (normalization + timezone shadow guard) is identical.
   $superfluous_count = 0;
-  foreach ($acf_screenings as $norm) {
-    if (!isset($table_lookup[$norm])) {
-      $superfluous_count++;
+  if (function_exists('gicinema__delete_superfluous_acf_screenings')) {
+    $res = gicinema__delete_superfluous_acf_screenings($post_id, true /* dry_run */);
+    if (is_array($res) && isset($res['deleted'])) {
+      $superfluous_count = (int) $res['deleted'];
     }
   }
 
@@ -169,52 +170,14 @@ function gicinema__count_superfluous_screenings($post_id) {
     return 0;
   }
 
-  global $wpdb;
-  $table_name = $wpdb->prefix . 'gi_screenings';
-  $table_exists = ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table_name)) === $table_name);
-
-  // Build table lookup
-  $table_lookup = [];
-  if ($table_exists) {
-    $rows = $wpdb->get_col($wpdb->prepare(
-      "SELECT screening FROM {$table_name} WHERE post_id = %d AND status = 1",
-      $post_id
-    ));
-    if (is_array($rows)) {
-      foreach ($rows as $r) {
-        if (!empty($r)) {
-          $table_lookup[$r] = true; // normalized already
-        }
-      }
+  // DRY with the bulk tool: use the same logic by invoking the per‑film
+  // deleter in dry‑run mode and returning the computed 'deleted' count.
+  if (function_exists('gicinema__delete_superfluous_acf_screenings')) {
+    $res = gicinema__delete_superfluous_acf_screenings($post_id, true /* dry_run */);
+    if (is_array($res) && isset($res['deleted'])) {
+      return (int) $res['deleted'];
     }
   }
 
-  // Collect ACF screenings and normalize
-  $acf_vals = [];
-  if (function_exists('get_field')) {
-    $acf_rows = get_field('screenings', $post_id);
-    if (is_array($acf_rows)) {
-      foreach ($acf_rows as $row) {
-        if (isset($row['screening']) && is_string($row['screening'])) {
-          $dt = DateTime::createFromFormat('m/d/Y g:i a', $row['screening']);
-          if ($dt instanceof DateTime) {
-            $acf_vals[] = $dt->format('Y-m-d H:i:s');
-          } else {
-            $ts = strtotime($row['screening']);
-            if ($ts) {
-              $acf_vals[] = date('Y-m-d H:i:s', $ts);
-            }
-          }
-        }
-      }
-    }
-  }
-
-  $superfluous = 0;
-  foreach ($acf_vals as $norm) {
-    if (!isset($table_lookup[$norm])) {
-      $superfluous++;
-    }
-  }
-  return $superfluous;
+  return 0;
 }

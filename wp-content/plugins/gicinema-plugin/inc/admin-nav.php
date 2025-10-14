@@ -61,7 +61,27 @@ function gicinema_get_admin_nav_items() {
     'deprecated' => false,
     'show' => true,
     'short' => 'Re‑syncs screenings for every Film by reading canonical times from the custom table and merging with any ACF‑only entries. Uses a timezone‑aware guard to avoid ±7/±8 hour duplicates. Useful after manual edits. Processes newest films first.',
-    'long'  => 'Writes the merged set back to the ACF repeater via `update_field`. Safe to run anytime; no changes to the canonical table occur here.'
+    'long'  => '<ul>'
+      . '<li><b>Entry points</b>: Admin page <code>gicinema--sync-all-screenings</code> shows a nonce‑protected confirmation form and buffers routine output into a success notice with a scrollable area.</li>'
+      . '<li><b>Main routine</b>: <code>gicinema__sync_all_screenings()</code> queries all <code>film</code> posts, newest‑first, and calls <code>gicinema__sync_screenings($post_id)</code> for each.</li>'
+      . '<li><b>Per‑film sync</b>:
+            <ul>
+              <li>Reads canonical screenings from the custom table (<code>status = 1</code>, DISTINCT, sorted).</li>
+              <li>Reads ACF repeater <code>screenings</code>; normalizes each value to <code>Y-m-d H:i:s</code> in the WordPress timezone (preserves already‑normalized strings).</li>
+              <li>Merges ACF + table with a timezone‑shadow guard: skips any ACF value equal to a table value ± the current WP timezone offset (e.g., ±7h/±8h). Toggle via <code>define(&#39;GICINEMA_TZ_SHADOW_GUARD&#39;, false)</code> or filter <code>gicinema_enable_tz_shadow_guard</code>.</li>
+              <li>Writes the merged, unique, sorted set back to ACF via <code>update_field</code>, replacing all rows.</li>
+            </ul>
+          </li>'
+      . '<li><b>Does not</b>:
+            <ul>
+              <li>Modify the custom screenings table.</li>
+              <li>Call Agile or refresh the feed.</li>
+              <li>Run the dedupe routine.</li>
+            </ul>
+          </li>'
+      . '<li><b>Output/UX</b>: Prints per‑film details and arrays (table, ACF, merged). Can be verbose on large datasets.</li>'
+      . '<li><b>Notes</b>: The page warning mentions updating “the table AND the field” but this tool only updates the ACF field. The README line stating “Re‑syncs all screenings from Agile” is inaccurate — this page does not fetch from Agile.</li>'
+      . '</ul>'
   ];
 
   // Local-only tools.
@@ -245,7 +265,22 @@ function gicinema_render_page_info($slug) {
   if (!$short && !$long) return;
   echo '<div class="info">';
   if ($short) { echo '<p>' . esc_html($short) . '</p>'; }
-  if ($long)  { echo '<p>' . esc_html($long) . '</p>'; }
+  if ($long)  {
+    // Allow limited markup in long descriptions so we can present bullet lists clearly.
+    $allowed = [
+      'ul' => [ 'style' => [] ],
+      'li' => [ 'style' => [] ],
+      'b'  => [],
+      'strong' => [],
+      'i'  => [],
+      'em' => [],
+      'code' => [],
+      'a' => [ 'href' => [], 'target' => [], 'rel' => [] ],
+      'p' => [],
+      'br' => []
+    ];
+    echo wp_kses($long, $allowed);
+  }
   echo '</div>';
 }
 

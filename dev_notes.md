@@ -10,6 +10,46 @@ Single source of truth for our collaboration notes. Keep entries concise and act
 
 ## Session Log
 
+### 2025-10-14
+- [note] Clarified data flow paths drive the front end: theme queries the custom table `{$wpdb->prefix}gi_screenings` for Now Playing/Coming Soon and per‑film screenings, not the ACF field.
+  - Front end files: `wp-content/themes/cinema-theme/page--home__new__save01.php` (lines querying `gi_screenings`), and `wp-content/themes/cinema-theme/inc/functions/function__get_screenings.php`.
+- [note] Mapped “Sync All Screenings” precisely: loops all Film posts, reads canonical screenings from the custom table + ACF, merges with a timezone‑shadow guard, and writes back to ACF only; does not modify the table; no Agile calls; manual only (not a cron).
+- [decision] Updated the Sync All Screenings page info to a detailed, bulleted overview and enabled safe HTML rendering inside the page “info” box for clarity.
+  - Files changed:
+    - `wp-content/plugins/gicinema-plugin/inc/admin-nav.php` — expanded `long` description for slug `gicinema--sync-all-screenings` into bullet list; updated `gicinema_render_page_info()` to allow limited HTML via `wp_kses`.
+  - Impact: Admin page now documents exact behavior, entry points, what it does/doesn’t do, and timezone‑guard specifics.
+- [note] Confirmed “Import From Agile” updates both storage paths: it upserts into the custom table (normalized to WP timezone) and then syncs ACF per film.
+- [note] Confirmed “Sync All Screenings” is manual‑only; the scheduled path is the importer (which also keeps ACF in sync).
+- [issue] Per‑film “Superfluous Screenings” indicator disagreed with the bulk “Delete Superfluous (All)” tool.
+  - Root cause: Per‑film counter previously normalized without WP timezone and lacked the timezone‑shadow guard used by the bulk logic, causing false “superfluous” flags.
+- [fix] DRY’d per‑film superfluous calculation to use the exact same code path as the bulk tool by invoking the deleter in dry‑run mode.
+  - Files changed:
+    - `wp-content/plugins/gicinema-plugin/function__compare_screenings.php` — both the inline count in `gicinema__render_matching_screenings()` and `gicinema__count_superfluous_screenings()` now call `gicinema__delete_superfluous_acf_screenings($post_id, true)` and read its `deleted` count.
+  - Impact: The per‑film badge/analysis now matches the bulk tool’s decision‑making (WP‑timezone normalization + timezone‑shadow guard + table‑empty safety).
+- [note] Reported behavior: On some films, pressing “DELETE SUPERFLUOUS SCREENINGS” appears to do nothing.
+  - Likely reasons (by design):
+    - Safety when the custom table has zero active rows for the film → no ACF deletions to avoid wiping editor‑entered data.
+    - Timezone‑shadow guard treats ± WP offset twins as matches → ACF rows are kept.
+- [idea] Make the per‑film action optionally affect the front end by updating the custom table as well.
+  - Safe default: upsert missing times from the kept set (no deletions), `status = 1`, with a dry‑run preview.
+  - Optional stricter mode (with explicit confirm): deactivate table rows not present in the kept set, still respecting timezone‑shadow guard.
+- [idea] Add a “force” override for per‑film delete to bypass the timezone‑shadow guard and (optionally) the table‑empty safety for rare fix‑ups; expose via a second button or a `force=1` flag.
+- [todo] Align warnings/docs:
+  - Update Sync All page warning text (currently claims it updates “table AND field”; actual behavior: ACF only).
+  - Update plugin `README.md` “Sync All Screenings” description to reflect that it does not fetch from Agile and does not modify the table.
+- [todo] Implement per‑film enhancements:
+  - Add optional “also update custom table (upsert only)” checkbox + dry‑run.
+  - Add optional “force delete” path that disables timezone‑shadow guard (and possibly table‑empty safety) with clear confirmation.
+
+- [fix] Per‑film delete kept ±offset “twins”; disable timezone‑shadow keep by default during deletions.
+  - Context: On post 5079 (Cora Bora), ACF had 6 legitimate screenings plus 6 additional entries exactly +7h from each. After running “DELETE SUPERFLUOUS SCREENINGS,” those +7h twins were being kept.
+  - Root cause: The delete routine treated timezone‑shifted values (± WP timezone offset, computed via `$tz->getOffset($dt)`) as matches and kept them to avoid false deletions during prior timezone issues.
+  - Change: Default behavior for delete now keeps only exact matches; timezone‑shadow matching is DISABLED by default for deletions so +/‑ offset twins are removed.
+  - Opt‑in guard: Can be re‑enabled via `define('GICINEMA_TZ_SHADOW_GUARD', true)` or `add_filter('gicinema_enable_tz_shadow_guard_delete', '__return_true')`.
+  - File changed: `wp-content/plugins/gicinema-plugin/function__delete_superfluous_screenings.php` (keep decision block).
+  - Impact: Running per‑film delete on 5079 should yield exactly the 6 canonical ACF rows; bulk tool shares the same core function and behavior.
+
+
 ### 2025-10-12
 - [note] Investigated reported cron issue: tailed `wp-content/debug.log`; found repeated fatal errors from Official Facebook Pixel (invalid token) unrelated to our plugin crons.
 - [note] Audited `gicinema-plugin` cron setup and backup routine; confirmed schedules in `cron_jobs.php` and daily DB backup to `../gicinema_dbs`.
