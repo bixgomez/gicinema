@@ -19,7 +19,9 @@ It maintains a custom “screenings” database table, supports automated cron j
 - **Admin Tools (under "Grand Illusion Cinema" in WP Admin)**
   - **Update Agile Shows Array**: Manually refreshes cached API data from Agile.
   - **Import from Agile**: Manually trigger film and screening imports. Now includes immediate sync to ACF fields.
-  - **Sync All Screenings**: Re-syncs all screenings from Agile.
+  - **Sync All Screenings**: Reconciles screenings between the custom table and the ACF field.
+    - Always: reads from the custom table and ACF, merges with timezone-aware guards, and writes the merged set back to ACF so editors see the canonical times.
+    - Optional two-way: can also upsert ACF-only screenings into the custom table (safe upsert). A strict mode can deactivate table rows not present in ACF. Includes dry-run and a “require clean ACF” preflight that aborts two-way if any film still has superfluous screenings.
   - **View All Film Posts**: Lists all film posts in the system.
   - **Deduplicate Screenings Table**: Removes duplicate screening rows.
   - **Delete All Films**: Bulk delete all film posts (use with caution).

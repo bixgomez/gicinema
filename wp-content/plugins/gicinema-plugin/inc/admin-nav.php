@@ -72,15 +72,23 @@ function gicinema_get_admin_nav_items() {
               <li>Writes the merged, unique, sorted set back to ACF via <code>update_field</code>, replacing all rows.</li>
             </ul>
           </li>'
+      . '<li><b>Optional two‑way sync</b>:
+            <ul>
+              <li><i>Also update custom table (upsert)</i>: add any ACF‑only screenings into the custom table (safe upsert). Default ON.</li>
+              <li><i>Strict mode</i>: deactivate table rows not present in ACF. Confirm prompt shown. Default OFF.</li>
+              <li><i>Require clean ACF</i>: preflight aborts two‑way if any film still has superfluous screenings. Default ON.</li>
+              <li><i>Dry run</i>: preview two‑way actions without writing. Default OFF.</li>
+            </ul>
+          </li>'
       . '<li><b>Does not</b>:
             <ul>
-              <li>Modify the custom screenings table.</li>
+              <li>Modify the custom screenings table <i>unless</i> two‑way options are enabled.</li>
               <li>Call Agile or refresh the feed.</li>
               <li>Run the dedupe routine.</li>
             </ul>
           </li>'
       . '<li><b>Output/UX</b>: Prints per‑film details and arrays (table, ACF, merged). Can be verbose on large datasets.</li>'
-      . '<li><b>Notes</b>: The page warning mentions updating “the table AND the field” but this tool only updates the ACF field. The README line stating “Re‑syncs all screenings from Agile” is inaccurate — this page does not fetch from Agile.</li>'
+      . '<li><b>Notes</b>: This page does not fetch from Agile. When two‑way is enabled, run only after deleting all superfluous screenings to avoid re‑introducing incorrect times into the custom table.</li>'
       . '</ul>'
   ];
 

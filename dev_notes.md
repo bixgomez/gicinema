@@ -41,6 +41,30 @@ Single source of truth for our collaboration notes. Keep entries concise and act
   - Add optional “also update custom table (upsert only)” checkbox + dry‑run.
   - Add optional “force delete” path that disables timezone‑shadow guard (and possibly table‑empty safety) with clear confirmation.
 
+- [decision] Two‑way Sync design for “Sync All Screenings” (ACF ↔ table) and implementation plan
+  - Goals
+    - Ensure the custom table contains all valid screenings (front‑end source of truth).
+    - Avoid polluting the table with stale ACF data; require clean ACF first.
+    - Preserve merge‑and‑write to ACF so editors see the canonical set.
+  - Precondition
+    - Require “clean ACF”: preflight films using `gicinema__delete_superfluous_acf_screenings($post_id, true)`; if any film has superfluous (>0), block two‑way and show a list of offenders (links to edit screens). ACF‑only sync may still proceed.
+  - Two‑Way logic (per film)
+    - Build sets: `table_set` from `gicinema__get_screenings_from_table()`, `acf_set` from `gicinema__get_screenings_from_post()` (both normalized to WP timezone).
+    - Additions (safe default): `to_add = acf_set \ table_set`; upsert with `INSERT … ON DUPLICATE KEY UPDATE status = 1`, splitting `screening_date`/`screening_time`.
+    - Optional strict mode: `to_deactivate = table_set \ acf_set`; `UPDATE … SET status = 0 WHERE post_id = ? AND screening IN (…)`.
+    - Then run `gicinema__sync_screenings($post_id)` to refresh ACF from the canonical merge.
+  - UX/Warnings
+    - Add bold warning (“Run only after deleting all superfluous screenings”).
+    - Provide checkboxes: two‑way, strict deactivate, require clean ACF (default on), dry‑run (default on).
+    - Show per‑film output: counts added/deactivated; clear dry‑run labels.
+  - Safety/consistency
+    - Reuse WP‑timezone normalization and rely on the unique key on `screening(19)` to prevent dupes.
+  - Files changed
+    - `wp-content/plugins/gicinema-plugin/page__sync_all_screenings.php` — UI: warnings, checkboxes, JS confirm for strict deactivate; passes options to runner.
+    - `wp-content/plugins/gicinema-plugin/function__sync_all_screenings.php` — Added options, preflight for clean ACF, two‑way upsert/deactivate with dry‑run, then ACF sync.
+  - Defaults
+    - Two‑way ON by default; Dry‑run OFF; Require clean ACF ON; Strict deactivate OFF.
+
 - [fix] Per‑film delete kept ±offset “twins”; disable timezone‑shadow keep by default during deletions.
   - Context: On post 5079 (Cora Bora), ACF had 6 legitimate screenings plus 6 additional entries exactly +7h from each. After running “DELETE SUPERFLUOUS SCREENINGS,” those +7h twins were being kept.
   - Root cause: The delete routine treated timezone‑shifted values (± WP timezone offset, computed via `$tz->getOffset($dt)`) as matches and kept them to avoid false deletions during prior timezone issues.
