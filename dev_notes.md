@@ -10,6 +10,21 @@ Single source of truth for our collaboration notes. Keep entries concise and act
 
 ## Session Log
 
+### 2025-10-17
+- [issue] Live server stalled at “Looping through all the films in the feed…”. Local worked.
+  - Likely causes: feed decoded into arrays (property access fatal on PHP 8) and poster downloads using `file_get_contents()` hanging under production network/timeouts.
+- [fix] Hardened importer against mixed array/object JSON and replaced poster downloads with WP HTTP API.
+  - Behavior changes
+    - Resilient JSON decode (assoc) and key fallback; logs film count before looping.
+    - Normalizes each show to an object; guards `AdditionalMedia` and `CustomProperties` for array/object shapes.
+    - Poster fetch via `wp_remote_get()` with timeout/redirection; clear error logging instead of silent hang.
+    - Screenings import now also normalizes items (arrays → objects) before parsing dates.
+  - Files changed:
+    - `wp-content/plugins/gicinema-plugin/function__import_films_from_agile.php`
+    - `wp-content/plugins/gicinema-plugin/function__import_screenings_from_agile.php`
+- [note] Admin UI now prints “Found X films…” before iterating, aiding quick diagnosis if feed is empty or malformed on production.
+- [next] If stalls persist, add logging around `gicinema__update_agile_shows_array()` response codes/body length and consider shorter HTTP timeouts + retries.
+
 ### 2025-10-14
 - [note] Clarified data flow paths drive the front end: theme queries the custom table `{$wpdb->prefix}gi_screenings` for Now Playing/Coming Soon and per‑film screenings, not the ACF field.
   - Front end files: `wp-content/themes/cinema-theme/page--home__new__save01.php` (lines querying `gi_screenings`), and `wp-content/themes/cinema-theme/inc/functions/function__get_screenings.php`.

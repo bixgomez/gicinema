@@ -41,11 +41,37 @@ function gicinema__import_films_from_agile() {
         $results = get_transient('agile_shows_array');
     }
 
-    $agile_shows_array = json_decode($results)->ArrayOfShows;
+    // Be resilient to JSON structure and PHP versions (array vs. object)
+    $decoded_assoc = [];
+    if (is_string($results) && $results !== '') {
+        $decoded_assoc = json_decode($results, true);
+    }
 
+    if (empty($decoded_assoc) || !is_array($decoded_assoc)) {
+        echo '<div class="notice notice-error"><p>Unable to decode Agile feed JSON.</p></div>';
+        echo '</div>';
+        return;
+    }
+
+    // Prefer common keys; fallback to empty array
+    if (isset($decoded_assoc['ArrayOfShows']) && is_array($decoded_assoc['ArrayOfShows'])) {
+        $agile_shows_array = $decoded_assoc['ArrayOfShows'];
+    } elseif (isset($decoded_assoc['Shows']) && is_array($decoded_assoc['Shows'])) {
+        $agile_shows_array = $decoded_assoc['Shows'];
+    } else {
+        $agile_shows_array = [];
+    }
+
+    $count_shows = is_array($agile_shows_array) ? count($agile_shows_array) : 0;
+    echo '<div>Found ' . intval($count_shows) . ' films in the feed.</div>';
     echo '<i>Looping through all the films in the feed...</i>';
 
     foreach ($agile_shows_array as $show) {
+
+        // Normalize show to object for consistent property access
+        if (is_array($show)) {
+            $show = (object) $show;
+        }
 
         // Declare variables with initial default values.
         $short_description = '';
@@ -69,30 +95,38 @@ function gicinema__import_films_from_agile() {
         echo '<div class="function-info">';
 
         // Set values for media variables.
-        foreach ($show->AdditionalMedia as $addlMedia) {
-            if ($addlMedia->Type == 'Image') {
+        $additionalMedia = isset($show->AdditionalMedia) ? $show->AdditionalMedia : [];
+        if (is_object($additionalMedia)) { $additionalMedia = (array) $additionalMedia; }
+        if (!is_array($additionalMedia)) { $additionalMedia = []; }
+        foreach ($additionalMedia as $addlMedia) {
+            if (is_array($addlMedia)) { $addlMedia = (object) $addlMedia; }
+            if (isset($addlMedia->Type) && $addlMedia->Type == 'Image' && isset($addlMedia->Value)) {
                 $poster_url = $addlMedia->Value;
             }
-            if ($addlMedia->Type == 'YouTube') {
+            if (isset($addlMedia->Type) && $addlMedia->Type == 'YouTube' && isset($addlMedia->Value)) {
                 $trailer_url = $addlMedia->Value;
             }
         }
 
         // Set values for custom properties.
-        foreach ($show->CustomProperties as $customProp) {
-            if ($customProp->Name == 'Release Year') {
+        $customProps = isset($show->CustomProperties) ? $show->CustomProperties : [];
+        if (is_object($customProps)) { $customProps = (array) $customProps; }
+        if (!is_array($customProps)) { $customProps = []; }
+        foreach ($customProps as $customProp) {
+            if (is_array($customProp)) { $customProp = (object) $customProp; }
+            if (isset($customProp->Name) && $customProp->Name == 'Release Year' && isset($customProp->Value)) {
                 $film_year = $customProp->Value;
             }
-            if ($customProp->Name == 'Format') {
+            if (isset($customProp->Name) && $customProp->Name == 'Format' && isset($customProp->Value)) {
                 $format = $customProp->Value;
             }
-            if ($customProp->Name == 'Director') {
+            if (isset($customProp->Name) && $customProp->Name == 'Director' && isset($customProp->Value)) {
                 if ($film_director != '') {
                     $film_director .= ', ';
                 }
                 $film_director .= $customProp->Value;
             }
-            if ($customProp->Name == 'Production Country') {
+            if (isset($customProp->Name) && $customProp->Name == 'Production Country' && isset($customProp->Value)) {
                 if ($country != '') {
                     $country .= ', ';
                 }
@@ -170,35 +204,48 @@ function gicinema__import_films_from_agile() {
             if ($current_poster_url !== $poster_url) {
                 echo '<div class="success">New poster URL detected, downloading image.</div>';
 
-                // https://wordpress.stackexchange.com/questions/256830/programmatically-adding-images-to-media-library
+                // Use WordPress HTTP API to fetch the image (more reliable on production)
                 $insert_id = $post_ID;
                 $image_url = $poster_url;
                 $upload_dir = wp_upload_dir();
 
-                $image_data = file_get_contents($image_url);
-                $filename = basename($image_url);
-                if (wp_mkdir_p($upload_dir['path'])) {
-                    $file = $upload_dir['path'] . '/' . $filename;
-                } else {
-                    $file = $upload_dir['basedir'] . '/' . $filename;
-                }
-                file_put_contents($file, $image_data);
-                $wp_filetype = wp_check_filetype($filename, null);
-                $attachment = array(
-                    'post_mime_type' => $wp_filetype['type'],
-                    'post_title' => sanitize_file_name($filename),
-                    'post_content' => '',
-                    'post_status' => 'inherit'
-                );
-                $attach_id = wp_insert_attachment($attachment, $file);
-                require_once(ABSPATH . 'wp-admin/includes/image.php');
-                $attach_data = wp_generate_attachment_metadata($attach_id, $file);
-                wp_update_attachment_metadata($attach_id, $attach_data);
+                $response = wp_remote_get($image_url, [
+                    'timeout' => 15,
+                    'redirection' => 5,
+                ]);
 
-                // And finally assign featured image to post
-                echo '<div>Inserting image ' . $attach_id . ' into film ' . $insert_id . '</div>';
-                set_post_thumbnail($insert_id, $attach_id);
-                update_field('film_poster', $attach_id, $insert_id);
+                if (!is_wp_error($response) && (int) wp_remote_retrieve_response_code($response) === 200) {
+                    $image_data = wp_remote_retrieve_body($response);
+                    $filename = basename(parse_url($image_url, PHP_URL_PATH));
+                    if (!$filename) { $filename = 'image-' . uniqid() . '.jpg'; }
+
+                    if (wp_mkdir_p($upload_dir['path'])) {
+                        $file = $upload_dir['path'] . '/' . $filename;
+                    } else {
+                        $file = $upload_dir['basedir'] . '/' . $filename;
+                    }
+
+                    file_put_contents($file, $image_data);
+                    $wp_filetype = wp_check_filetype($filename, null);
+                    $attachment = array(
+                        'post_mime_type' => $wp_filetype['type'],
+                        'post_title' => sanitize_file_name($filename),
+                        'post_content' => '',
+                        'post_status' => 'inherit'
+                    );
+                    $attach_id = wp_insert_attachment($attachment, $file);
+                    require_once(ABSPATH . 'wp-admin/includes/image.php');
+                    $attach_data = wp_generate_attachment_metadata($attach_id, $file);
+                    wp_update_attachment_metadata($attach_id, $attach_data);
+
+                    // And finally assign featured image to post
+                    echo '<div>Inserting image ' . $attach_id . ' into film ' . $insert_id . '</div>';
+                    set_post_thumbnail($insert_id, $attach_id);
+                    update_field('film_poster', $attach_id, $insert_id);
+                } else {
+                    $err = is_wp_error($response) ? $response->get_error_message() : ('HTTP ' . wp_remote_retrieve_response_code($response));
+                    echo '<div class="failure">Failed to download image: ' . esc_html($err) . '</div>';
+                }
             } else {
                 echo '<div>Poster URL unchanged, skipping image download.</div>';
             }
@@ -220,7 +267,8 @@ function gicinema__import_films_from_agile() {
         update_post_meta($post_ID, 'trailer_url', $trailer_url);
 
         // Create variable for future screenings array from Agile.
-        $screenings_array = $show->CurrentShowings;
+        $screenings_array = isset($show->CurrentShowings) ? $show->CurrentShowings : [];
+        if (is_object($screenings_array)) { $screenings_array = (array) $screenings_array; }
 
         gicinema__import_screenings_from_agile(
             $screenings_array,

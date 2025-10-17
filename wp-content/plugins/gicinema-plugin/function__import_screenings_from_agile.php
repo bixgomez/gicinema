@@ -28,6 +28,7 @@ function gicinema__import_screenings_from_agile (
   $tz = function_exists('wp_timezone') ? wp_timezone() : new DateTimeZone(get_option('timezone_string') ?: 'UTC');
 
   foreach( $agile_array as $screening ) :
+    if (is_array($screening)) { $screening = (object) $screening; }
     // Parse StartDate; if it contains a timezone, PHP respects it; then convert to WP timezone
     try {
       $dt = new DateTime($screening->StartDate, $tz);
