@@ -41,25 +41,74 @@ function gicinema__import_films_from_agile() {
         $results = get_transient('agile_shows_array');
     }
 
-    // Be resilient to JSON structure and PHP versions (array vs. object)
+    // Be resilient to JSON structure and environments (array/object + BOM)
+    $agile_shows_array = [];
     $decoded_assoc = [];
     if (is_string($results) && $results !== '') {
-        $decoded_assoc = json_decode($results, true);
+        // Remove UTF-8 BOM if present
+        $clean = preg_replace('/^\xEF\xBB\xBF/', '', $results);
+        $decoded_assoc = json_decode($clean, true);
+        if (!is_array($decoded_assoc)) {
+            // Try as object structure
+            $decoded_obj = json_decode($clean);
+            if (is_object($decoded_obj)) {
+                if (isset($decoded_obj->ArrayOfShows)) {
+                    $tmp = $decoded_obj->ArrayOfShows;
+                    if (is_object($tmp)) { $tmp = (array) $tmp; }
+                    if (is_array($tmp)) { $agile_shows_array = $tmp; }
+                } elseif (isset($decoded_obj->Shows)) {
+                    $tmp = $decoded_obj->Shows;
+                    if (is_object($tmp)) { $tmp = (array) $tmp; }
+                    if (is_array($tmp)) { $agile_shows_array = $tmp; }
+                }
+            }
+        }
     }
 
-    if (empty($decoded_assoc) || !is_array($decoded_assoc)) {
-        echo '<div class="notice notice-error"><p>Unable to decode Agile feed JSON.</p></div>';
+    // If assoc decode worked, prefer it
+    if (empty($agile_shows_array) && is_array($decoded_assoc)) {
+        if (isset($decoded_assoc['ArrayOfShows']) && is_array($decoded_assoc['ArrayOfShows'])) {
+            $agile_shows_array = $decoded_assoc['ArrayOfShows'];
+        } elseif (isset($decoded_assoc['Shows']) && is_array($decoded_assoc['Shows'])) {
+            $agile_shows_array = $decoded_assoc['Shows'];
+        }
+    }
+
+    // If still empty or failed to decode, try refreshing the transient once
+    if (empty($agile_shows_array)) {
+        echo '<div class="notice notice-warning"><p>Unable to decode Agile feed JSON from transient; refreshing…</p></div>';
+        gicinema__update_agile_shows_array();
+        $results = get_transient('agile_shows_array');
+        if (is_string($results) && $results !== '') {
+            $clean = preg_replace('/^\xEF\xBB\xBF/', '', $results);
+            $decoded_assoc = json_decode($clean, true);
+            if (is_array($decoded_assoc)) {
+                if (isset($decoded_assoc['ArrayOfShows']) && is_array($decoded_assoc['ArrayOfShows'])) {
+                    $agile_shows_array = $decoded_assoc['ArrayOfShows'];
+                } elseif (isset($decoded_assoc['Shows']) && is_array($decoded_assoc['Shows'])) {
+                    $agile_shows_array = $decoded_assoc['Shows'];
+                }
+            } else {
+                $decoded_obj = json_decode($clean);
+                if (is_object($decoded_obj)) {
+                    if (isset($decoded_obj->ArrayOfShows)) {
+                        $tmp = $decoded_obj->ArrayOfShows;
+                        if (is_object($tmp)) { $tmp = (array) $tmp; }
+                        if (is_array($tmp)) { $agile_shows_array = $tmp; }
+                    } elseif (isset($decoded_obj->Shows)) {
+                        $tmp = $decoded_obj->Shows;
+                        if (is_object($tmp)) { $tmp = (array) $tmp; }
+                        if (is_array($tmp)) { $agile_shows_array = $tmp; }
+                    }
+                }
+            }
+        }
+    }
+
+    if (empty($agile_shows_array)) {
+        echo '<div class="notice notice-error"><p>Unable to decode Agile feed JSON after refresh. See details above in the fetch log.</p></div>';
         echo '</div>';
         return;
-    }
-
-    // Prefer common keys; fallback to empty array
-    if (isset($decoded_assoc['ArrayOfShows']) && is_array($decoded_assoc['ArrayOfShows'])) {
-        $agile_shows_array = $decoded_assoc['ArrayOfShows'];
-    } elseif (isset($decoded_assoc['Shows']) && is_array($decoded_assoc['Shows'])) {
-        $agile_shows_array = $decoded_assoc['Shows'];
-    } else {
-        $agile_shows_array = [];
     }
 
     $count_shows = is_array($agile_shows_array) ? count($agile_shows_array) : 0;
