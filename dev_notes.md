@@ -32,6 +32,24 @@ Single source of truth for our collaboration notes. Keep entries concise and act
   - File: `wp-content/plugins/gicinema-plugin/page__import_from_agile.php`
 - [ops] Ask DreamHost for outbound egress IP(s) and confirm no outbound proxy/WAF modification; provide IP(s) to Agile to whitelist the feed endpoint.
 
+- [result] Manual fallback import (pasted JSON) worked successfully on production; importer completed and processed films/screenings.
+- [ui] Added direct, copyable Agile feed URL to the Manual Fallback section for convenience.
+  - File: `wp-content/plugins/gicinema-plugin/page__import_from_agile.php`
+- [ops] DreamHost support request to resolve permanent fetch (paste template below):
+  - Subject: Need egress IP + confirm no outbound filtering (JSON feed returns HTML)
+  - Message:
+    - Hi DreamHost Support,
+    - From our site on your servers, requests to this JSON feed:
+      https://prod5.agileticketing.net/websales/feed.ashx?guid=52c1280f-be14-4579-8ddf-4b3dadbf96c7&showslist=true&withmedia=true&format=json&v=latest
+      return HTTP 200 with Content-Type text/html and a small HTML body. From local machines, the same URL returns valid JSON.
+    - Could you please:
+      1) Provide the public outbound IP address(es) used by PHP/cURL from our site (so the vendor can whitelist them).
+      2) Confirm outbound HTTPS to prod5.agileticketing.net:443 isn’t proxied/filtered/rewritten by any WAF/ModSecurity; if it is, add an exception for the URL above.
+      3) (Optional) Run these from the web node and share results:
+         - curl -I "https://prod5.agileticketing.net/websales/feed.ashx?guid=52c1280f-be14-4579-8ddf-4b3dadbf96c7&showslist=true&withmedia=true&format=json&v=latest" -H "Accept: application/json" -A "GICinemaImporter/1.0"
+         - curl -s "https://prod5.agileticketing.net/websales/feed.ashx?guid=52c1280f-be14-4579-8ddf-4b3dadbf96c7&showslist=true&withmedia=true&format=json&v=latest" -H "Accept: application/json" -A "GICinemaImporter/1.0" | head -c 500
+    - Thanks!
+
 ### 2025-10-14
 - [note] Clarified data flow paths drive the front end: theme queries the custom table `{$wpdb->prefix}gi_screenings` for Now Playing/Coming Soon and per‑film screenings, not the ACF field.
   - Front end files: `wp-content/themes/cinema-theme/page--home__new__save01.php` (lines querying `gi_screenings`), and `wp-content/themes/cinema-theme/inc/functions/function__get_screenings.php`.

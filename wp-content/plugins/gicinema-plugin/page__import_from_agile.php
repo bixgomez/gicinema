@@ -55,6 +55,15 @@ function gicinema_page_display__import_films_from_agile() {
     <hr>
     <h3>Manual Fallback: Paste Agile Feed JSON</h3>
     <p>If the server cannot reach the Agile JSON feed, paste the JSON here (copied from a machine that can access the URL). It will be cached for 1 hour and used for import.</p>
+    <p>
+      Open this feed on a computer that can access it and copy all text:
+      <br>
+      <a href="https://prod5.agileticketing.net/websales/feed.ashx?guid=52c1280f-be14-4579-8ddf-4b3dadbf96c7&showslist=true&withmedia=true&format=json&v=latest" target="_blank" rel="noopener noreferrer">Agile JSON Feed (opens in new tab)</a>
+    </p>
+    <p>
+      URL for copy/paste:
+      <input type="text" readonly style="width:100%; font-family:monospace;" value="https://prod5.agileticketing.net/websales/feed.ashx?guid=52c1280f-be14-4579-8ddf-4b3dadbf96c7&showslist=true&withmedia=true&format=json&v=latest" onclick="this.select();">
+    </p>
     <form method="post">
       <?php wp_nonce_field('import_films_action', 'import_nonce'); ?>
       <textarea name="agile_json_input" rows="10" style="width:100%; font-family:monospace;"></textarea>
