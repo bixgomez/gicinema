@@ -13,8 +13,27 @@ function gicinema_page_display__import_films_from_agile() {
   gicinema_render_page_info('gicinema--import-films-from-agile');
   gicinema_render_cron_info('gicinema--import-films-from-agile');
 
-  // Check if the form was submitted
-  if (isset($_POST['confirm_import']) && $_POST['confirm_import'] == 'yes') {
+  // Handle pasted JSON shortcut (sets transient and then runs import)
+  if (isset($_POST['paste_agile_json']) && !empty($_POST['agile_json_input'])) {
+    check_admin_referer('import_films_action', 'import_nonce');
+    $raw = wp_unslash($_POST['agile_json_input']);
+    // Strip UTF-8 BOM if present
+    $clean = preg_replace('/^\xEF\xBB\xBF/', '', $raw);
+    json_decode($clean);
+    if (json_last_error() === JSON_ERROR_NONE) {
+      set_transient('agile_shows_array', $clean, HOUR_IN_SECONDS);
+      echo "<div class='notice notice-success'><p>Pasted JSON accepted and cached for 1 hour.</p></div>";
+    } else {
+      echo "<div class='notice notice-error'><p>Invalid JSON pasted. Please verify and try again.</p></div>";
+    }
+    require_once "function__import_films_from_agile.php";
+    ob_start();
+    gicinema__import_films_from_agile();
+    $html = ob_get_clean();
+    echo "<div class='notice notice-success'><p><strong>Import from Agile finished.</strong></p><div class='gicinema-notice-content' style='max-height:420px; overflow:auto;'>{$html}</div></div>";
+
+  // Check if the standard import form was submitted
+  } elseif (isset($_POST['confirm_import']) && $_POST['confirm_import'] == 'yes') {
     require_once "function__import_films_from_agile.php";
     ob_start();
     gicinema__import_films_from_agile();
@@ -31,6 +50,18 @@ function gicinema_page_display__import_films_from_agile() {
       <?php wp_nonce_field('import_films_action', 'import_nonce'); ?>
       <input type="hidden" name="confirm_import" value="yes">
       <input type="submit" class="button button-primary" value="Confirm Import From Agile">
+    </form>
+
+    <hr>
+    <h3>Manual Fallback: Paste Agile Feed JSON</h3>
+    <p>If the server cannot reach the Agile JSON feed, paste the JSON here (copied from a machine that can access the URL). It will be cached for 1 hour and used for import.</p>
+    <form method="post">
+      <?php wp_nonce_field('import_films_action', 'import_nonce'); ?>
+      <textarea name="agile_json_input" rows="10" style="width:100%; font-family:monospace;"></textarea>
+      <p>
+        <button class="button">Validate, Cache, and Import</button>
+        <input type="hidden" name="paste_agile_json" value="1">
+      </p>
     </form>
 <?php
   }

@@ -20,6 +20,7 @@ function gicinema__update_agile_shows_array() {
     'headers'     => array(
       'Accept'        => 'application/json, text/javascript, */*; q=0.1',
       'User-Agent'    => 'GICinemaImporter/1.0 (+ ' . home_url('/') . ' )',
+      'Referer'       => 'https://prod5.agileticketing.net/websales/',
     ),
   );
   $response = wp_remote_get( $url, $args );

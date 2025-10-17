@@ -25,6 +25,13 @@ Single source of truth for our collaboration notes. Keep entries concise and act
 - [note] Admin UI now prints “Found X films…” before iterating, aiding quick diagnosis if feed is empty or malformed on production.
 - [next] If stalls persist, add logging around `gicinema__update_agile_shows_array()` response codes/body length and consider shorter HTTP timeouts + retries.
 
+- [issue] Production feed returned HTML (HTTP 200 text/html body) instead of JSON; likely WAF/cache/proxy behavior on DreamHost path.
+- [fix] Added explicit headers (`Accept`, `User-Agent`, `Referer`) and cache-busting + one retry on invalid JSON; improved diagnostics.
+  - File: `wp-content/plugins/gicinema-plugin/function__update_agile_shows_array.php`
+- [fallback] Added manual “Paste Agile Feed JSON” form on the Import page; validates, caches (1 hour), and proceeds with import.
+  - File: `wp-content/plugins/gicinema-plugin/page__import_from_agile.php`
+- [ops] Ask DreamHost for outbound egress IP(s) and confirm no outbound proxy/WAF modification; provide IP(s) to Agile to whitelist the feed endpoint.
+
 ### 2025-10-14
 - [note] Clarified data flow paths drive the front end: theme queries the custom table `{$wpdb->prefix}gi_screenings` for Now Playing/Coming Soon and per‑film screenings, not the ACF field.
   - Front end files: `wp-content/themes/cinema-theme/page--home__new__save01.php` (lines querying `gi_screenings`), and `wp-content/themes/cinema-theme/inc/functions/function__get_screenings.php`.
