@@ -50,6 +50,18 @@ Single source of truth for our collaboration notes. Keep entries concise and act
          - curl -s "https://prod5.agileticketing.net/websales/feed.ashx?guid=52c1280f-be14-4579-8ddf-4b3dadbf96c7&showslist=true&withmedia=true&format=json&v=latest" -H "Accept: application/json" -A "GICinemaImporter/1.0" | head -c 500
     - Thanks!
 
+- [ops] Agile Support request to whitelist server IP (paste template below):
+  - Subject: Please whitelist our server IP for Agile JSON feed
+  - Message:
+    - Hi Agile Support,
+    - From our production server, requests to the feed below return an HTML page instead of JSON, while local machines receive JSON.
+      https://prod5.agileticketing.net/websales/feed.ashx?guid=52c1280f-be14-4579-8ddf-4b3dadbf96c7&showslist=true&withmedia=true&format=json&v=latest
+    - Our hosting provider’s outbound IP is: <INSERT IP HERE>.
+    - Could you please whitelist this IP for HTTPS access to that feed (port 443), so our server can retrieve JSON?
+    - Thanks!
+
+- [link] DreamHost Support Dashboard (to open a ticket): https://panel.dreamhost.com/index.cgi?tree=support.dashboard
+
 ### 2025-10-14
 - [note] Clarified data flow paths drive the front end: theme queries the custom table `{$wpdb->prefix}gi_screenings` for Now Playing/Coming Soon and per‑film screenings, not the ACF field.
   - Front end files: `wp-content/themes/cinema-theme/page--home__new__save01.php` (lines querying `gi_screenings`), and `wp-content/themes/cinema-theme/inc/functions/function__get_screenings.php`.
