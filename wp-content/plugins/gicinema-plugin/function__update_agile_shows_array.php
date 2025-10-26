@@ -46,6 +46,9 @@ function gicinema__update_agile_shows_array() {
 
       if ($code === 200 && $valid_json) {
         set_transient( 'agile_shows_array', $body, 12 * HOUR_IN_SECONDS );
+        // Track the last update timestamp and TTL for admin display
+        update_option('gicinema_agile_shows_array_updated', time());
+        update_option('gicinema_agile_shows_array_ttl', 12 * HOUR_IN_SECONDS);
         echo '<div class="success">Success! HTTP ' . esc_html($code) . '; bytes=' . intval($len) . '.</div>';
       } else {
         // Retry once with a different cache buster and stronger headers
@@ -64,6 +67,8 @@ function gicinema__update_agile_shows_array() {
           json_decode($body2);
           if ($code2 === 200 && json_last_error() === JSON_ERROR_NONE) {
             set_transient( 'agile_shows_array', $body2, 12 * HOUR_IN_SECONDS );
+            update_option('gicinema_agile_shows_array_updated', time());
+            update_option('gicinema_agile_shows_array_ttl', 12 * HOUR_IN_SECONDS);
             echo '<div class="success">Retry succeeded! HTTP ' . esc_html($code2) . '; bytes=' . intval(strlen((string)$body2)) . '.</div>';
           } else {
             delete_transient('agile_shows_array');

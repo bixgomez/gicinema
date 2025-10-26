@@ -141,3 +141,74 @@ If an event exists but isn’t yet due, make it due or run the callback directly
 - Troubleshooting tips
   - Re-list events: `ddev wp cron event list --fields=hook,next_run,recurrence | grep cron__`
   - Ensure `DISABLE_WP_CRON` is not true in `wp-config.php` if expecting automatic WP‑Cron on requests. For dev, using WP‑CLI as above is sufficient.
+
+## Agile Feed Update and Import
+
+This section documents, in detail, the two core actions that power the data flow: updating the cached Agile feed and importing films/screenings.
+
+### Update Agile Shows Array
+
+- Function: `gicinema__update_agile_shows_array()`  
+  File: `wp-content/plugins/gicinema-plugin/function__update_agile_shows_array.php`
+- What it does
+  - Fetches the Agile Ticketing JSON feed and caches the raw JSON string in the transient `agile_shows_array` for 12 hours.
+  - Appends a cache‑buster (`_ts`) to the URL; sets headers (`Accept`, `User‑Agent`, `Referer`) to avoid WAF/proxy oddities.
+  - Uses WordPress HTTP API (`wp_remote_get`) with timeout and redirection handling.
+  - Strips UTF‑8 BOM if present and validates JSON. If initial attempt fails, retries once with stricter headers and a different cache‑buster.
+  - On success: stores the response body (string) in the transient; on failure: deletes transient and logs HTTP code/content‑type/length and body snippet(s).
+- Admin UI: `Grand Illusion Cinema → Update Agile Shows Array`  
+  File: `page__update_agile_array.php` — posts to the function above and shows a detailed log.
+- Cron: scheduled every 23 minutes  
+  Hook: `cron__update_agile_shows_array` (configured in `cron_jobs.php`).
+
+### Import Films From Agile
+
+- Function: `gicinema__import_films_from_agile()`  
+  File: `wp-content/plugins/gicinema-plugin/function__import_films_from_agile.php`
+- What it does
+  - Ensures screenings table schema/index exist (`gicinema__ensure_screenings_unique_index()`), then reads the cached `agile_shows_array` transient; if missing or undecodable, it calls the update function to refresh and retries.
+  - Robust JSON handling: strips BOM and decodes either array or object structures; supports the feed being nested under `ArrayOfShows` or `Shows`.
+  - Logs “Found X films…” to confirm parse success before looping.
+  - For each show:
+    - Normalizes to object; pulls core fields (ID/Name/Duration/ShortDescription/InfoLink).
+    - Parses `AdditionalMedia` for a poster URL (Type=Image) and trailer URL (Type=YouTube).
+    - Parses `CustomProperties` for Release Year, Format, Director(s), Production Country (handles arrays/objects; concatenates multiple directors and countries).
+    - Finds existing Film by meta `agile_film_id`; if none, creates a new `film` post (status `publish`).
+    - Poster handling: if the poster URL changed, downloads via `wp_remote_get` and inserts an attachment, sets as featured image (no `file_get_contents`), updates ACF `film_poster`.
+    - Updates ACF/meta fields: `agile_film_id`, `description`, `film_length`, `ticket_purchase_link`, `film_year`, `format`, `film_director`, `country`, `poster_url`, `trailer_url`.
+    - Imports screenings by calling `gicinema__import_screenings_from_agile()` with `$show->CurrentShowings` (array/object tolerant).
+      - Screenings normalization: converts each `StartDate` into WP timezone (`wp_timezone()` fallback to `timezone_string`) and formats `Y-m-d H:i:s`.
+      - Database write: `INSERT ... ON DUPLICATE KEY UPDATE status = 1` into the custom table.
+    - Immediately calls `gicinema__sync_screenings($post_ID)` so the ACF repeater shows the canonical, normalized times.
+  - Dedupe is available as a separate admin tool, and uniqueness is enforced at schema level (see below).
+- Admin UI: `Grand Illusion Cinema → Import from Agile`  
+  File: `page__import_from_agile.php` — standard confirm form plus a manual fallback to paste full JSON (validated, cached 1h, then import).
+- Cron: scheduled every 30 minutes  
+  Hook: `cron__import_films_from_agile` (configured in `cron_jobs.php`).
+
+### Relationship and Data Flow
+
+- Update action writes the raw feed JSON into the `agile_shows_array` transient.
+- Import action reads and decodes that transient, then:
+  - Creates/updates Film posts; downloads posters if changed.
+  - Normalizes and upserts screenings into the custom table.
+  - Syncs screenings into the ACF repeater so front‑end templates use the same canonical timestamps.
+- If the transient is missing/invalid, the importer automatically calls the updater first.
+
+### Timezones and Uniqueness
+
+- Timezone normalization: Importer and sync routines standardize times to the WordPress timezone and format `Y-m-d H:i:s` to eliminate recurring ±7/8h duplicates.
+- Database uniqueness: The screenings table includes `UNIQUE KEY unique_screening_str (film_id, post_id, screening(19))` so inserts are idempotent via `ON DUPLICATE KEY` even if legacy `screening_date/time` uniqueness isn’t present.  
+  File: `function__create_custom_table.php`.
+
+### Manual Triggers and Troubleshooting
+
+- Admin pages render detailed logs for both actions and provide a JSON paste fallback on the import page for environments blocked from reaching the feed.
+- WP‑CLI (DDEV examples):
+  - Update feed now: `ddev wp eval 'gicinema__update_agile_shows_array();'`
+  - Import now: `ddev wp eval 'gicinema__import_films_from_agile();'`
+  - Run scheduled: `ddev wp cron event run cron__update_agile_shows_array --due-now` and `cron__import_films_from_agile`.
+- If “Found X films…” doesn’t appear or feed logs show HTML instead of JSON:
+  - Re‑run Update; verify headers/retries in the log.
+  - Use the paste‑JSON fallback on the Import page as a temporary workaround.
+  - Consider shorter HTTP timeouts and additional diagnostics if production networking is flaky.

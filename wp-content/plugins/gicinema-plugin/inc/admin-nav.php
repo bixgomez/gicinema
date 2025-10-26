@@ -33,7 +33,7 @@ function gicinema_get_admin_nav_items() {
     'deprecated' => false,
     'show' => true,
     'short' => 'Fetches the latest film/show data from Agile Ticketing and caches it for 12 hours. The importer consumes this cached feed and refreshes it automatically if needed.',
-    'long'  => 'Stores JSON in the transient `agile_shows_array` with a 12‑hour TTL. Uses WordPress HTTP API and respects site configuration. Safe to run repeatedly; no database changes beyond the transient.',
+    'long'  => 'Stores JSON in the transient `agile_shows_array` with a 12‑hour TTL. Uses WordPress HTTP API and respects site configuration. Safe to run repeatedly; no database changes beyond the transient. Note: This updates the cached API data that is used by the film import process.',
     'cron'  => [
       'hook'      => 'cron__update_agile_shows_array',
       'schedule'  => 'every_23_minutes',

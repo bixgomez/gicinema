@@ -22,6 +22,9 @@ function gicinema_page_display__import_films_from_agile() {
     json_decode($clean);
     if (json_last_error() === JSON_ERROR_NONE) {
       set_transient('agile_shows_array', $clean, HOUR_IN_SECONDS);
+      // Track timestamp and TTL for admin display
+      update_option('gicinema_agile_shows_array_updated', time());
+      update_option('gicinema_agile_shows_array_ttl', HOUR_IN_SECONDS);
       echo "<div class='notice notice-success'><p>Pasted JSON accepted and cached for 1 hour.</p></div>";
     } else {
       echo "<div class='notice notice-error'><p>Invalid JSON pasted. Please verify and try again.</p></div>";

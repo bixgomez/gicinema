@@ -2,6 +2,12 @@
 
 Single source of truth for our collaboration notes. Keep entries concise and actionable.
 
+## Initial commands and direction
+- Please familiarize yourself with this site, in particular:
+  - The file found at ./dev_notes.md
+  - The custom plugin found at ./wp-content/plugins/gicinema-plugin
+  - The custom theme found at ./wp-content/themes/cinema-theme
+
 ## Conventions
 - Dates in ISO format (YYYY-MM-DD)
 - Reverse‑chronological session log
