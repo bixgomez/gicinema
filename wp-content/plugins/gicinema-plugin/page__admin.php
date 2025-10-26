@@ -29,7 +29,7 @@ function gicinema_admin_page_display() {
       in sync for editor visibility.
     </p>
     <p>
-      Use the tools below to run key tasks manually. Most are also scheduled via WP‑Cron.
+      Use the tools below to run key tasks manually. Most are also scheduled via WP-Cron.
     </p>
     <ul>
       <?php

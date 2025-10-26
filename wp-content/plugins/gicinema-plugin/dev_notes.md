@@ -1,6 +1,6 @@
 # gicinema-plugin — Dev Notes
 
-Plugin-specific collaboration log and action items. Keep concise, reverse‑chronological, ISO dates.
+Plugin-specific collaboration log and action items. Keep concise, reverse-chronological, ISO dates.
 
 ## Conventions
 - Tags: [decision], [note], [todo], [question], [link], [issue]

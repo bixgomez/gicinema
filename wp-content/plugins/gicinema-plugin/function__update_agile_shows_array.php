@@ -10,6 +10,19 @@ function gicinema__update_agile_shows_array() {
 
   echo '<div class="function-info">';
 
+  // Lightweight updater log helper (keeps last 10 entries)
+  if (!function_exists('gicinema__append_update_log')) {
+    function gicinema__append_update_log($entry) {
+      $log = get_option('gicinema_update_feed_log');
+      if (!is_array($log)) { $log = []; }
+      $log[] = $entry;
+      if (count($log) > 10) { $log = array_slice($log, -10); }
+      update_option('gicinema_update_feed_log', $log, false);
+    }
+  }
+
+  $context = (defined('DOING_CRON') && DOING_CRON) ? 'cron' : (is_admin() ? 'admin' : 'frontend');
+
   $base_url = 'https://prod5.agileticketing.net/websales/feed.ashx?guid=52c1280f-be14-4579-8ddf-4b3dadbf96c7&showslist=true&withmedia=true&format=json&v=latest';
   $url = add_query_arg( array( '_ts' => time() ), $base_url );
   $args = array(
@@ -50,6 +63,14 @@ function gicinema__update_agile_shows_array() {
         update_option('gicinema_agile_shows_array_updated', time());
         update_option('gicinema_agile_shows_array_ttl', 12 * HOUR_IN_SECONDS);
         echo '<div class="success">Success! HTTP ' . esc_html($code) . '; bytes=' . intval($len) . '.</div>';
+        gicinema__append_update_log([
+          'time'      => time(),
+          'context'   => $context,
+          'retried'   => false,
+          'success'   => true,
+          'code'      => (int) $code,
+          'bytes'     => (int) $len,
+        ]);
       } else {
         // Retry once with a different cache buster and stronger headers
         $retry_url = add_query_arg( array( '_ts' => time() + 1 ), $base_url );
@@ -70,6 +91,14 @@ function gicinema__update_agile_shows_array() {
             update_option('gicinema_agile_shows_array_updated', time());
             update_option('gicinema_agile_shows_array_ttl', 12 * HOUR_IN_SECONDS);
             echo '<div class="success">Retry succeeded! HTTP ' . esc_html($code2) . '; bytes=' . intval(strlen((string)$body2)) . '.</div>';
+            gicinema__append_update_log([
+              'time'      => time(),
+              'context'   => $context,
+              'retried'   => true,
+              'success'   => true,
+              'code'      => (int) $code2,
+              'bytes'     => (int) strlen((string)$body2),
+            ]);
           } else {
             delete_transient('agile_shows_array');
             echo '<div class="failure">Failed fetching valid JSON from Agile. HTTP ' . esc_html($code) . '; content-type=' . esc_html((string)$ctype) . '; bytes=' . intval($len) . '.</div>';
@@ -82,14 +111,38 @@ function gicinema__update_agile_shows_array() {
               $snippet2 = esc_html(substr($body2, 0, 300));
               echo '<details><summary>Retry body preview (first 300 chars)</summary><pre>' . $snippet2 . '</pre></details>';
             }
+            gicinema__append_update_log([
+              'time'      => time(),
+              'context'   => $context,
+              'retried'   => true,
+              'success'   => false,
+              'code'      => (int) $code2,
+              'bytes'     => (int) strlen((string)$body2),
+            ]);
           }
         } else {
           echo '<div class="failure">Retry HTTP request error: ' . esc_html($response2->get_error_message()) . '</div>';
+          gicinema__append_update_log([
+            'time'      => time(),
+            'context'   => $context,
+            'retried'   => true,
+            'success'   => false,
+            'code'      => 0,
+            'bytes'     => 0,
+          ]);
         }
       }
 
   } else {
     echo '<div class="failure">HTTP request error: ' . esc_html($response->get_error_message()) . '</div>';
+    gicinema__append_update_log([
+      'time'      => time(),
+      'context'   => $context,
+      'retried'   => false,
+      'success'   => false,
+      'code'      => 0,
+      'bytes'     => 0,
+    ]);
   }
 
   echo '</div>';

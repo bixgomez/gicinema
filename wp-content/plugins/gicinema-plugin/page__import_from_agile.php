@@ -35,7 +35,7 @@ function gicinema_page_display__import_films_from_agile() {
     $html = ob_get_clean();
     echo "<div class='notice notice-success'><p><strong>Import from Agile finished.</strong></p><div class='gicinema-notice-content' style='max-height:420px; overflow:auto;'>{$html}</div></div>";
 
-  // Check if the standard import form was submitted
+    // Check if the standard import form was submitted
   } elseif (isset($_POST['confirm_import']) && $_POST['confirm_import'] == 'yes') {
     require_once "function__import_films_from_agile.php";
     ob_start();
@@ -55,7 +55,30 @@ function gicinema_page_display__import_films_from_agile() {
       <input type="submit" class="button button-primary" value="Confirm Import From Agile">
     </form>
 
-    <hr>
+    <?php
+    // Recent import attempts log (last 10) — show above manual fallback section
+    $log = get_option('gicinema_import_log');
+    if (is_array($log) && count($log)) {
+      echo '<h3>Recent Import Attempts</h3>';
+      echo '<table class="widefat striped" style="max-width:820px">';
+      echo '<thead><tr><th style="width:200px;">Time</th><th style="width:120px;">Context</th><th style="width:120px;">Refreshed</th><th>Shows Count</th></tr></thead><tbody>';
+      foreach (array_reverse($log) as $row) {
+        $t = isset($row['time']) ? (int) $row['time'] : 0;
+        $time_str = $t ? wp_date('Y-m-d H:i:s T', $t) : 'unknown';
+        $ctx = isset($row['context']) ? esc_html((string)$row['context']) : 'unknown';
+        $ref = !empty($row['refreshed']) ? 'yes' : 'no';
+        $cnt = isset($row['count']) ? intval($row['count']) : 0;
+        echo '<tr>'
+          . '<td>' . esc_html($time_str) . '</td>'
+          . '<td>' . $ctx . '</td>'
+          . '<td>' . esc_html($ref) . '</td>'
+          . '<td>' . esc_html((string)$cnt) . '</td>'
+          . '</tr>';
+      }
+      echo '</tbody></table>';
+    }
+    ?>
+
     <h3>Manual Fallback: Paste Agile Feed JSON</h3>
     <p>If the server cannot reach the Agile JSON feed, paste the JSON here (copied from a machine that can access the URL). It will be cached for 1 hour and used for import.</p>
     <p>

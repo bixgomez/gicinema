@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 /**
  * Delete superfluous screenings from ACF repeater for a single film.
  *
- * DRY: This is the single source of truth used by both the per‑film red button
+ * DRY: This is the single source of truth used by both the per-film red button
  * and the global batch tool. To support "dry run" previews, pass $dry_run=true
  * to compute counts without updating ACF.
  */

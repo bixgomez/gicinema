@@ -98,7 +98,7 @@ function gicinema__render_matching_screenings($post_id) {
   }
 
   // 5) Analysis: count superfluous ACF screenings using the exact same logic as the
-  // bulk tool (DRY). We invoke the per‑film deleter in dry‑run mode so the
+  // bulk tool (DRY). We invoke the per-film deleter in dry-run mode so the
   // calculation (normalization + timezone shadow guard) is identical.
   $superfluous_count = 0;
   if (function_exists('gicinema__delete_superfluous_acf_screenings')) {
@@ -170,8 +170,8 @@ function gicinema__count_superfluous_screenings($post_id) {
     return 0;
   }
 
-  // DRY with the bulk tool: use the same logic by invoking the per‑film
-  // deleter in dry‑run mode and returning the computed 'deleted' count.
+  // DRY with the bulk tool: use the same logic by invoking the per-film
+  // deleter in dry-run mode and returning the computed 'deleted' count.
   if (function_exists('gicinema__delete_superfluous_acf_screenings')) {
     $res = gicinema__delete_superfluous_acf_screenings($post_id, true /* dry_run */);
     if (is_array($res) && isset($res['deleted'])) {

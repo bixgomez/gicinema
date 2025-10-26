@@ -30,8 +30,8 @@ function gicinema_page_display__sync_all_screenings() {
 ?>
 
     <div class="warning" style="border-left:4px solid #d63638; background:#fff; padding:8px 12px;">
-      <p style="margin:0 0 6px;"><strong>Important:</strong> Run the two‑way sync only after deleting all superfluous screenings. Otherwise you may re‑introduce incorrect times into the custom table.</p>
-      <p style="margin:0;">Defaults: Two‑way upsert ON; Require clean ACF ON; Dry‑run OFF; Strict deactivate OFF. ACF‑only sync runs regardless.</p>
+      <p style="margin:0 0 6px;"><strong>Important:</strong> Run the two-way sync only after deleting all superfluous screenings. Otherwise you may re-introduce incorrect times into the custom table.</p>
+      <p style="margin:0;">Defaults: Two-way upsert ON; Require clean ACF ON; Dry-run OFF; Strict deactivate OFF. ACF-only sync runs regardless.</p>
     </div>
     <form method="post">
       <?php wp_nonce_field('sync_screenings_action', 'sync_nonce'); ?>
@@ -39,7 +39,7 @@ function gicinema_page_display__sync_all_screenings() {
       <p style="margin-top:10px;">
         <label style="display:block; margin:6px 0;">
           <input type="checkbox" name="two_way" value="1" checked>
-          Also update the custom table (two‑way upsert)
+          Also update the custom table (two-way upsert)
         </label>
         <label style="display:block; margin:6px 0;">
           <input type="checkbox" name="deactivate_missing" value="1">
@@ -47,24 +47,27 @@ function gicinema_page_display__sync_all_screenings() {
         </label>
         <label style="display:block; margin:6px 0;">
           <input type="checkbox" name="require_clean_acf" value="1" checked>
-          Require clean ACF (abort two‑way if any superfluous remain)
+          Require clean ACF (abort two-way if any superfluous remain)
         </label>
         <label style="display:block; margin:6px 0;">
           <input type="checkbox" name="dry_run" value="1">
-          Dry run (preview two‑way actions without writing)
+          Dry run (preview two-way actions without writing)
         </label>
       </p>
       <input id="gicinema-sync-all-submit" type="submit" class="button button-primary" value="Confirm sync all screenings">
     </form>
     <script>
-      (function(){
+      (function() {
         const form = document.currentScript.previousElementSibling;
         const submit = document.getElementById('gicinema-sync-all-submit');
-        form && form.addEventListener('submit', function(ev){
+        form && form.addEventListener('submit', function(ev) {
           const strict = form.querySelector('input[name="deactivate_missing"]')?.checked;
           if (strict) {
             const ok = window.confirm('Strict mode will deactivate table rows not present in ACF. Are you sure?');
-            if (!ok) { ev.preventDefault(); return false; }
+            if (!ok) {
+              ev.preventDefault();
+              return false;
+            }
           }
         });
       })();

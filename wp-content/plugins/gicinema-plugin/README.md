@@ -85,7 +85,7 @@ It maintains a custom “screenings” database table, supports automated cron j
 
 ## Cron Jobs
 
-The custom plugin `gicinema-plugin` schedules several automated tasks. These run via WP‑Cron and can also be triggered with WP‑CLI.
+The custom plugin `gicinema-plugin` schedules several automated tasks. These run via WP-Cron and can also be triggered with WP-CLI.
 
 - Agile shows feed refresh
   - Hook: `cron__update_agile_shows_array`
@@ -111,7 +111,7 @@ The custom plugin `gicinema-plugin` schedules several automated tasks. These run
     - Keep first backup of each month for 1 year
     - Keep first backup of each year indefinitely
 
-### WP‑CLI (DDEV) examples
+### WP-CLI (DDEV) examples
 
 - List scheduled events: `ddev wp cron event list`
 - Run a specific job now: `ddev wp cron event run cron__update_agile_shows_array --due-now`
@@ -140,7 +140,7 @@ If an event exists but isn’t yet due, make it due or run the callback directly
 
 - Troubleshooting tips
   - Re-list events: `ddev wp cron event list --fields=hook,next_run,recurrence | grep cron__`
-  - Ensure `DISABLE_WP_CRON` is not true in `wp-config.php` if expecting automatic WP‑Cron on requests. For dev, using WP‑CLI as above is sufficient.
+  - Ensure `DISABLE_WP_CRON` is not true in `wp-config.php` if expecting automatic WP-Cron on requests. For dev, using WP-CLI as above is sufficient.
 
 ## Agile Feed Update and Import
 
@@ -152,10 +152,10 @@ This section documents, in detail, the two core actions that power the data flow
   File: `wp-content/plugins/gicinema-plugin/function__update_agile_shows_array.php`
 - What it does
   - Fetches the Agile Ticketing JSON feed and caches the raw JSON string in the transient `agile_shows_array` for 12 hours.
-  - Appends a cache‑buster (`_ts`) to the URL; sets headers (`Accept`, `User‑Agent`, `Referer`) to avoid WAF/proxy oddities.
+  - Appends a cache-buster (`_ts`) to the URL; sets headers (`Accept`, `User-Agent`, `Referer`) to avoid WAF/proxy oddities.
   - Uses WordPress HTTP API (`wp_remote_get`) with timeout and redirection handling.
-  - Strips UTF‑8 BOM if present and validates JSON. If initial attempt fails, retries once with stricter headers and a different cache‑buster.
-  - On success: stores the response body (string) in the transient; on failure: deletes transient and logs HTTP code/content‑type/length and body snippet(s).
+  - Strips UTF-8 BOM if present and validates JSON. If initial attempt fails, retries once with stricter headers and a different cache-buster.
+  - On success: stores the response body (string) in the transient; on failure: deletes transient and logs HTTP code/content-type/length and body snippet(s).
 - Admin UI: `Grand Illusion Cinema → Update Agile Shows Array`  
   File: `page__update_agile_array.php` — posts to the function above and shows a detailed log.
 - Cron: scheduled every 23 minutes  
@@ -192,7 +192,7 @@ This section documents, in detail, the two core actions that power the data flow
 - Import action reads and decodes that transient, then:
   - Creates/updates Film posts; downloads posters if changed.
   - Normalizes and upserts screenings into the custom table.
-  - Syncs screenings into the ACF repeater so front‑end templates use the same canonical timestamps.
+  - Syncs screenings into the ACF repeater so front-end templates use the same canonical timestamps.
 - If the transient is missing/invalid, the importer automatically calls the updater first.
 
 ### Timezones and Uniqueness
@@ -204,11 +204,11 @@ This section documents, in detail, the two core actions that power the data flow
 ### Manual Triggers and Troubleshooting
 
 - Admin pages render detailed logs for both actions and provide a JSON paste fallback on the import page for environments blocked from reaching the feed.
-- WP‑CLI (DDEV examples):
+- WP-CLI (DDEV examples):
   - Update feed now: `ddev wp eval 'gicinema__update_agile_shows_array();'`
   - Import now: `ddev wp eval 'gicinema__import_films_from_agile();'`
   - Run scheduled: `ddev wp cron event run cron__update_agile_shows_array --due-now` and `cron__import_films_from_agile`.
 - If “Found X films…” doesn’t appear or feed logs show HTML instead of JSON:
-  - Re‑run Update; verify headers/retries in the log.
-  - Use the paste‑JSON fallback on the Import page as a temporary workaround.
+  - Re-run Update; verify headers/retries in the log.
+  - Use the paste-JSON fallback on the Import page as a temporary workaround.
   - Consider shorter HTTP timeouts and additional diagnostics if production networking is flaky.

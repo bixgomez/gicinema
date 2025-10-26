@@ -32,10 +32,12 @@ function gicinema__import_films_from_agile() {
     echo '<h3>OK, let us import films from Agile!</h3>';
 
     $results = get_transient('agile_shows_array');
+    $refreshed_feed = false;
 
     if (false === $results) {
         echo '<div>The transient does not exist, so call the function to update it.</div>';
         gicinema__update_agile_shows_array();
+        $refreshed_feed = true;
 
         // After updating, try to get the transient again
         $results = get_transient('agile_shows_array');
@@ -78,6 +80,7 @@ function gicinema__import_films_from_agile() {
     if (empty($agile_shows_array)) {
         echo '<div class="notice notice-warning"><p>Unable to decode Agile feed JSON from transient; refreshing…</p></div>';
         gicinema__update_agile_shows_array();
+        $refreshed_feed = true;
         $results = get_transient('agile_shows_array');
         if (is_string($results) && $results !== '') {
             $clean = preg_replace('/^\xEF\xBB\xBF/', '', $results);
@@ -112,8 +115,29 @@ function gicinema__import_films_from_agile() {
     }
 
     $count_shows = is_array($agile_shows_array) ? count($agile_shows_array) : 0;
-    echo '<div>Found ' . intval($count_shows) . ' films in the feed.</div>';
-    echo '<i>Looping through all the films in the feed...</i>';
+    echo '<div>Found ' . intval($count_shows) . ' films in the cached feed (transient).</div>';
+    echo '<i>Looping through films from cached feed (transient)…</i>';
+
+    // Record a lightweight log entry (keeps last 10 attempts)
+    if (!function_exists('gicinema__append_import_log')) {
+        function gicinema__append_import_log($entry) {
+            $log = get_option('gicinema_import_log');
+            if (!is_array($log)) { $log = []; }
+            $log[] = $entry;
+            // Keep only the last 10
+            if (count($log) > 10) {
+                $log = array_slice($log, -10);
+            }
+            update_option('gicinema_import_log', $log, false);
+        }
+    }
+    $context = (defined('DOING_CRON') && DOING_CRON) ? 'cron' : (is_admin() ? 'admin' : 'frontend');
+    gicinema__append_import_log([
+        'time'      => time(),
+        'count'     => (int) $count_shows,
+        'context'   => $context,
+        'refreshed' => (bool) $refreshed_feed,
+    ]);
 
     foreach ($agile_shows_array as $show) {
 
