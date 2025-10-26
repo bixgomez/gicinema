@@ -8,6 +8,9 @@ if (!defined('ABSPATH')) {
 function gicinema__db_backup_and_cleanup() {
   // CSRF Protection - only when called via admin form
   if (isset($_POST['confirm_backup'])) {
+    if (!current_user_can('manage_options')) {
+      return "Unauthorized";
+    }
     if (!isset($_POST['backup_nonce']) || !wp_verify_nonce($_POST['backup_nonce'], 'backup_database_action')) {
       return "Security check failed - unauthorized request";
     }

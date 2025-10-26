@@ -7,9 +7,8 @@ if (!defined('ABSPATH')) {
 
 require_once "function__db_backup_and_cleanup.php";
 
-if (defined('WP_LOCAL_DEV') && WP_LOCAL_DEV) {
-  // Secure download handler via admin-post endpoint (separate request → clean headers)
-  function gicinema_handle_download_backup() {
+// Secure download handler via admin-post endpoint (separate request → clean headers)
+function gicinema_handle_download_backup() {
     if (!current_user_can('manage_options')) {
       wp_die('Unauthorized');
     }
@@ -34,11 +33,11 @@ if (defined('WP_LOCAL_DEV') && WP_LOCAL_DEV) {
     header('Content-Length: ' . filesize($fullPath));
     readfile($fullPath);
     exit;
-  }
-  add_action('admin_post_gicinema_download_backup', 'gicinema_handle_download_backup');
+}
+add_action('admin_post_gicinema_download_backup', 'gicinema_handle_download_backup');
 
-  // Submenu registration is centralized in inc/admin-nav.php
-  function gicinema_page_display__db_backup_and_cleanup() {
+// Submenu registration is centralized in inc/admin-nav.php
+function gicinema_page_display__db_backup_and_cleanup() {
     echo '<div class="wrap wrap--gicinema">';
 
     // Check if the form was submitted (render notice immediately after nav)
@@ -117,5 +116,4 @@ if (defined('WP_LOCAL_DEV') && WP_LOCAL_DEV) {
     }
 
     echo '</div>';
-  }
 }

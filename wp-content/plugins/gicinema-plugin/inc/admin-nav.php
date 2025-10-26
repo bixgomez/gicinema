@@ -92,23 +92,25 @@ function gicinema_get_admin_nav_items() {
       . '</ul>'
   ];
 
-  // Local-only tools.
+  // Backup DB (admins only; available in all environments)
+  $items[] = [
+    'slug' => 'gicinema--backup-database',
+    'label' => 'Backup DB',
+    'deprecated' => false,
+    'show' => true,
+    'short' => 'Creates a compressed SQL backup to `../gicinema_dbs`. Scheduled daily at 21:00; safe to run on demand.',
+    'long'  => 'Admins only. Filenames follow `gicinema-db--YYYY-MM-DD--HH-MM-SS.sql.gz`. Retention policy: keep all < 7 days, keep weekly for 30 days, keep monthly for 1 year, and keep the first backup of each year indefinitely. Old backups are pruned accordingly. Backups are stored outside the web root and downloadable via a nonce‑protected endpoint.',
+    'cron'  => [
+      'hook'      => 'cron__db_backup_and_cleanup',
+      'schedule'  => 'daily',
+      'frequency' => 'Daily at 21:00 (server time)',
+      'notes'     => [ 'Prunes old backups per retention policy.', 'Writes to `../gicinema_dbs`.' ]
+    ]
+  ];
+
+  // Local-only tools (hidden on production).
   $local = defined('WP_LOCAL_DEV') && WP_LOCAL_DEV;
   if ($local) {
-    $items[] = [
-      'slug' => 'gicinema--backup-database',
-      'label' => 'Backup DB',
-      'deprecated' => false,
-      'show' => true,
-      'short' => 'Creates a compressed SQL backup to `../gicinema_dbs`. Scheduled daily at 21:00; safe to run on demand.',
-      'long'  => 'Filenames follow `gicinema-db--YYYY-MM-DD--HH-MM-SS.sql.gz`. Retention policy: keep all < 7 days, keep weekly for 30 days, keep monthly for 1 year, and keep the first backup of each year indefinitely. Old backups are pruned accordingly.',
-      'cron'  => [
-        'hook'      => 'cron__db_backup_and_cleanup',
-        'schedule'  => 'daily',
-        'frequency' => 'Daily at 21:00 (server time)',
-        'notes'     => [ 'Prunes old backups per retention policy.', 'Writes to `../gicinema_dbs`.' ]
-      ]
-    ];
     $items[] = [
       'slug' => 'gicinema--delete-all-films',
       'label' => 'Delete All Films',
