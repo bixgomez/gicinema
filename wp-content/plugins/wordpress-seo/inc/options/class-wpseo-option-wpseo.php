@@ -155,10 +155,15 @@ class WPSEO_Option_Wpseo extends WPSEO_Option {
 		'default_seo_meta_desc'                                => [],
 		'first_activated_by'                                   => 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		'enable_task_list'                                     => true,
 		'enable_schema'                                        => true,
 >>>>>>> 07955227f67d14ec4798c4b901c136b69715eefe
+=======
+		'enable_task_list'                                     => true,
+		'enable_schema'                                        => true,
+>>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
 	];
 
 	/**

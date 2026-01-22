@@ -13,10 +13,14 @@
 msgid ""
 msgstr ""
 <<<<<<< HEAD
+<<<<<<< HEAD
 "PO-Revision-Date: 2025-10-28T18:19:16+00:00\n"
 =======
 "PO-Revision-Date: 2025-12-11T18:22:21+00:00\n"
 >>>>>>> 07955227f67d14ec4798c4b901c136b69715eefe
+=======
+"PO-Revision-Date: 2025-12-11T18:22:21+00:00\n"
+>>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
 "Report-Msgid-Bugs-To: http://support.advancedcustomfields.com\n"
 "Language: pt_PT\n"
 "MIME-Version: 1.0\n"

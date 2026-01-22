@@ -16,10 +16,14 @@ if ( ! function_exists( 'add_filter' ) ) {
  *            serious issues with the options, so no if ( ! defined() ).}}
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 define( 'WPSEO_VERSION', '26.3' );
 =======
 define( 'WPSEO_VERSION', '26.8' );
 >>>>>>> 07955227f67d14ec4798c4b901c136b69715eefe
+=======
+define( 'WPSEO_VERSION', '26.8' );
+>>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
 
 
 if ( ! defined( 'WPSEO_PATH' ) ) {

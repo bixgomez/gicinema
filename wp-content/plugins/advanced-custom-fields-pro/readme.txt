@@ -5,10 +5,14 @@ Requires at least: 6.2
 Tested up to: 6.9
 Requires PHP: 7.4
 <<<<<<< HEAD
+<<<<<<< HEAD
 Stable tag: 6.6.2
 =======
 Stable tag: 6.7.0.2
 >>>>>>> 07955227f67d14ec4798c4b901c136b69715eefe
+=======
+Stable tag: 6.7.0.2
+>>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -99,7 +103,10 @@ From your WordPress dashboard
 == Changelog ==
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
 = 6.7.0.2 =
 *Release Date 11th December 2025*
 *PRO Only Release*
@@ -129,7 +136,10 @@ From your WordPress dashboard
 * Fix - List tables now respect the convert_field_name_to_lowercase javascript filter
 * Fix - WYSIWYG field on attachment pages no longer sends ajax on every keystroke
 
+<<<<<<< HEAD
 >>>>>>> 07955227f67d14ec4798c4b901c136b69715eefe
+=======
+>>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
 = 6.6.2 =
 *Release Date 29th October 2025*
 

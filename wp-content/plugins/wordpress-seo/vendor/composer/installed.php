@@ -8,10 +8,13 @@
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
 <<<<<<< HEAD
+<<<<<<< HEAD
         'reference' => '6cbdc76327d0809c9b9e48e9d6757be32e4985b5',
         'name' => 'yoast/wordpress-seo',
 =======
 >>>>>>> 07955227f67d14ec4798c4b901c136b69715eefe
+=======
+>>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
         'dev' => false,
     ),
     'versions' => array(
@@ -32,9 +35,12 @@
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
 <<<<<<< HEAD
+<<<<<<< HEAD
             'reference' => '6cbdc76327d0809c9b9e48e9d6757be32e4985b5',
 =======
 >>>>>>> 07955227f67d14ec4798c4b901c136b69715eefe
+=======
+>>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
             'dev_requirement' => false,
         ),
     ),

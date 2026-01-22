@@ -31,6 +31,7 @@ class Intro_Builder {
 		);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		$sitemap_link = $this->sitemap_link_collector->get_link();
 		if ( $sitemap_link !== null ) {
 			$intro_links[] = $sitemap_link;
@@ -42,5 +43,8 @@ class Intro_Builder {
 =======
 		return new Intro( $intro_content, [] );
 >>>>>>> 07955227f67d14ec4798c4b901c136b69715eefe
+=======
+		return new Intro( $intro_content, [] );
+>>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
 	}
 }

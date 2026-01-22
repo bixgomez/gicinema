@@ -92,11 +92,15 @@ class Ping_Other_Admins_Alert implements Integration_Interface {
 	 */
 	public function register_hooks() {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		// @phpcs:ignore Squiz.PHP.CommentedOutCode.Found, Squiz.Commenting.InlineComment.InvalidEndChar -- we're gonna postpone this notification until we're actually ready for it.
 		// \add_action( 'admin_init', [ $this, 'add_notifications' ] );
 =======
 		\add_action( 'admin_init', [ $this, 'add_notifications' ] );
 >>>>>>> 07955227f67d14ec4798c4b901c136b69715eefe
+=======
+		\add_action( 'admin_init', [ $this, 'add_notifications' ] );
+>>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
 	}
 
 	/**
@@ -160,17 +164,23 @@ class Ping_Other_Admins_Alert implements Integration_Interface {
 			$message,
 			[
 <<<<<<< HEAD
+<<<<<<< HEAD
 				'id'           => self::NOTIFICATION_ID,
 				'type'         => Yoast_Notification::WARNING,
 				'capabilities' => [ 'wpseo_manage_options' ],
 				'priority'     => 20,
 =======
+=======
+>>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
 				'id'            => self::NOTIFICATION_ID,
 				'type'          => Yoast_Notification::WARNING,
 				'capabilities'  => [ 'wpseo_manage_options' ],
 				'priority'      => 20,
 				'resolve_nonce' => \wp_create_nonce( 'wpseo-resolve-alert-nonce' ),
+<<<<<<< HEAD
 >>>>>>> 07955227f67d14ec4798c4b901c136b69715eefe
+=======
+>>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
 			]
 		);
 	}
@@ -181,6 +191,7 @@ class Ping_Other_Admins_Alert implements Integration_Interface {
 	 * @return string The HTML string representation of the notification.
 	 */
 	private function get_message() {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		$shortlink = $this->short_link_helper->get( 'https://yoa.st/new-admin-newsletter-sign-up/' );
 
@@ -198,6 +209,8 @@ class Ping_Other_Admins_Alert implements Integration_Interface {
 		$notification_text .= \esc_html__( 'Dismiss', 'wordpress-seo' );
 		$notification_text .= '</a>';
 =======
+=======
+>>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
 		$message = \sprintf(
 			/* translators: %1$s expands to "Yoast SEO". */
 			\esc_html__( 'Looks like you’re new here. %1$s makes it easy to optimize your website for search engines. Want to keep your site healthy and easier to find? Sign up below to receive practical emails to get you started!', 'wordpress-seo' ),
@@ -205,7 +218,10 @@ class Ping_Other_Admins_Alert implements Integration_Interface {
 		);
 
 		$notification_text = '<p>' . $message . '</p>';
+<<<<<<< HEAD
 >>>>>>> 07955227f67d14ec4798c4b901c136b69715eefe
+=======
+>>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
 
 		return $notification_text;
 	}
