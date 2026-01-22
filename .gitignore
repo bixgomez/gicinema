@@ -33,11 +33,3 @@ uploads-webpc
 wp-config-ddev.php
 wp-config-ddev*
 _resources
-
-# Panorama tiles and source images (too large for git)
-panorama/tiles/
-panorama/source_images/
-panorama/working/
-panorama_v1/
-panorama_tool/img/*.png
-panorama_tool/img/*.svg
