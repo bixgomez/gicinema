@@ -244,18 +244,9 @@ class WPSEO_Tracking_Settings_Data implements WPSEO_Collection {
 		'enable_llms_txt',
 		'llms_txt_selection_mode',
 		'configuration_finished_steps',
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 		'enable_task_list',
 		'enable_schema',
 		// No need to add anything from WPSEO_Option_Tracking_Only as they are added automatically below.
->>>>>>> 07955227f67d14ec4798c4b901c136b69715eefe
-=======
-		'enable_task_list',
-		'enable_schema',
-		// No need to add anything from WPSEO_Option_Tracking_Only as they are added automatically below.
->>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
 	];
 
 	/**

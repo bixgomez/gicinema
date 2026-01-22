@@ -4,18 +4,8 @@ Donate link: https://yoa.st/1up
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 Tags: SEO, XML sitemap, Content analysis, Readability, Schema
-<<<<<<< HEAD
-<<<<<<< HEAD
-Tested up to: 6.8
-Stable tag: 26.3
-=======
 Tested up to: 6.9
 Stable tag: 26.8
->>>>>>> 07955227f67d14ec4798c4b901c136b69715eefe
-=======
-Tested up to: 6.9
-Stable tag: 26.8
->>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
 Requires PHP: 7.4
 
 Improve your SEO with real-time feedback, schema, and clear guidance. Upgrade for AI tools, Google Docs integration, and 24/7 support, no hidden fees.
@@ -312,29 +302,6 @@ Your question has most likely been answered on our help center: [yoast.com/help/
 8. The inclusive language analysis in Yoast SEO.
 
 == Changelog ==
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-= 26.3 =
-
-Release date: 2025-11-04
-
-Yoast SEO 26.3 brings more enhancements and bugfixes. [Find more information about our software releases and updates here](https://yoa.st/releases).
-
-#### Bugfixes
-
-*  Fixes a bug where the llms.txt file template contained a spelling error "can by found" instead of "can be found". Props to [aditya241104](https://github.com/aditya241104).
-
-#### Other
-
-* Introduces the `wpseo_llmstxt_link_description` filter for link descriptions in the `llms.txt` file. Props to @Godzilaa.
-* Removes the external link icon from the `Customize llms.txt file` button in the `Site features` section of the plugin's Settings page.
-
-= 26.2 =
-=======
->>>>>>> 07955227f67d14ec4798c4b901c136b69715eefe
-=======
->>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
 
 = 26.8 =
 
@@ -344,20 +311,6 @@ Yoast SEO 26.8 brings more enhancements and bugfixes. [Find more information abo
 
 #### Enhancements
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-* Adds a `Pronouns` field to the user profile and includes these pronouns in the Schema.org output. Props to [jdevalk](https://github.com/jdevalk).
-* Adds edit buttons next to the _keyphrase in meta description_, _keyphrase in slug_, and _keyphrase in SEO title_ assessments when there is no keyphrase and/or no meta description, slug, or SEO title.
-* Improves the _transition words_ assessment for Arabic by expanding the list of recognized transition words. Props to [Reem76-ar](https://github.com/Reem76-ar).
-* Introduces Content blocks collapsible inside Yoast Metabox and Sidebar to improve Yoast custom blocks discoverability.
-
-#### Other
-
-* Adapts the behavior of the `Contact our support team` button in the `Support` page to our new Premium and WooCommerce SEO subscription plans.
-* Disables opcache invalidation on plugin upgrade for a subset of the userbase.
-=======
-=======
->>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
 * Adds a schema settings page to allow users more control over the Yoast Schema Framework API.
 * Implements a new, easy-to-use design for the site features settings.
 
@@ -395,10 +348,6 @@ Release date: 2026-01-07
 
 * Hides the llms.txt task in multisites, since the feature is disabled in such setups.
 * Increases disabling opcache invalidation on plugin upgrade, now applied to a bigger subset of the userbase.
-<<<<<<< HEAD
->>>>>>> 07955227f67d14ec4798c4b901c136b69715eefe
-=======
->>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
 
 = Earlier versions =
 For the changelog of earlier versions, please refer to [the changelog on yoast.com](https://yoa.st/yoast-seo-changelog).

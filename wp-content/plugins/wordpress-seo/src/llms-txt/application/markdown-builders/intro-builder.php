@@ -30,21 +30,6 @@ class Intro_Builder {
 			$this->get_generator_version()
 		);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-		$sitemap_link = $this->sitemap_link_collector->get_link();
-		if ( $sitemap_link !== null ) {
-			$intro_links[] = $sitemap_link;
-
-			$intro_content .= \PHP_EOL . \PHP_EOL . 'The XML sitemap of this website can be found by following %s.';
-		}
-
-		return new Intro( $intro_content, $intro_links );
-=======
 		return new Intro( $intro_content, [] );
->>>>>>> 07955227f67d14ec4798c4b901c136b69715eefe
-=======
-		return new Intro( $intro_content, [] );
->>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
 	}
 }

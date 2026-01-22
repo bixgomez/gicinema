@@ -131,14 +131,7 @@ function acf_handle_json_block_registration( $settings, $metadata ) {
 		'validateOnLoad'      => 'validate_on_load',
 		'usePostMeta'         => 'use_post_meta',
 		'hideFieldsInSidebar' => 'hide_fields_in_sidebar',
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 		'autoInlineEditing'   => 'auto_inline_editing',
->>>>>>> 07955227f67d14ec4798c4b901c136b69715eefe
-=======
-		'autoInlineEditing'   => 'auto_inline_editing',
->>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
 	);
 	$textdomain        = ! empty( $metadata['textdomain'] ) ? $metadata['textdomain'] : 'acf';
 	$i18n_schema       = get_block_metadata_i18n_schema();
@@ -899,14 +892,7 @@ function acf_enqueue_block_assets() {
 			'Open Expanded Editor'      => __( 'Open Expanded Editor', 'acf' ),
 			'Error previewing block v3' => __( 'The preview for this block couldn’t be loaded. Review its content or settings for issues.', 'acf' ),
 			'ACF Block'                 => __( 'ACF Block', 'acf' ),
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 			'Done'                      => __( 'Done', 'acf' ),
->>>>>>> 07955227f67d14ec4798c4b901c136b69715eefe
-=======
-			'Done'                      => __( 'Done', 'acf' ),
->>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
 
 			/* translators: %s: Block type title */
 			'%s settings'              => __( '%s settings', 'acf' ),

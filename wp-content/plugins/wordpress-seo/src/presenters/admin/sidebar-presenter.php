@@ -66,25 +66,6 @@ class Sidebar_Presenter extends Abstract_Presenter {
 							echo ( $is_woocommerce_active ) ? \sprintf( \esc_html__( '%1$s%2$s %3$s', 'wordpress-seo' ), '<span>', '</span>', 'Yoast WooCommerce SEO' ) : \sprintf( \esc_html__( '%1$s%2$s %3$s', 'wordpress-seo' ), '<span>', '</span>', 'Yoast SEO Premium' );
 						?>
 					</h2>
-<<<<<<< HEAD
-<<<<<<< HEAD
-					<span>
-					<?php
-						echo ( $is_woocommerce_active ) ? \esc_html__( 'SEO that scales with your product catalog.', 'wordpress-seo' ) : \esc_html__( 'Now with Local, News & Video SEO + 1 Google Docs seat!', 'wordpress-seo' );
-						echo '<ul>';
-						echo '<li>' . \esc_html__( 'AI tools included', 'wordpress-seo' ) . '</li>';
-						echo '<li>';
-						/* translators: %1$s expands to "Yoast SEO academy". */
-						\printf( \esc_html__( '%1$s access', 'wordpress-seo' ), 'Yoast SEO academy' );
-						echo '</li>';
-						echo '<li>' . \esc_html__( '24/7 support', 'wordpress-seo' ) . '</li>';
-						echo '</ul>';
-					?>
-					<p class="plugin-buy-button">
-						<a class="yoast-button-upsell" data-action="load-nfd-ctb"
-=======
-=======
->>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
 					<div>
 						<p class="info-header">
 						<?php
@@ -114,10 +95,6 @@ class Sidebar_Presenter extends Abstract_Presenter {
 						</ul>
 						<p class="plugin-buy-button">
 							<a class="yoast-button-upsell" data-action="load-nfd-ctb"
-<<<<<<< HEAD
->>>>>>> 07955227f67d14ec4798c4b901c136b69715eefe
-=======
->>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
 							data-ctb-id="f6a84663-465f-4cb5-8ba5-f7a6d72224b2" target="_blank"
 							href="<?php echo \esc_url( $shortlink ); ?>">
 						<?php
@@ -172,23 +149,10 @@ class Sidebar_Presenter extends Abstract_Presenter {
 				</p>
 				<p>
 					<a href="<?php echo \esc_url( $academy_shortlink ); ?>" style="font-weight: 500" target="_blank">
-<<<<<<< HEAD
-<<<<<<< HEAD
-						<?php
-						/* translators: %1$s expands to Yoast SEO academy */
-						\printf( \esc_html__( 'Check out %1$s', 'wordpress-seo' ), 'Yoast SEO academy' );
-						?>
-=======
-=======
->>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
 								<?php
 								/* translators: %1$s expands to Yoast SEO academy */
 								\printf( \esc_html__( 'Check out %1$s', 'wordpress-seo' ), 'Yoast SEO academy' );
 								?>
-<<<<<<< HEAD
->>>>>>> 07955227f67d14ec4798c4b901c136b69715eefe
-=======
->>>>>>> 42e963058bc112ffad35f07a6b79625948b27421
 						<span class="screen-reader-text">
 							<?php
 							/* translators: Hidden accessibility text. */
