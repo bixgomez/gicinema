@@ -33,8 +33,11 @@ class Menu_Badge_Integration implements Integration_Interface {
 	public function add_inline_styles() {
 		$custom_css = 'ul.wp-submenu span.yoast-premium-badge::after, #wpadminbar span.yoast-premium-badge::after { content:"'
 			. \__( 'Premium', 'wordpress-seo' ) . '"}' . \PHP_EOL;
+<<<<<<< HEAD
 
 		$custom_css .= 'ul.wp-submenu span.yoast-ai-plus-badge::after, #wpadminbar span.yoast-ai-plus-badge::after  { content:"AI+"; }' . \PHP_EOL;
+=======
+>>>>>>> 07955227f67d14ec4798c4b901c136b69715eefe
 		\wp_add_inline_style( WPSEO_Admin_Asset_Manager::PREFIX . 'admin-global', $custom_css );
 	}
 }
