@@ -1,4 +1,5 @@
 <?php
+
 // phpcs:disable Yoast.NamingConventions.NamespaceName.TooLong -- Needed in the folder structure.
 namespace Yoast\WP\SEO\Task_List\User_Interface\Tasks;
 
@@ -112,7 +113,7 @@ final class Get_Tasks_Route implements Route_Interface {
 						],
 					],
 				],
-			]
+			],
 		);
 	}
 
@@ -132,7 +133,7 @@ final class Get_Tasks_Route implements Route_Interface {
 					'success' => false,
 					'error'   => $exception->getMessage(),
 				],
-				$exception->getCode()
+				$exception->getCode(),
 			);
 		}
 
@@ -141,7 +142,7 @@ final class Get_Tasks_Route implements Route_Interface {
 				'success' => true,
 				'tasks'   => $tasks_data,
 			],
-			200
+			200,
 		);
 	}
 

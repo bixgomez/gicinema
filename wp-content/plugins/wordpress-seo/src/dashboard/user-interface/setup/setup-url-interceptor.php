@@ -1,4 +1,5 @@
 <?php
+
 // phpcs:disable Yoast.NamingConventions.NamespaceName.TooLong -- Needed in the folder structure.
 namespace Yoast\WP\SEO\Dashboard\User_Interface\Setup;
 
@@ -88,11 +89,11 @@ class Setup_Url_Interceptor implements Integration_Interface {
 	 */
 	public function add_redirect_page( $pages ) {
 		\add_submenu_page(
-			'',
+			'options.php',
 			'',
 			'',
 			'wpseo_manage_options',
-			self::PAGE
+			self::PAGE,
 		);
 
 		return $pages;
@@ -121,7 +122,6 @@ class Setup_Url_Interceptor implements Integration_Interface {
 				// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Reason: Only allowed pre verified links can end up here.
 				$redirect_url = \wp_unslash( $_GET['redirect_setup_url'] );
 				$this->redirect_helper->do_safe_redirect( $redirect_url, 302, 'Yoast SEO' );
-
 			}
 			else {
 				$this->redirect_helper->do_safe_redirect( \self_admin_url( 'admin.php?page=wpseo_dashboard' ), 302, 'Yoast SEO' );

@@ -7,7 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'FacebookPixelPlugin\\Integration\\' => array($baseDir . '/integration'),
+    'FacebookPixelPlugin\\FacebookAds\\' => array($baseDir . '/FacebookAds'),
     'FacebookPixelPlugin\\Core\\' => array($baseDir . '/core'),
     'FacebookPixelPlugin\\' => array($baseDir . '/'),
-    'FacebookAds\\' => array($vendorDir . '/facebook/php-business-sdk/src/FacebookAds'),
 );
