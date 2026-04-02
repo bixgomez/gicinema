@@ -23,7 +23,6 @@
     " title";
   grid-template-columns: auto;
   column-gap: 1em;
-  transition: .2s linear font-size, .2s linear margin;
 
   @include breakpoint($md) {
     width: 46.1em;

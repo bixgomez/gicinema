@@ -69,6 +69,20 @@
     justify-content: left;
     display: flex;
   }
+
+  // Hide toggle by default to prevent FOUC, show once JS adds hc-nav-trigger class
+  // Hide again on desktop ($md+) where the full nav is shown
+  .toggle {
+    display: none;
+
+    &.hc-nav-trigger {
+      display: block;
+
+      @include breakpoint($md) {
+        display: none;
+      }
+    }
+  }
 }
 
 .main-navigation {
@@ -102,7 +116,6 @@
   top: 0;
   right: 0;
   font-size: .8em;
-  transition: .25s linear font-size;
 
   @include breakpoint($md) {
     font-size: .7em;
