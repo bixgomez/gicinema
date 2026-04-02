@@ -1,6 +1,6 @@
 .section-outer--site-footer {
   min-height: 100px;
-  background-color: $c--red;
+  background-color: $c--red--darker; // Darker red for WCAG AA contrast with white text
   display: flex;
   flex-direction: column;
 

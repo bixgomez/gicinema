@@ -176,8 +176,7 @@
       
 
       &.past {
-        opacity: 0.5;
-        font-weight: 100;
+        color: #767676; // Minimum gray for WCAG AA on white (4.54:1)
       }
 
       &.present,
