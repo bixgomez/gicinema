@@ -37,3 +37,4 @@ _resources
 panorama-1
 panorama-2
 wp-content/ewww/image-backup/uploads
+.wp_ewwwio_image_optimize_process_lock
