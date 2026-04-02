@@ -16,7 +16,7 @@
   }
 
   h2 {
-    // Override global h2 to match previous h4 styling
+    grid-area: title;
     color: #D6D6D6;
     font-family: $font__subheading;
     font-size: 1em;

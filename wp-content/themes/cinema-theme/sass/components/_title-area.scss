@@ -11,7 +11,6 @@
 }
 
 .title-area {
-  // background-color: rgba(#000, .25);
   container-type: inline-size;
   padding: 0;
   margin: 0;
@@ -20,31 +19,24 @@
   display: grid;
   position: relative;
   grid-template-areas:
-    " title";
-  grid-template-columns: auto;
+    "logo title";
+  grid-template-columns: 5.75em auto;
   column-gap: 1em;
 
   @include breakpoint($md) {
-    width: 46.1em;
-    // background-color: rgba(#fff, .125);
-    grid-template-columns: 7em auto;
-    grid-template-areas:
-      "logo title";
+    width: 43.5em;
+    grid-template-columns: 6.625em auto;
   }
 
   .logo {
-    display: none;
-
-    @include breakpoint($md) {
-      grid-area: logo;
-      display: block;
-      aspect-ratio: 1/1;
-      width: 15.25cqi;
-      background-image: url(images/logos/gi-logo--optimized.webp);
-      background-size: contain;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
+    grid-area: logo;
+    display: block;
+    aspect-ratio: 1/1;
+    width: 15.25cqi;
+    background-image: url(images/logos/gi-logo--optimized.webp);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
   }
 
   .site-title {
@@ -53,6 +45,7 @@
     flex-direction: column;
     justify-content: flex-end;
     margin-left: -.05em;
+    width: max-content;
   }
 
   .site-subtitle {
@@ -71,14 +64,13 @@
 }
 
 .site-title {
-
-    font-family: $font__sitename;
-    margin: 0;
-    text-transform: uppercase;
+  font-family: $font__sitename;
+  margin: 0;
+  text-transform: uppercase;
   display: flex;
   flex-direction: column;
   line-height: 1.2;
-  font-size: 9.5cqi;
+  font-size: 10cqi;
   justify-content: flex-start;
   align-items: flex-start;
   font-weight: bold;
