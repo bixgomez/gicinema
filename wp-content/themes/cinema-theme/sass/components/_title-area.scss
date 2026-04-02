@@ -70,7 +70,11 @@
   }
 }
 
-h1.site-title {
+.site-title {
+
+    font-family: $font__sitename;
+    margin: 0;
+    text-transform: uppercase;
   display: flex;
   flex-direction: column;
   line-height: 1.2;

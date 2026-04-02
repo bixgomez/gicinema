@@ -79,6 +79,6 @@
       </div>
     </header>
 
-    <section id="content" class="section-outer section-outer--site-content">
+    <main id="content" class="section-outer section-outer--site-content">
       <div class="section section--site-content">
         <div class="section-inner section-inner--site-content">

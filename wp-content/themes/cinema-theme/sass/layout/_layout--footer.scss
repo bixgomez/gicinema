@@ -15,8 +15,13 @@
     font-weight: $font-weight--bold;
   }
 
-  h4 {
+  h2 {
+    // Override global h2 to match previous h4 styling
     color: #D6D6D6;
+    font-family: $font__subheading;
+    font-size: 1em;
+    font-weight: $font-weight--bold;
+    margin: 0 0 0.25em;
   }
 
   &:before {

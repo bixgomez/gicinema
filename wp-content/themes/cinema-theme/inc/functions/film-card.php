@@ -103,13 +103,18 @@ function filmCard($filmPostId, $classes='film', $isLCP=false) {
         <div class="film-card--sidebar">
 
           <div class="film-card--poster">
-            <a class="film-title" href="<?php echo $link; ?>">
+            <?php
+            // Use plain text title for accessible name
+            $accessibleTitle = $titleDisplayStripped !== '' ? $titleDisplayStripped : wp_strip_all_tags($displayName);
+            ?>
+            <a class="film-title" href="<?php echo $link; ?>" aria-label="<?php echo esc_attr($accessibleTitle); ?>">
               <?php
               if (has_post_thumbnail($filmPostId)) {
                 // Responsive sizes: small (400px) for mobile, large (1040px) for desktop
                 // Browser picks best srcset image based on viewport + device pixel ratio
                 $imgAttrs = [
-                  'sizes' => '(max-width: 549px) 400px, 520px'
+                  'sizes' => '(max-width: 549px) 400px, 520px',
+                  'alt' => '' // Decorative - link has aria-label
                 ];
                 if ($isLCP) {
                   $imgAttrs['fetchpriority'] = 'high';
@@ -119,7 +124,7 @@ function filmCard($filmPostId, $classes='film', $isLCP=false) {
               } else {
                 $poster = get_field('poster_url', $filmPostId);
                 if ($poster) {
-                  echo '<div class="film-poster"><img src="' . $poster . '"></div>';
+                  echo '<div class="film-poster"><img src="' . esc_url($poster) . '" alt=""></div>';
                 }
               }
               ?>

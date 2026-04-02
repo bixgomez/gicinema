@@ -13,7 +13,7 @@
 
         </div>
       </div>
-    </section>
+    </main>
 
     <footer class="section-outer section-outer--site-footer">
       <div class="section section--site-footer">
@@ -25,11 +25,7 @@
             <div class="column column--first">
               <div class="title-area title-area--footer">
                 <div class="logo"></div>
-                <h1 class="site-title"><span class="article">The</span> Grand Illusion</h1>
-                <!-- <h2 class="site-subtitle">
-                  <span class="line-1">Seattle's oldest continuously</span>
-                  <span class="line-2">running movie theater</span>
-                </h2> -->
+                <p class="site-title" aria-hidden="true"><span class="article">The</span> Grand Illusion</p>
                 <a href="/" class="home-link">The Grand Illusion: Seattle's oldest continuously running movie theater</a>
               </div>
             </div>
@@ -42,19 +38,19 @@
 
               <div class="column column--first">
                 <div class="email">
-                  <h4>Email</h4>
+                  <h2>Email</h2>
                   <p>
-                    <a href="mailto:info@grandillusioncinema.org" target="_blank">info@grandillusioncinema.org</a>
+                    <a href="mailto:info@grandillusioncinema.org">info@grandillusioncinema.org</a>
                   </p>
                 </div>
                 <div class="email">
-                  <h4>Rentals</h4>
+                  <h2>Rentals</h2>
                   <p>
-                    <a href="mailto:rentals@grandillusioncinema.org" target="_blank">rentals@grandillusioncinema.org</a>
+                    <a href="mailto:rentals@grandillusioncinema.org">rentals@grandillusioncinema.org</a>
                   </p>
                 </div>
                 <div class="mail">
-                  <h4>Mail</h4>
+                  <h2>Mail</h2>
                   <p>
                     4730 University Way NE #1330<br>
                     Seattle, WA 98105
@@ -68,7 +64,7 @@
                 <!-- Begin MailChimp Signup Form -->
                 <div id="mc_embed_signup">
                   <form action="https://grandillusioncinema.us2.list-manage.com/subscribe/post?u=c68e502f1bdccca389af3a3a8&amp;id=5baa7ea5de" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
-                    <label for="mce-EMAIL"><h4>Subscribe to our mailing list</h4></label>
+                    <h2><label for="mce-EMAIL">Subscribe to our mailing list</label></h2>
                     <input type="email" value="" name="EMAIL" class="email" id="mce-EMAIL" placeholder="email address" required>
                     <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
                   </form>
