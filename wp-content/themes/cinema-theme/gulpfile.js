@@ -30,11 +30,17 @@ const sassGlob = require('gulp-sass-glob');
 sass.compiler = require('sass')
 
 // Compile CSS from Sass.
-function buildStyles() {
-  return src( STYLES_MAIN )
+function compileStyles(options = {}) {
+  const writeSourcemaps = options.writeSourcemaps === true;
+  let pipeline = src( STYLES_MAIN )
     .pipe(plumbError()) // Global error handler through all pipes.
-    .pipe(sourcemaps.init())
-    .pipe(sassGlob())
+    .pipe(sassGlob());
+
+  if ( writeSourcemaps ) {
+    pipeline = pipeline.pipe(sourcemaps.init());
+  }
+
+  pipeline = pipeline
     .pipe(sass({
       includePaths: [
         './node_modules/breakpoint-sass/stylesheets/',
@@ -43,10 +49,23 @@ function buildStyles() {
       errLogToConsole: true,
       outputStyle: 'compressed'
     }))
-    .pipe(autoprefixer(['last 15 versions', '> 1%', 'ie 8', 'ie 7']))
-    .pipe(sourcemaps.write())
+    .pipe(autoprefixer(['last 15 versions', '> 1%', 'ie 8', 'ie 7']));
+
+  if ( writeSourcemaps ) {
+    pipeline = pipeline.pipe(sourcemaps.write());
+  }
+
+  return pipeline
     .pipe(dest( STYLES_DEST ))
     .pipe(browsersync.reload({ stream: true }));
+}
+
+function buildStyles() {
+  return compileStyles({ writeSourcemaps: true });
+}
+
+function buildStylesProd() {
+  return compileStyles();
 }
 
 // Watch changes on all *.scss files, lint them and
@@ -111,4 +130,4 @@ function plumbError() {
 exports.default = parallel(browserSync, watchFiles); // $ gulp
 exports.sass = buildStyles; // $ gulp sass
 exports.watch = watchFiles; // $ gulp watch
-exports.build = series(buildStyles); // $ gulp build
+exports.build = series(buildStylesProd); // $ gulp build

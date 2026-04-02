@@ -28,8 +28,8 @@ Quick Start (Local)
 
 Common Commands
 - Dev/watch + live reload: `npx gulp`
-- One‑off Sass compile: `npx gulp sass`
-- Production/minified CSS: `npx gulp build`
+- One‑off Sass compile with inline sourcemaps: `npx gulp sass`
+- Production/minified CSS without sourcemaps: `npx gulp build`
 - Run inside the web container:
   - `ddev ssh`
   - `cd wp-content/themes/cinema-theme && npm ci && npx gulp`
@@ -41,7 +41,7 @@ Build & Assets
   - Editor: `sass/styles_editor.scss`, `sass/styles_editor_extra.scss` → outputs editor CSS
 - Gulp features:
   - Dart Sass compilation with glob imports
-  - Sourcemaps and Autoprefixer
+  - Autoprefixer, plus inline sourcemaps for local dev commands
   - Cache‑busted enqueues using `filemtime()` in `functions.php`
 - Browsersync:
   - Proxy target: `gicinema.ddev.site`
