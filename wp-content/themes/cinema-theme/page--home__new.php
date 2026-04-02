@@ -76,10 +76,11 @@ endif;
 
 // error_log(print_r($nowPlayingPostIds, true));
 
-// Display their full teasers, in "next screening" order 
+// Display their full teasers, in "next screening" order
 if ( ! empty( $nowPlayingPostIds ) ) {
     echo '<h2 class="section-title">Now Playing</h2>';
     echo '<div class="film-cards film-cards--now-playing">';
+    $isFirstFilm = true;
     foreach ($nowPlayingPostIds as $nowPlayingPostId) :
         $args = array (
             'post_type' => 'film',
@@ -91,7 +92,8 @@ if ( ! empty( $nowPlayingPostIds ) ) {
         if ( $getThePostId->have_posts() ) :
             while ( $getThePostId->have_posts() ) : $getThePostId->the_post();
                 $filmPostId = get_the_ID();
-                filmCard(filmPostId:$filmPostId, classes:'now-playing');
+                filmCard(filmPostId:$filmPostId, classes:'now-playing', isLCP:$isFirstFilm);
+                $isFirstFilm = false;
             endwhile;
         endif;
         wp_reset_query();

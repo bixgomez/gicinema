@@ -7,7 +7,7 @@ require_once get_template_directory() . '/inc/functions/function__get_screenings
 require_once get_template_directory() . '/inc/functions/function__validate_date.php';
 require_once get_template_directory() . '/inc/functions/function__date_compare.php';
 
-function filmCard($filmPostId, $classes='film') {
+function filmCard($filmPostId, $classes='film', $isLCP=false) {
 
   $filmCardArgs = array(
     'posts_per_page' => 1,
@@ -106,7 +106,14 @@ function filmCard($filmPostId, $classes='film') {
             <a class="film-title" href="<?php echo $link; ?>">
               <?php
               if (has_post_thumbnail($filmPostId)) {
-                echo get_the_post_thumbnail($filmPostId);
+                $imgAttrs = [
+                  'sizes' => '520px'
+                ];
+                if ($isLCP) {
+                  $imgAttrs['fetchpriority'] = 'high';
+                  $imgAttrs['loading'] = 'eager';
+                }
+                echo get_the_post_thumbnail($filmPostId, 'large', $imgAttrs);
               } else {
                 $poster = get_field('poster_url', $filmPostId);
                 if ($poster) {

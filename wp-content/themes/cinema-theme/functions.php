@@ -41,7 +41,6 @@ if ( ! function_exists( 'cinema_theme_setup' ) ) :
 		 * @link https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
 		 */
 		add_theme_support( 'post-thumbnails' );
-    add_image_size( 'sidebar-thumb', 600, 400, true );
 
 		// This theme uses wp_nav_menu() in one location.
 		register_nav_menus( array(
@@ -62,6 +61,24 @@ if ( ! function_exists( 'cinema_theme_setup' ) ) :
 	}
 endif;
 add_action( 'after_setup_theme', 'cinema_theme_setup' );
+
+/**
+ * Remove unused image sizes to reduce disk usage and upload time.
+ * Keeping only: thumbnail, large, poster
+ */
+function cinema_theme_remove_image_sizes() {
+    remove_image_size( '1536x1536' );
+    remove_image_size( '2048x2048' );
+    remove_image_size( 'sidebar-thumb' );
+}
+add_action( 'init', 'cinema_theme_remove_image_sizes' );
+
+// Remove medium_large size (768px) - requires filter approach
+function cinema_theme_remove_medium_large( $sizes ) {
+    unset( $sizes['medium_large'] );
+    return $sizes;
+}
+add_filter( 'intermediate_image_sizes_advanced', 'cinema_theme_remove_medium_large' );
 
 /**
  * Register widget area.
