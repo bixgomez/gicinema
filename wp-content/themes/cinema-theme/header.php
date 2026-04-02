@@ -47,8 +47,10 @@
                   ) );
                   ?>
                 </nav>
-                <div class="logo"></div>
-                <h1 class="site-title"><span class="article">The</span> Grand Illusion</h1>
+                <a class="logo" href="/"></a>
+                <h1 class="site-title">
+                  <span class="article">The</span> Grand Illusion
+                </h1>
                 <!-- <h2 class="site-subtitle">
                   <span class="line-1">Seattle's oldest continuously</span>
                   <span class="line-2">running movie theater</span>
