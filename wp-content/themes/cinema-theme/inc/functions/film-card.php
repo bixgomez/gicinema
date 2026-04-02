@@ -106,8 +106,10 @@ function filmCard($filmPostId, $classes='film', $isLCP=false) {
             <a class="film-title" href="<?php echo $link; ?>">
               <?php
               if (has_post_thumbnail($filmPostId)) {
+                // Responsive sizes: small (400px) for mobile, large (1040px) for desktop
+                // Browser picks best srcset image based on viewport + device pixel ratio
                 $imgAttrs = [
-                  'sizes' => '520px'
+                  'sizes' => '(max-width: 549px) 400px, 520px'
                 ];
                 if ($isLCP) {
                   $imgAttrs['fetchpriority'] = 'high';

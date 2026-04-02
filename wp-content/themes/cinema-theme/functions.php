@@ -63,22 +63,36 @@ endif;
 add_action( 'after_setup_theme', 'cinema_theme_setup' );
 
 /**
- * Remove unused image sizes to reduce disk usage and upload time.
- * Keeping only: thumbnail, large, poster
+ * Image Sizes Configuration
+ *
+ * All image sizes for this theme are defined here explicitly.
+ * WordPress core sizes are disabled and replaced with our own.
+ *
+ * Sizes generated on upload:
+ *   - thumbnail: 150x150 (cropped)
+ *   - small:     400px width (proportional)
+ *   - medium:    768px width (proportional)
+ *   - large:     1040px width (proportional)
  */
-function cinema_theme_remove_image_sizes() {
-    remove_image_size( '1536x1536' );
-    remove_image_size( '2048x2048' );
-    remove_image_size( 'sidebar-thumb' );
+function cinema_theme_image_sizes() {
+    // Define our image sizes
+    add_image_size( 'thumbnail', 150, 150, true );
+    add_image_size( 'small', 400, 0, false );
+    add_image_size( 'medium', 768, 0, false );
+    add_image_size( 'large', 1040, 0, false );
 }
-add_action( 'init', 'cinema_theme_remove_image_sizes' );
+add_action( 'after_setup_theme', 'cinema_theme_image_sizes' );
 
-// Remove medium_large size (768px) - requires filter approach
-function cinema_theme_remove_medium_large( $sizes ) {
-    unset( $sizes['medium_large'] );
-    return $sizes;
+/**
+ * Filter out WordPress core sizes we don't want.
+ * This prevents generation of medium_large, 1536x1536, 2048x2048, etc.
+ */
+function cinema_theme_filter_image_sizes( $sizes ) {
+    // Only keep our explicitly defined sizes
+    $allowed = array( 'thumbnail', 'small', 'medium', 'large' );
+    return array_intersect_key( $sizes, array_flip( $allowed ) );
 }
-add_filter( 'intermediate_image_sizes_advanced', 'cinema_theme_remove_medium_large' );
+add_filter( 'intermediate_image_sizes_advanced', 'cinema_theme_filter_image_sizes' );
 
 /**
  * Register widget area.
