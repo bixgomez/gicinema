@@ -135,6 +135,18 @@ function cinema_theme_scripts() {
 add_action( 'wp_enqueue_scripts', 'cinema_theme_scripts' );
 
 /**
+ * Move jQuery to footer and remove jQuery Migrate.
+ */
+function cinema_theme_optimize_jquery() {
+    if ( ! is_admin() ) {
+        // Remove jQuery Migrate
+        wp_deregister_script( 'jquery' );
+        wp_register_script( 'jquery', includes_url( '/js/jquery/jquery.min.js' ), array(), null, true );
+    }
+}
+add_action( 'wp_enqueue_scripts', 'cinema_theme_optimize_jquery', 1 );
+
+/**
  * Ajax-specific experiments.
  */
 function cinema_theme_ajax_call(){

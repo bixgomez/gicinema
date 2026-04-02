@@ -1,4 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Anton&family=Libre+Baskerville:wght@400;700&family=Work+Sans:wght@400;500;600&display=swap");
+// Google Fonts loaded via <link> in header.php for better performance
+// (removed @import which was render-blocking)
 
 @import "breakpoint";
 
@@ -6,6 +7,7 @@
   font-family: "Franchise Bold";
   font-style: normal;
   font-weight: bold;
+  font-display: swap;
   src: local("Franchise Bold"),
     url("fonts/Franchise-Bold-hinted.woff") format("woff");
 }
@@ -14,6 +16,7 @@
   font-family: "Brothers Regular";
   font-style: normal;
   font-weight: normal;
+  font-display: swap;
   src: local("Brothers Regular"),
     url("fonts/Brothers-Regular.woff") format("woff");
 }
@@ -22,5 +25,6 @@
   font-family: "Prata Regular";
   font-style: normal;
   font-weight: normal;
+  font-display: swap;
   src: local("Prata Regular"), url("fonts/Prata-Regular.woff") format("woff");
 }
