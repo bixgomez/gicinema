@@ -16,7 +16,7 @@
   }
 
   h4 {
-    color: $c--red--darkerest;
+    color: #D6D6D6;
   }
 
   &:before {
@@ -24,7 +24,7 @@
     content: "";
     height: 16px;
     width: 100%;
-    background-image: url(images/footer-squiggle.png);
+    background-image: url(images/footer-squiggle--v4.png);
     background-position: top center;
     background-repeat: repeat-x;
     margin-top: -12px;
