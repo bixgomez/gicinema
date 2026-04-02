@@ -37,34 +37,33 @@
 
           <div class="content-layout content-layout--header">
 
-            <div class="title-area header-area-fontsize">
-              <div class="logo"></div>
-              <h1 class="site-title"><span class="article">The</span> Grand Illusion</h1>
-              <!-- <h2 class="site-subtitle">
-                <span class="line-1">Seattle's oldest continuously</span>
-                <span class="line-2">running movie theater</span>
-              </h2> -->
-              <a href="/" class="home-link">The Grand Illusion: <?php bloginfo( 'description' ); ?></a>
+            <div class="title-area">
+              <div class="title-grid">
+                <nav class="social-navigation">
+                  <?php
+                  wp_nav_menu( array(
+                    'menu'    => 'social-media-menu',
+                    'menu_id' => 'social-media-menu',
+                  ) );
+                  ?>
+                </nav>
+                <div class="logo"></div>
+                <h1 class="site-title"><span class="article">The</span> Grand Illusion</h1>
+                <!-- <h2 class="site-subtitle">
+                  <span class="line-1">Seattle's oldest continuously</span>
+                  <span class="line-2">running movie theater</span>
+                </h2> -->
+                <!-- <a href="/" class="home-link">The Grand Illusion: <?php bloginfo( 'description' ); ?></a> -->
+              </div>
             </div>
 
-            <div class="menu-area header-area-fontsize">
+            <div class="menu-area">
               <a class="toggle" href="#" role="button"><span>MENU</span></a>
               <nav class="main-navigation">
                 <?php
                 wp_nav_menu( array(
                   'theme_location' => 'menu-1',
                   'menu_id'        => 'primary-menu',
-                ) );
-                ?>
-              </nav>
-            </div>
-
-            <div class="social-media-area header-area-fontsize">
-              <nav class="social-navigation">
-                <?php
-                wp_nav_menu( array(
-                  'menu'    => 'social-media-menu',
-                  'menu_id' => 'social-media-menu',
                 ) );
                 ?>
               </nav>

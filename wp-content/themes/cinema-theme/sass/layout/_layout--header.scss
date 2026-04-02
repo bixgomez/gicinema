@@ -15,23 +15,24 @@
 }
 
 .section-inner--site-header {
-  font-size: 1.75vw;
-  margin-left: 2em;
-  margin-right: 2em;
-  padding: 1.25em 0;
+  margin: 0 1rem;
+  padding: 1.5rem 0 1rem;
+  container-type: inline-size;
 
   @include breakpoint($md) {
-    font-size: 1rem;
+    margin: 0 2rem;
   }
 }
 
 .content-layout--header {
   display: grid;
-  grid-template-columns: 1fr 1fr 4em;
+  width: 100cqi;
+  overflow: hidden;
+  grid-template-columns: 1fr auto;
   grid-template-rows: min-content auto;
   grid-template-areas:
-    'social donate donate'
-    'title title menu';
+    'donate donate'
+    'title menu';
 
   @include breakpoint($md) {
     grid-template-columns: 1fr 1fr;
@@ -40,10 +41,6 @@
       'social donate'
       'title title'
       'menu menu';
-  }
-
-  .social-media-area {
-    grid-area: social;
   }
 
   .title-area {
@@ -56,6 +53,15 @@
 
   .menu-area {
     grid-area: menu;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 0 2cqi;
+
+    @include breakpoint($md) {
+      display: block;
+      padding: 0;
+    }
   }
 }
 
@@ -130,8 +136,8 @@ a.donate-button {
   background-image: url("images/donate-button.png");
   display: block;
   text-indent: -9999px;
-  height: 6.8em;
-  width: 11.26em;
+  height: 12cqi;
+  width: 20cqi;
   background-size: contain;
   background-position: top right;
   background-repeat: no-repeat;
@@ -140,5 +146,11 @@ a.donate-button {
   &:hover,
   &:focus {
     opacity: 1;
+  }
+
+  @include breakpoint($md) {
+    height: 8cqi;
+    width: 16cqi;
+    margin-right: 3cqi;
   }
 }
