@@ -18,7 +18,7 @@
     "logo title";
   grid-template-columns: 1fr 5fr;
   row-gap: 1.825cqi;
-  column-gap: 2.5cqi;
+  column-gap: 1.5cqi;
 
   .logo {
     grid-area: logo;
@@ -71,7 +71,7 @@
   justify-content: flex-start;
   align-items: flex-start;
   font-weight: bold;
-  letter-spacing: .2125cqi;
+  letter-spacing: .1cqi;
   color: $c--white;
 
   .article {
