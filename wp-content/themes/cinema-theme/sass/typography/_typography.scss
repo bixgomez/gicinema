@@ -35,6 +35,11 @@ h6 {
   &:first-child {
     margin-top: 0;
   }
+
+  > a,
+  > * > a {
+    text-decoration: none;
+  }
 }
 
 h1,
@@ -107,7 +112,9 @@ aside.sidebar {
   margin: 0 0 10px;
 }
 
-a {
+a.film-title,
+a.film-button,
+.title > a {
   text-decoration: none;
 
   &:hover,
@@ -116,7 +123,8 @@ a {
   }
 }
 
-div.link a {
+div.link > a,
+a.film-button {
   display: block;
   font-weight: bold;
   width: max-content;
@@ -133,15 +141,11 @@ div.link a {
   }
 }
 
-#content a {
-  &:not(.film-title):not(.film-button) {
-      text-decoration: underline;
-  }
+a.title-grid {
+  text-decoration: none;
 
   &:hover,
-  &:focus,
-  &.film-title:hover,
-  &.film-title:focus {
-      text-decoration: underline;
+  &:focus {
+    text-decoration: none;
   }
 }

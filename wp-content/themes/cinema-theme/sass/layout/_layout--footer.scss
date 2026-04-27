@@ -6,13 +6,17 @@
 
   color: $c--white;
 
-  p {
-    color: $c--white;
+  a {
+    color: #D6D6D6;
+
+    &:focus,
+    &:hover {
+      color: $c--white;
+    }
   }
 
-  a {
+  p {
     color: $c--white;
-    font-weight: $font-weight--bold;
   }
 
   h2 {
