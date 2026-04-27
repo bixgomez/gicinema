@@ -38,3 +38,31 @@ panorama-1
 panorama-2
 wp-content/ewww/image-backup/uploads
 .wp_ewwwio_image_optimize_process_lock
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Editor and IDE
+.vscode/
+**/.claude/
+
+# Archives and backups
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.bak
+*.backup
+*.old
+
+# Certificates and keys
+*.pem
+*.key
+*.p12
+*.pfx
+*.csr
+
+# WordPress migration plugin
+wp-content/uploads/wp-migrate-db/
