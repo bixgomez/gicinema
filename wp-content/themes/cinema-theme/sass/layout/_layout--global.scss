@@ -32,6 +32,7 @@ body {
 
 .section {
   max-width: $max-site-width;
+  container-type: inline-size;
   margin: 0 auto;
 }
 

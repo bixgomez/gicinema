@@ -11,6 +11,23 @@
     text-decoration: none;
     font-weight: 600;
   }
+
+  .month-choice {
+    text-align: center;
+    width: 33.33cqi;
+
+    &:first-child {
+      text-align: left;
+    }
+
+    &:last-child {
+      text-align: right;
+    }
+
+    @include breakpoint($md) {
+      width: 33.33cqi;
+    }
+  }
 }
 
 .calendar--monthly {

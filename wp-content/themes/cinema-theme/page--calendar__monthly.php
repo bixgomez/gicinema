@@ -42,30 +42,25 @@ $curr_month = date( "m", strtotime( $the_month ) );
 $this_year = date( "Y", strtotime( $this_month ) );
 
 $this_month_display = date( 'F Y', strtotime( $the_month ) );
+$prev_month_display = date( 'M Y', strtotime( $prev_month ) );
+$next_month_display = date( 'M Y', strtotime( $next_month ) );
 ?>
 
 <!-- calendar -->
 <div class="content-layout">
     <main class="site-main" id="main">
         <h1 class="entry-title"><?php echo $this_month_display; ?></h1>
-        <!-- <div class="debug">
-            <?php echo "The month we're on is: " . $the_month ?> <br>
-            <?php echo "The first day of this month is: " . $first_day_of_month ?> <br>
-            <?php echo "The first of this month was a: " . $first_of_month_day ?> <br>
-            <?php echo "There are " . $days_in_month . " days in this month." ?> <br>
-            <?php echo "The last day of this month is: " . $last_day_of_month ?>
-        </div> -->
         <div class="calendar-header">
             <div class="month-choice">
-                <a href="/calendar/?month=<?php echo $prev_month ?>#content"><?php echo $prev_month ?></a>
+                <a href="/calendar/?month=<?php echo $prev_month ?>"><?php echo $prev_month_display ?></a>
             </div>
             <div class="month-choice">
-                <?php if ( $the_month != $this_month OR 1 == 1 ) : ?>
-                    <a href="/calendar/?month=<?php echo $this_month ?>#content">This month</a>
+                <?php if ( $the_month != $this_month ) : ?>
+                    <a href="/calendar/?month=<?php echo $this_month ?>">This month</a>
                 <?php endif ?>
             </div>
             <div class="month-choice">
-                <a href="/calendar/?month=<?php echo $next_month ?>#content"><?php echo $next_month ?></a>
+                <a href="/calendar/?month=<?php echo $next_month ?>"><?php echo $next_month_display ?></a>
             </div>
         </div>
         <ul class="calendar calendar--monthly">
