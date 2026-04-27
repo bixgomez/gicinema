@@ -31,7 +31,7 @@ function gicinema_page_display__sync_all_screenings() {
 
     <div class="warning" style="border-left:4px solid #d63638; background:#fff; padding:8px 12px;">
       <p style="margin:0 0 6px;"><strong>Important:</strong> Run the two-way sync only after deleting all superfluous screenings. Otherwise you may re-introduce incorrect times into the custom table.</p>
-      <p style="margin:0;">Defaults: Two-way upsert ON; Require clean ACF ON; Dry-run OFF; Strict deactivate OFF. ACF-only sync runs regardless.</p>
+      <p style="margin:0;">Defaults: Two-way table update ON; Require clean ACF ON; Dry-run OFF; Strict deactivate OFF. ACF-only sync runs regardless.</p>
     </div>
     <form method="post">
       <?php wp_nonce_field('sync_screenings_action', 'sync_nonce'); ?>
@@ -39,7 +39,7 @@ function gicinema_page_display__sync_all_screenings() {
       <p style="margin-top:10px;">
         <label style="display:block; margin:6px 0;">
           <input type="checkbox" name="two_way" value="1" checked>
-          Also update the custom table (two-way upsert)
+          Also update the custom table with missing ACF screenings
         </label>
         <label style="display:block; margin:6px 0;">
           <input type="checkbox" name="deactivate_missing" value="1">

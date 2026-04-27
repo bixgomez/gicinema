@@ -122,7 +122,7 @@ function gicinema__sync_all_screenings($opts = []) {
               echo '<div>two-way sync: adding ' . count($to_add) . ' to table' . ($deactivate_missing ? ('; deactivating ' . count($to_deactivate)) : '') . '.</div>';
             }
 
-            // Perform upserts (safe; respect unique key)
+            // Insert missing rows or reactivate existing rows, respecting the unique key.
             if (!$dry_run && !empty($to_add)) {
               foreach ($to_add as $screening) {
                 $screening = sanitize_text_field($screening);

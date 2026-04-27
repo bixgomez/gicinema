@@ -47,7 +47,7 @@ function gicinema_get_admin_nav_items() {
     'deprecated' => false,
     'show' => true,
     'short' => 'Runs the importer: reads the cached Agile JSON (refreshes the transient if missing/invalid), creates/updates Film posts, downloads poster images when URLs change, imports screenings into the custom table (normalized to the site timezone), and immediately syncs the ACF “Screenings” field. Scheduled every 30 minutes; safe to run manually.',
-    'long'  => 'Source: cached feed stored as transient `agile_shows_array` (auto-refreshed if absent or undecodable; manual JSON paste available on the Import page). Idempotency: screenings are upserted with a unique key on the normalized timestamp to prevent duplicates; poster and fields update only when values change. Times are normalized to the WordPress timezone before writing. Output includes per-film diagnostics and an edit-link for quick review.',
+    'long'  => 'Source: cached feed stored as transient `agile_shows_array` (auto-refreshed if absent or undecodable; manual JSON paste available on the Import page). Repeatability: screenings are inserted or updated with a unique key on the normalized timestamp to prevent duplicates; poster and fields update only when values change. Times are normalized to the WordPress timezone before writing. Output includes per-film diagnostics and an edit-link for quick review.',
     'cron'  => [
       'hook'      => 'cron__import_films_from_agile',
       'schedule'  => 'every_30_minutes',
@@ -74,7 +74,7 @@ function gicinema_get_admin_nav_items() {
           </li>'
       . '<li><b>Optional two-way sync</b>:
             <ul>
-              <li><i>Also update custom table (upsert)</i>: add any ACF-only screenings into the custom table (safe upsert). Default ON.</li>
+              <li><i>Also update custom table</i>: add any ACF-only screenings into the custom table without creating duplicates. Default ON.</li>
               <li><i>Strict mode</i>: deactivate table rows not present in ACF. Confirm prompt shown. Default OFF.</li>
               <li><i>Require clean ACF</i>: preflight aborts two-way if any film still has superfluous screenings. Default ON.</li>
               <li><i>Dry run</i>: preview two-way actions without writing. Default OFF.</li>
