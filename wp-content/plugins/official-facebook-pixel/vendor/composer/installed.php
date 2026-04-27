@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'facebook/pixel-for-wordpress',
-        'pretty_version' => 'dev-main',
-        'version' => 'dev-main',
-        'reference' => '7038bc22f2f871ce190207fc1691ffde5a713fe2',
+        'pretty_version' => 'dev-release/p5.0.1/publish',
+        'version' => 'dev-release/p5.0.1/publish',
+        'reference' => '7e452cd858659875d8883283001a1f6f8c8f2213',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'facebook/pixel-for-wordpress' => array(
-            'pretty_version' => 'dev-main',
-            'version' => 'dev-main',
-            'reference' => '7038bc22f2f871ce190207fc1691ffde5a713fe2',
+            'pretty_version' => 'dev-release/p5.0.1/publish',
+            'version' => 'dev-release/p5.0.1/publish',
+            'reference' => '7e452cd858659875d8883283001a1f6f8c8f2213',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
