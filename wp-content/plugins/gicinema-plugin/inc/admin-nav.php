@@ -129,19 +129,6 @@ function gicinema_get_admin_nav_items() {
     ];
   }
 
-  // Deprecated tool: keep visible but disabled with explanation.
-  $overnight_enabled = function_exists('apply_filters') ? apply_filters('gicinema_enable_overnight_tool', false) : false;
-  $items[] = [
-    'slug' => 'gicinema--delete-overnight-screenings',
-    'label' => 'Delete Overnight (Deprecated)',
-    'deprecated' => true,
-    'show' => true,
-    'enabled' => $overnight_enabled,
-    'deprecated_reason' => 'Replaced by timezone-normalized imports and the safer global cleanup tool.',
-    'short' => 'Deprecated. The former UTC shift issue is resolved by timezone-normalized imports. This tool used naive 22:00–10:00 windows and could remove legitimate shows. Prefer the safer “Delete Superfluous (All Films)” cleanup.',
-    'long'  => 'Hidden by default; can be temporarily re-enabled via the `gicinema_enable_overnight_tool` filter. Includes a dry-run preview but should generally be avoided.'
-  ];
-
   // Global cleanup tool appears last (added later in sidebar as well).
   $items[] = [
     'slug' => 'gicinema--delete-all-superfluous-screenings',
@@ -165,7 +152,6 @@ function gicinema_register_admin_submenus() {
     'gicinema--update-agile-array'             => 'gicinema_page_display__update_agile_array',
     'gicinema--import-films-from-agile'        => 'gicinema_page_display__import_films_from_agile',
     'gicinema--sync-all-screenings'            => 'gicinema_page_display__sync_all_screenings',
-    'gicinema--delete-overnight-screenings'    => 'gicinema_page_display__delete_overnight_screenings',
     'gicinema--dedupe-screenings-page'         => 'gicinema_page_display__dedupe_screenings_table',
     'gicinema--backup-database'                => 'gicinema_page_display__db_backup_and_cleanup',
     'gicinema--delete-all-films'               => 'gicinema_page_display__delete_all_films',
