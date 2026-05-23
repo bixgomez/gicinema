@@ -131,7 +131,7 @@ The custom plugin `gicinema-plugin` schedules several automated tasks. These run
 
 ### Local development: forcing runs
 
-If an event exists but isn’t yet due, make it due or run the callback directly.
+If an event exists but isn't yet due, make it due or run the callback directly.
 
 - Ensure environment and plugin
   - Start DDEV: `ddev start`
@@ -209,7 +209,7 @@ This section documents, in detail, the two core actions that power the data flow
 ### Timezones and Uniqueness
 
 - Timezone normalization: Importer and sync routines standardize times to the WordPress timezone and format `Y-m-d H:i:s` to eliminate recurring ±7/8h duplicates.
-- Database uniqueness: The screenings table includes `UNIQUE KEY unique_screening_str (film_id, post_id, screening(19))` so inserts are idempotent via `ON DUPLICATE KEY` even if legacy `screening_date/time` uniqueness isn’t present.  
+- Database uniqueness: The screenings table includes `UNIQUE KEY unique_screening_str (film_id, post_id, screening(19))` so inserts are idempotent via `ON DUPLICATE KEY` even if legacy `screening_date/time` uniqueness isn't present.  
   File: `function__create_custom_table.php`.
 
 ### Manual Triggers and Troubleshooting
@@ -219,7 +219,7 @@ This section documents, in detail, the two core actions that power the data flow
   - Update feed now: `ddev wp eval 'gicinema__update_agile_shows_array();'`
   - Import now: `ddev wp eval 'gicinema__import_films_from_agile();'`
   - Run scheduled: `ddev wp cron event run cron__update_agile_shows_array --due-now` and `cron__import_films_from_agile`.
-- If “Found X films…” doesn’t appear or feed logs show HTML instead of JSON:
+- If “Found X films…” doesn't appear or feed logs show HTML instead of JSON:
   - Re-run Update; verify headers/retries in the log.
   - Use the paste-JSON fallback on the Import page as a temporary workaround.
   - Consider shorter HTTP timeouts and additional diagnostics if production networking is flaky.

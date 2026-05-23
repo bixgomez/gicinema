@@ -67,7 +67,7 @@ function gicinema__render_matching_screenings($post_id) {
       }
     }
   } else {
-    // If ACF unavailable, attempt to read a count but we can’t derive values; return early.
+    // If ACF unavailable, attempt to read a count but we can't derive values; return early.
     return '';
   }
 

@@ -41,7 +41,7 @@ add_action('admin_enqueue_scripts', 'gicinema_enqueue_styles');
 
 /**
  * Inject a simple info box at the very top of the Edit Film form
- * (after the title/permalink area). For now, it’s a placeholder.
+ * (after the title/permalink area). For now, it's a placeholder.
  */
 function gicinema_render_film_top_box() {
   // Ensure we are on a post edit screen and the post type is 'film'.

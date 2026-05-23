@@ -24,7 +24,7 @@ function gicinema_admin_page_display() {
   <div class="wrap wrap--gicinema">
     <p>
       This plugin integrates with Agile Ticketing to keep Film posts and their Screenings
-      up to date. Imports normalize all dates/times to the site’s WordPress timezone and
+      up to date. Imports normalize all dates/times to the site's WordPress timezone and
       write canonical screening times to a custom table, with an ACF “Screenings” field kept
       in sync for editor visibility.
     </p>
