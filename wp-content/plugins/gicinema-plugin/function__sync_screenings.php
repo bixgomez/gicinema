@@ -1,4 +1,13 @@
 <?php
+/**
+ * Per-film ACF and custom-table screening synchronization.
+ *
+ * Loaded by function__sync_all_screenings.php and called for each Film during
+ * manual all-film sync. It reads active screenings from gi_screenings, reads
+ * the Film post's ACF "screenings" repeater, merges and normalizes the values,
+ * applies timezone-shadow duplicate guards, and writes the resulting list back
+ * to the ACF repeater field.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {

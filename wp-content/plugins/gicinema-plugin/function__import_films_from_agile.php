@@ -1,4 +1,15 @@
 <?php
+/**
+ * Main Agile-to-WordPress Film import routine.
+ *
+ * Loaded by cron_jobs.php and by the manual Import from Agile admin page. This
+ * function is called directly by the every-30-minutes WP-Cron import job, and
+ * it can also be run by an administrator from the Import from Agile screen. It
+ * reads the cached Agile feed, refreshes that feed if needed,
+ * creates or updates Film posts and ACF fields, downloads changed poster media,
+ * imports showtimes into the custom screenings table, and logs the import
+ * attempt for the admin screen.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {

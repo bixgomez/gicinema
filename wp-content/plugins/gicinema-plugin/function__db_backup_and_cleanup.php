@@ -1,4 +1,14 @@
 <?php
+/**
+ * Database backup and retention routine.
+ *
+ * Loaded by cron_jobs.php and page__db_backup_and_cleanup.php. This function is
+ * called directly by the daily WP-Cron backup job, and it can also be run by an
+ * administrator from the Backup DB screen. It creates a compressed SQL
+ * database backup, stores it outside the web root, deletes older
+ * backups according to the retention policy, and returns a status message for
+ * the admin screen.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {

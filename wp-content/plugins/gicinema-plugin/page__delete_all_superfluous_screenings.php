@@ -1,4 +1,13 @@
 <?php
+/**
+ * Admin page wrapper for batch removal of superfluous ACF screenings.
+ *
+ * Loaded by gicinema.php and added to the GI Cinema admin menu by
+ * inc/admin-nav.php. This is the all-films cleanup screen for removing ACF
+ * showtimes that no longer match the custom table. It builds a
+ * queue of Film posts and uses JavaScript to process them one at a time. Dry-run
+ * mode previews deletions; live mode updates the ACF repeater rows.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {
@@ -28,18 +37,18 @@ function gicinema_page_display__delete_all_superfluous_screenings() {
 
 ?>
 
-  <div style="margin:12px 0;">
-    <label style="margin-right:12px;">
+  <div class="gicinema-batch-controls">
+    <label class="gicinema-control-label">
       <input type="checkbox" id="gicinema-dry-run" checked>
       Dry run (no changes)
     </label>
     <button id="gicinema-start-delete" class="button button-primary">Start</button>
-    <button id="gicinema-stop-delete" class="button" style="margin-left:6px;">Stop</button>
-    <span id="gicinema-progress" style="margin-left:10px; color:#555;">Idle</span>
+    <button id="gicinema-stop-delete" class="button gicinema-button-spaced">Stop</button>
+    <span id="gicinema-progress" class="gicinema-progress">Idle</span>
   </div>
-  <div id="gicinema-summary" style="margin:8px 0; color:#1d2327;"></div>
-  <div class="function-info" style="max-height:360px; overflow:auto; border:1px solid #ccd0d4; padding:8px; background:#fff;">
-    <ul id="gicinema-delete-log" style="margin:0 0 0 18px; list-style:disc;"></ul>
+  <div id="gicinema-summary" class="gicinema-summary"></div>
+  <div class="function-info gicinema-log-box">
+    <ul id="gicinema-delete-log" class="gicinema-delete-log"></ul>
   </div>
 
   <script>
@@ -104,7 +113,7 @@ function gicinema_page_display__delete_all_superfluous_screenings() {
           const data = await res.json();
           if (!data || !data.success) {
             const li = document.createElement('li');
-            li.style.color = '#b32d2e';
+            li.classList.add('gicinema-error');
             li.textContent = 'Film #' + postId + ': error processing.';
             $log.appendChild(li);
           } else {
@@ -122,7 +131,7 @@ function gicinema_page_display__delete_all_superfluous_screenings() {
               const keepText = p.dry_run ? 'keeping ' : 'kept ';
               const status = actionText + (p.deleted || 0) + ' of ' + (p.original || 0) + ' (' + keepText + keepCount + ')';
               const statusHtml = (p.deleted || 0) > 0 ?
-                '<strong style="color:#b32d2e">' + status + '</strong>' :
+                '<strong class="gicinema-danger-text">' + status + '</strong>' :
                 status;
               li.innerHTML = prefix + base + ' — ' + statusHtml + '.';
               $log.appendChild(li);
@@ -131,7 +140,7 @@ function gicinema_page_display__delete_all_superfluous_screenings() {
           }
         } catch (e) {
           const li = document.createElement('li');
-          li.style.color = '#b32d2e';
+          li.classList.add('gicinema-error');
           li.textContent = 'Film #' + postId + ': exception ' + e;
           $log.appendChild(li);
         }

@@ -1,4 +1,13 @@
 <?php
+/**
+ * WordPress save_post integration for Film posts.
+ *
+ * Loaded by gicinema.php during plugin bootstrap. This file runs when someone
+ * saves a Film post in the WordPress editor. It ignores
+ * autosaves and saves that do not include ACF data, then hands the screening
+ * sync work to function__sync_screenings_on_save.php. It also shows an admin
+ * notice after the save completes.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {

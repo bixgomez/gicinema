@@ -1,4 +1,13 @@
 <?php
+/**
+ * All-film screening synchronization routine.
+ *
+ * Loaded by page__sync_all_screenings.php. It runs from the manual Sync All
+ * Screenings admin form and loops through Film posts newest-first, calling the
+ * per-film sync helper for each one. Optional form settings can preview or
+ * perform two-way repair of custom-table rows, require clean ACF first, or
+ * deactivate table rows that are no longer present in ACF.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {
@@ -49,7 +58,7 @@ function gicinema__sync_all_screenings($opts = []) {
     }
     if (!empty($offenders)) {
       echo "<div class='notice notice-warning'><p><strong>Two-way sync aborted.</strong> Found films with superfluous ACF screenings. Please delete superfluous screenings first, then re-run.</p>";
-      echo "<ul style='margin:0 0 0 18px; list-style:disc;'>";
+      echo "<ul class='gicinema-offender-list'>";
       foreach ($offenders as $o) {
         $label = esc_html($o['title'] ?: ('Film #' . $o['post_id']));
         $edit  = $o['edit'] ? "<a href='" . esc_url($o['edit']) . "' target='_blank' rel='noopener'>edit</a>" : '';

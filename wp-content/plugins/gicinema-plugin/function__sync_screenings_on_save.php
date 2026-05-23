@@ -1,4 +1,12 @@
 <?php
+/**
+ * Film-save synchronization from ACF screenings to the custom table.
+ *
+ * Loaded by function__update_film_on_save.php and called from the save_post
+ * workflow after a Film post with ACF data is saved. It normalizes the submitted
+ * ACF screening rows, disables existing custom-table rows for the post, then
+ * reactivates or inserts rows that match the saved ACF values.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {

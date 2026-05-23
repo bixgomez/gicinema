@@ -1,4 +1,13 @@
 <?php
+/**
+ * ACF screening cleanup for one film or a batch of films.
+ *
+ * Loaded by gicinema.php and by page__delete_all_superfluous_screenings.php.
+ * The core routine compares a Film post's ACF "screenings" repeater against
+ * active rows in the custom screenings table, keeps matching rows, and removes
+ * stale ACF-only rows unless dry-run mode is requested. It also registers the
+ * per-film admin-post handler and the batch AJAX handler used by the admin UI.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {

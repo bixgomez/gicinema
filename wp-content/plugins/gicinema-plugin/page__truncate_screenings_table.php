@@ -1,4 +1,13 @@
 <?php
+/**
+ * Local-development admin page for truncating the screenings table.
+ *
+ * Loaded by gicinema.php, but the page callback is only defined when
+ * WP_LOCAL_DEV is true. This page will only appear and run on the local dev
+ * server, not on production. It shows the current row count,
+ * requires a security token and browser confirmation, then calls
+ * gicinema__truncate_screenings_table() to empty gi_screenings.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {

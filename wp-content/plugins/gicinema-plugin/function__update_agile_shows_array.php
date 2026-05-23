@@ -1,4 +1,15 @@
 <?php
+/**
+ * Agile feed refresh routine.
+ *
+ * Loaded by cron_jobs.php and by the Update Agile Array admin page. This
+ * function is called directly by the every-23-minutes WP-Cron feed-refresh job.
+ * It can also be run by an administrator from the Update Agile Shows Array
+ * screen, or automatically by the importer if the cached feed is missing or
+ * invalid. It downloads the latest Agile JSON feed, checks that it is valid
+ * JSON, stores it in WordPress' temporary cache, and records a
+ * short fetch log for the admin screen.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {

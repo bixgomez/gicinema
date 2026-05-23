@@ -1,4 +1,14 @@
 <?php
+/**
+ * Per-film Agile screening import helper.
+ *
+ * Loaded by function__import_films_from_agile.php and called inside the Agile
+ * import loop for each Film. Because the main importer also runs from WP-Cron,
+ * this helper can run during the automatic 30-minute import job as well as
+ * during a manual import. It takes Agile showtimes, converts them to the
+ * WordPress timezone, and adds or reactivates the matching rows in
+ * the custom screenings table without creating duplicates.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {
