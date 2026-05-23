@@ -52,7 +52,7 @@ function gicinema_page_display__db_backup_and_cleanup() {
 
     // Always show the confirmation form
 ?>
-    <div class="warning">
+    <div class="notice notice-error inline">
       <p><strong>Warning:</strong> This action will back up the current database and delete old backups according to the retention policy. This action is irreversible.</p>
     </div>
     <form method="post">

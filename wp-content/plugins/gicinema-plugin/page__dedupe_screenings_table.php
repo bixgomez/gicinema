@@ -23,7 +23,7 @@ function gicinema_page_display__dedupe_screenings_table() {
     // Display warning and confirmation form
 ?>
     
-    <div class="warning">
+    <div class="notice notice-error inline">
       <p><strong>Warning:</strong> This action will dedupe the screenings table. This action is irreversible.</p>
     </div>
     <form method="post">

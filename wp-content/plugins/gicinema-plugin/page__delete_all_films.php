@@ -26,7 +26,7 @@ if (defined('WP_LOCAL_DEV') && WP_LOCAL_DEV) {
       // Display warning and confirmation form
 ?>
 
-      <div class="warning">
+      <div class="notice notice-error inline">
         <p><strong>Warning:</strong> This action will permanently delete all Film posts. It cannot be undone. Make a fresh backup before proceeding.</p>
       </div>
       <?php

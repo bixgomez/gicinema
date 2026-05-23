@@ -26,7 +26,7 @@ if (defined('WP_LOCAL_DEV') && WP_LOCAL_DEV) {
       // Display warning and confirmation form
 ?>
 
-      <div class="warning">
+      <div class="notice notice-error inline">
         <p><strong>Warning:</strong> This will permanently truncate the custom screenings table. It cannot be undone. Film posts remain; all screenings rows will be removed.</p>
       </div>
       <?php
