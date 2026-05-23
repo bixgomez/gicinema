@@ -36,7 +36,6 @@ Automation is handled through WP-Cron. The plugin refreshes the Agile feed every
   - **Deduplicate Screenings Table**: Removes duplicate screening rows.
   - **Delete Superfluous (All)**: Removes ACF screening rows that do not match active rows in the custom screenings table, with dry-run and stop/start controls.
   - **Delete All Films**: Bulk delete all film posts in local development only (use with caution).
-  - **Delete Overnight Screenings**: Deprecated and disabled by default. It can be temporarily re-enabled with a filter, but the safer cleanup path is **Delete Superfluous (All)**.
   - **Truncate Screenings Table**: Completely empties the screenings table in local development only.
   - **Database Backup & Cleanup**: Backs up the full WordPress database and cleans up old backup files according to the retention policy.
 
