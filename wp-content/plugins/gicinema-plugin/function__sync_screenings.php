@@ -6,7 +6,7 @@
  * manual all-film sync. It reads active screenings from gi_screenings, reads
  * the Film post's ACF "screenings" repeater, merges and normalizes the values,
  * applies timezone-shadow duplicate guards, and writes the resulting list back
- * to the ACF repeater field.
+ * to the ACF repeater field unless dry-run mode is requested.
  */
 
 // If this file is called directly, abort!
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
   exit;
 }
 
-function gicinema__sync_screenings($post_id) {
+function gicinema__sync_screenings($post_id, $dry_run = false) {
 
   global $wpdb;
 
@@ -54,7 +54,13 @@ function gicinema__sync_screenings($post_id) {
   echo '</pre>';
   echo '</div>';
 
-  gicinema__replace_all_screenings_in_post($merged_screenings, $post_id);
+  if ($dry_run) {
+    echo '<div class="function-info">';
+    echo '<div><em>[dry]</em> Would replace the ACF screenings field with the merged list above.</div>';
+    echo '</div>';
+  } else {
+    gicinema__replace_all_screenings_in_post($merged_screenings, $post_id);
+  }
 
   echo '</div>';
 }

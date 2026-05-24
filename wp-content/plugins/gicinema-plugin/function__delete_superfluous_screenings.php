@@ -7,6 +7,8 @@
  * active rows in the custom screenings table, keeps matching rows, and removes
  * stale ACF-only rows unless dry-run mode is requested. It also registers the
  * per-film admin-post handler and the batch AJAX handler used by the admin UI.
+ * The AJAX response also includes date-range and rationale details for the
+ * Delete Superfluous admin table.
  */
 
 // If this file is called directly, abort!
@@ -31,7 +33,17 @@ if (!defined('ABSPATH')) {
  * to compute counts without updating ACF.
  */
 function gicinema__delete_superfluous_acf_screenings($post_id, $dry_run = false) {
-  $result = ['original' => 0, 'kept' => 0, 'deleted' => 0, 'dry_run' => (bool) $dry_run];
+  $result = [
+    'original' => 0,
+    'kept' => 0,
+    'deleted' => 0,
+    'dry_run' => (bool) $dry_run,
+    'screen_date_range' => '',
+    'rationale' => 'No ACF screenings found.',
+    'table_count' => 0,
+    'unmatched' => 0,
+    'unparseable' => 0,
+  ];
 
   if (empty($post_id) || !function_exists('get_field') || !function_exists('update_field')) {
     return $result;
@@ -57,6 +69,7 @@ function gicinema__delete_superfluous_acf_screenings($post_id, $dry_run = false)
       }
     }
   }
+  $result['table_count'] = count($table_set);
 
   // Read ACF screenings
   $acf_rows = get_field('screenings', $post_id);
@@ -65,38 +78,42 @@ function gicinema__delete_superfluous_acf_screenings($post_id, $dry_run = false)
   }
 
   $result['original'] = count($acf_rows);
+  $acf_normalized = [];
 
   // Safety: If no active screenings exist in the custom table for this post,
   // do not delete anything from ACF. Treat everything as kept to avoid wiping
   // user-entered data when the canonical set is empty/stale.
   if (empty($table_set)) {
+    $tz = function_exists('wp_timezone') ? wp_timezone() : new DateTimeZone(get_option('timezone_string') ?: 'UTC');
+    foreach ($acf_rows as $row) {
+      $label = isset($row['screening']) ? $row['screening'] : '';
+      $normalized = gicinema__normalize_screening_for_cleanup($label, $tz);
+      if ($normalized) {
+        $acf_normalized[] = $normalized;
+      }
+    }
+
     $result['kept'] = $result['original'];
     $result['deleted'] = 0;
+    $result['screen_date_range'] = gicinema__format_screening_date_range($acf_normalized);
+    $result['rationale'] = 'No active custom-table screenings were found for this Film, so cleanup skipped deletion to avoid wiping ACF rows.';
     return $result;
   }
 
   $kept_rows = [];
+  $kept_normalized = [];
+  $unmatched_count = 0;
+  $unparseable_count = 0;
   $tz = function_exists('wp_timezone') ? wp_timezone() : new DateTimeZone(get_option('timezone_string') ?: 'UTC');
 
   foreach ($acf_rows as $row) {
     $label = isset($row['screening']) ? $row['screening'] : '';
-    $normalized = '';
-    if (is_string($label) && $label !== '') {
-      if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $label)) {
-        $normalized = $label;
-      } else {
-        $tz = function_exists('wp_timezone') ? wp_timezone() : new DateTimeZone(get_option('timezone_string') ?: 'UTC');
-        $dt = DateTime::createFromFormat('m/d/Y g:i a', $label, $tz);
-        if ($dt instanceof DateTime) {
-          $dt->setTimezone($tz);
-          $normalized = $dt->format('Y-m-d H:i:s');
-        } else {
-          $ts = strtotime($label);
-          if ($ts) {
-            $normalized = date('Y-m-d H:i:s', $ts);
-          }
-        }
-      }
+    $normalized = gicinema__normalize_screening_for_cleanup($label, $tz);
+
+    if ($normalized) {
+      $acf_normalized[] = $normalized;
+    } else {
+      $unparseable_count++;
     }
 
     $keep = false;
@@ -138,6 +155,13 @@ function gicinema__delete_superfluous_acf_screenings($post_id, $dry_run = false)
 
     if ($keep) {
       $kept_rows[] = $row; // keep only matching screenings
+      if ($normalized) {
+        $kept_normalized[] = $normalized;
+      }
+    } else {
+      if ($normalized) {
+        $unmatched_count++;
+      }
     }
   }
 
@@ -148,7 +172,124 @@ function gicinema__delete_superfluous_acf_screenings($post_id, $dry_run = false)
 
   $result['kept'] = count($kept_rows);
   $result['deleted'] = $result['original'] - $result['kept'];
+  $result['screen_date_range'] = gicinema__format_screening_date_range($kept_normalized ?: $acf_normalized);
+  $result['unmatched'] = $unmatched_count;
+  $result['unparseable'] = $unparseable_count;
+  $result['rationale'] = gicinema__build_superfluous_cleanup_rationale($result);
   return $result;
+}
+
+
+
+
+
+function gicinema__normalize_screening_for_cleanup($label, $tz) {
+  if (!is_string($label) || $label === '') {
+    return '';
+  }
+
+  if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $label)) {
+    return $label;
+  }
+
+  $dt = DateTime::createFromFormat('m/d/Y g:i a', $label, $tz);
+  if ($dt instanceof DateTime) {
+    $dt->setTimezone($tz);
+    return $dt->format('Y-m-d H:i:s');
+  }
+
+  $ts = strtotime($label);
+  if ($ts) {
+    return date('Y-m-d H:i:s', $ts);
+  }
+
+  return '';
+}
+
+
+
+
+
+function gicinema__format_screening_date_range($screenings) {
+  $dates = [];
+
+  foreach ((array) $screenings as $screening) {
+    if (!is_string($screening) || $screening === '') {
+      continue;
+    }
+
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}/', $screening)) {
+      continue;
+    }
+
+    $dates[] = substr($screening, 0, 10);
+  }
+
+  $dates = array_values(array_unique($dates));
+  sort($dates);
+
+  if (empty($dates)) {
+    return '';
+  }
+
+  $first = gicinema__format_screening_date_for_admin($dates[0]);
+  $last = gicinema__format_screening_date_for_admin($dates[count($dates) - 1]);
+
+  if ($first === $last) {
+    return $first;
+  }
+
+  return $first . ' - ' . $last;
+}
+
+
+
+
+
+function gicinema__format_screening_date_for_admin($date) {
+  $ts = strtotime($date);
+
+  if (!$ts) {
+    return '';
+  }
+
+  return date('n/j/Y', $ts);
+}
+
+
+
+
+
+function gicinema__build_superfluous_cleanup_rationale($result) {
+  $original = isset($result['original']) ? (int) $result['original'] : 0;
+  $kept = isset($result['kept']) ? (int) $result['kept'] : 0;
+  $deleted = isset($result['deleted']) ? (int) $result['deleted'] : 0;
+  $table_count = isset($result['table_count']) ? (int) $result['table_count'] : 0;
+  $unmatched = isset($result['unmatched']) ? (int) $result['unmatched'] : 0;
+  $unparseable = isset($result['unparseable']) ? (int) $result['unparseable'] : 0;
+
+  if ($original === 0) {
+    return 'No ACF screenings found.';
+  }
+
+  if ($table_count === 0) {
+    return 'No active custom-table screenings were found for this Film, so cleanup skipped deletion to avoid wiping ACF rows.';
+  }
+
+  if ($deleted === 0) {
+    return 'All ACF screenings matched active custom-table screenings after normalization.';
+  }
+
+  $parts = [];
+  if ($unmatched > 0) {
+    $parts[] = $unmatched . ' ACF ' . _n('row did', 'rows did', $unmatched, 'gicinema') . ' not match any active custom-table screening after normalization.';
+  }
+  if ($unparseable > 0) {
+    $parts[] = $unparseable . ' ACF ' . _n('row could', 'rows could', $unparseable, 'gicinema') . ' not be parsed as a screening date.';
+  }
+  $parts[] = $kept . ' ' . _n('row matched', 'rows matched', $kept, 'gicinema') . ' active custom-table screenings and will be kept.';
+
+  return implode(' ', $parts);
 }
 
 /**
@@ -206,7 +347,11 @@ function gicinema_ajax_delete_superfluous_batch() {
 
   $dry_run = !empty($_POST['dry_run']);
   $res = gicinema__delete_superfluous_acf_screenings($post_id, $dry_run);
-  $title = get_the_title($post_id);
+  $title = html_entity_decode(
+    wp_strip_all_tags(get_the_title($post_id)),
+    ENT_QUOTES | ENT_HTML5,
+    get_option('blog_charset') ?: 'UTF-8'
+  );
   $edit  = get_edit_post_link($post_id, '');
 
   wp_send_json_success([
@@ -216,6 +361,8 @@ function gicinema_ajax_delete_superfluous_batch() {
     'original' => isset($res['original']) ? (int)$res['original'] : 0,
     'kept'     => isset($res['kept']) ? (int)$res['kept'] : 0,
     'deleted'  => isset($res['deleted']) ? (int)$res['deleted'] : 0,
+    'screen_date_range' => isset($res['screen_date_range']) ? $res['screen_date_range'] : '',
+    'rationale' => isset($res['rationale']) ? $res['rationale'] : '',
     'dry_run'  => !empty($res['dry_run']),
   ]);
 }

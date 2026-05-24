@@ -69,36 +69,22 @@ function gicinema_get_admin_nav_items() {
     'label' => 'Sync All Screenings',
     'deprecated' => false,
     'show' => true,
-    'short' => 'Re-syncs screenings for every Film by reading canonical times from the custom table and merging with any ACF-only entries. Uses a timezone-aware guard to avoid ±7/±8 hour duplicates. Useful after manual edits. Processes newest films first.',
-    'long'  => '<ul>'
-      . '<li><b>Entry points</b>: Admin page <code>gicinema--sync-all-screenings</code> shows a nonce-protected confirmation form and buffers routine output into a success notice with a scrollable area.</li>'
-      . '<li><b>Main routine</b>: <code>gicinema__sync_all_screenings()</code> queries all <code>film</code> posts, newest-first, and calls <code>gicinema__sync_screenings($post_id)</code> for each.</li>'
-      . '<li><b>Per-film sync</b>:
-            <ul>
-              <li>Reads canonical screenings from the custom table (<code>status = 1</code>, DISTINCT, sorted).</li>
-              <li>Reads ACF repeater <code>screenings</code>; normalizes each value to <code>Y-m-d H:i:s</code> in the WordPress timezone (preserves already-normalized strings).</li>
-              <li>Merges ACF + table with a timezone-shadow guard: skips any ACF value equal to a table value ± the current WP timezone offset (e.g., ±7h/±8h). Toggle via <code>define(&#39;GICINEMA_TZ_SHADOW_GUARD&#39;, false)</code> or filter <code>gicinema_enable_tz_shadow_guard</code>.</li>
-              <li>Writes the merged, unique, sorted set back to ACF via <code>update_field</code>, replacing all rows.</li>
-            </ul>
-          </li>'
-      . '<li><b>Optional two-way sync</b>:
-            <ul>
-              <li><i>Also update custom table</i>: add any ACF-only screenings into the custom table without creating duplicates. Default ON.</li>
-              <li><i>Strict mode</i>: deactivate table rows not present in ACF. Confirm prompt shown. Default OFF.</li>
-              <li><i>Require clean ACF</i>: preflight aborts two-way if any film still has superfluous screenings. Default ON.</li>
-              <li><i>Dry run</i>: preview two-way actions without writing. Default OFF.</li>
-            </ul>
-          </li>'
-      . '<li><b>Does not</b>:
-            <ul>
-              <li>Modify the custom screenings table <i>unless</i> two-way options are enabled.</li>
-              <li>Call Agile or refresh the feed.</li>
-              <li>Run the dedupe routine.</li>
-            </ul>
-          </li>'
-      . '<li><b>Output/UX</b>: Prints per-film details and arrays (table, ACF, merged). Can be verbose on large datasets.</li>'
-      . '<li><b>Notes</b>: This page does not fetch from Agile. When two-way is enabled, run only after deleting all superfluous screenings to avoid re-introducing incorrect times into the custom table.</li>'
-      . '</ul>'
+    'short' => 'Manual tool for rebuilding each Film&rsquo;s ACF “Screenings” field from the merged custom-table and ACF screening lists.',
+    'long'  => '<h3>Default behavior</h3>'
+      . '<p>With neither checkbox selected, the tool processes every Film, reads active custom-table screenings (<code>gi_screenings.status = 1</code>) and ACF screenings, normalizes and merges them, and rewrites the ACF <code>screenings</code> field from that merged list. It does not change the custom table.</p>'
+      . '<h3>How the merge works</h3>'
+      . '<ul class="ul-disc">
+          <li>Active custom-table rows (<code>status = 1</code>) are always included. Inactive custom-table rows (<code>status = 0</code>) are ignored and are not copied into ACF.</li>
+          <li>ACF-only rows are also included unless they look like timezone-shadow duplicates of table rows.</li>
+          <li>Because ordinary ACF-only rows are preserved, this page is not the cleanup tool for bad ACF data. Use Delete Superfluous for that.</li>
+        </ul>'
+      . '<h3>Additional options</h3>'
+      . '<ul class="ul-disc">
+          <li><strong>Copy ACF-only screenings into the custom table:</strong> Adds or reactivates ACF-only screenings in <code>gi_screenings</code>. In Dry run mode, it only reports what would be added.</li>
+          <li><strong>Mark active custom-table rows inactive when they are missing from ACF:</strong> Sets <code>gi_screenings.status = 0</code> for active table rows that are not present in ACF. It does not delete those rows. In Dry run mode, it only reports what would be marked inactive.</li>
+        </ul>'
+      . '<h3>Output</h3>'
+      . '<p>Prints detailed per-film diagnostics showing table values, ACF values, optional table-repair actions, and the merged list. The output can be very verbose.</p>'
   ];
 
   // Backup DB (admins only; available in all environments)
@@ -259,12 +245,12 @@ function gicinema_render_page_info($slug) {
   echo '<div class="notice notice-info inline">';
   if ($short) { echo '<p>' . esc_html($short) . '</p>'; }
   if ($long)  {
-    // Allow limited markup in long descriptions so we can present bullet lists clearly.
+    // Allow limited markup in long descriptions so instructions can use headings and WordPress list classes.
     $allowed = [
-      'ul' => [ 'style' => [] ],
+      'ul' => [ 'class' => [], 'style' => [] ],
       'li' => [ 'style' => [] ],
-      'b'  => [],
       'strong' => [],
+      'h3' => [],
       'i'  => [],
       'em' => [],
       'code' => [],
@@ -273,7 +259,12 @@ function gicinema_render_page_info($slug) {
       'br' => []
     ];
 
-    echo '<p>' . wp_kses($long, $allowed) . '</p>';
+    $has_markup = preg_match('/<\s*(p|ul|ol|li|h[1-6]|strong|em|i|code|a|br)\b/i', $long);
+    if ($has_markup) {
+      echo wp_kses($long, $allowed);
+    } else {
+      echo '<p>' . esc_html($long) . '</p>';
+    }
   }
   echo '</div>';
 }
@@ -286,7 +277,7 @@ function gicinema_render_cron_info($slug) {
   if (!isset($map[$slug]) || empty($map[$slug]['cron'])) return;
   $c = $map[$slug]['cron'];
   echo '<div class="notice notice-info inline gicinema-cron-info">';
-  echo '<p><b>Cron</b></p>';
+  echo '<h3>Cron</h3>';
   echo '<ul class="gicinema-cron-list">';
   if (!empty($c['hook']))      echo '<li>Hook: ' . esc_html($c['hook']) . '</li>';
   if (!empty($c['frequency'])) echo '<li>Frequency: ' . esc_html($c['frequency']) . '</li>';

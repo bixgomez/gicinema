@@ -4,9 +4,9 @@
  *
  * Loaded by page__sync_all_screenings.php. It runs from the manual Sync All
  * Screenings admin form and loops through Film posts newest-first, calling the
- * per-film sync helper for each one. Optional form settings can preview or
- * perform two-way repair of custom-table rows, require clean ACF first, or
- * deactivate table rows that are no longer present in ACF.
+ * per-film sync helper for each one. Dry run is the default and does not write
+ * to ACF or the custom table. Commit mode performs the ACF rewrite and can also
+ * perform optional custom-table repair actions.
  */
 
 // If this file is called directly, abort!
@@ -31,43 +31,20 @@ function gicinema__sync_all_screenings($opts = []) {
   echo '<div class="function-name">gicinema__sync_all_screenings()</div>';
 
   // Options (allow override via $opts or POST)
-  $two_way            = isset($opts['two_way'])            ? (bool)$opts['two_way']            : (!empty($_POST['two_way']));
-  $dry_run            = isset($opts['dry_run'])            ? (bool)$opts['dry_run']            : (!empty($_POST['dry_run']));
-  $require_clean_acf  = isset($opts['require_clean_acf'])  ? (bool)$opts['require_clean_acf']  : (!empty($_POST['require_clean_acf']));
-  $deactivate_missing = isset($opts['deactivate_missing']) ? (bool)$opts['deactivate_missing'] : (!empty($_POST['deactivate_missing']));
-
-  // Preflight: if two-way and require clean ACF, verify no superfluous ACF screenings remain
-  if ($two_way && $require_clean_acf && function_exists('gicinema__delete_superfluous_acf_screenings')) {
-    $pre_q = new WP_Query([
-      'post_type'      => 'film',
-      'posts_per_page' => -1,
-      'fields'         => 'ids',
-      'orderby'        => 'date',
-      'order'          => 'DESC',
-    ]);
-    $offenders = [];
-    if ($pre_q->have_posts()) {
-      foreach ($pre_q->posts as $pid) {
-        $res = gicinema__delete_superfluous_acf_screenings((int)$pid, true /* dry run */);
-        $del = is_array($res) && isset($res['deleted']) ? (int)$res['deleted'] : 0;
-        if ($del > 0) {
-          $offenders[] = [ 'post_id' => (int)$pid, 'title' => get_the_title($pid), 'superfluous' => $del, 'edit' => get_edit_post_link($pid, '') ];
-        }
-      }
-      wp_reset_postdata();
-    }
-    if (!empty($offenders)) {
-      echo "<div class='notice notice-warning'><p><strong>Two-way sync aborted.</strong> Found films with superfluous ACF screenings. Please delete superfluous screenings first, then re-run.</p>";
-      echo "<ul class='gicinema-offender-list'>";
-      foreach ($offenders as $o) {
-        $label = esc_html($o['title'] ?: ('Film #' . $o['post_id']));
-        $edit  = $o['edit'] ? "<a href='" . esc_url($o['edit']) . "' target='_blank' rel='noopener'>edit</a>" : '';
-        echo "<li>" . $label . " — <strong>" . (int)$o['superfluous'] . "</strong> superfluous " . ($edit ? "(" . $edit . ")" : '') . "</li>";
-      }
-      echo "</ul></div>";
-      // Continue with ACF-only sync so page still provides value
-    }
+  $copy_acf_to_table  = isset($opts['two_way'])            ? (bool)$opts['two_way']            : (!empty($_POST['two_way']));
+  if (isset($opts['dry_run'])) {
+    $dry_run = (bool) $opts['dry_run'];
+  } elseif (isset($_POST['sync_mode'])) {
+    $dry_run = ($_POST['sync_mode'] !== 'commit');
+  } elseif (!empty($_POST['dry_run'])) {
+    $dry_run = true;
+  } else {
+    $dry_run = true;
   }
+  $deactivate_missing = isset($opts['deactivate_missing']) ? (bool)$opts['deactivate_missing'] : (!empty($_POST['deactivate_missing']));
+  $repair_table       = $copy_acf_to_table || $deactivate_missing;
+
+  echo '<div><strong>Mode:</strong> ' . ($dry_run ? 'Dry run. No ACF or custom-table changes will be written.' : 'Commit changes. ACF changes and selected custom-table repairs will be written.') . '</div>';
 
   // Arguments for the query
   $args = array(
@@ -98,8 +75,8 @@ function gicinema__sync_all_screenings($opts = []) {
           echo '(Posted ' . get_the_date('Y-m-d') . ')';
           echo '</div>';
 
-          // Optionally perform two-way sync against the custom table using the ACF set
-          if ($two_way) {
+          // Optionally repair the custom table using the ACF set.
+          if ($repair_table) {
             global $wpdb;
             $table_name = $wpdb->prefix . 'gi_screenings';
 
@@ -111,10 +88,12 @@ function gicinema__sync_all_screenings($opts = []) {
             $acf_set = [];
             foreach ((array)$acf_vals as $v) { if (is_string($v) && $v !== '') $acf_set[$v] = true; }
 
-            // Compute additions and (optionally) deactivations
+            // Compute additions and deactivations for the selected table repair actions.
             $to_add = [];
-            foreach ($acf_set as $val => $_t) {
-              if (!isset($table_set[$val])) { $to_add[] = $val; }
+            if ($copy_acf_to_table) {
+              foreach ($acf_set as $val => $_t) {
+                if (!isset($table_set[$val])) { $to_add[] = $val; }
+              }
             }
             $to_deactivate = [];
             if ($deactivate_missing) {
@@ -126,9 +105,9 @@ function gicinema__sync_all_screenings($opts = []) {
             // Report intent
             echo '<div class="function-info">';
             if ($dry_run) {
-              echo '<div><em>[dry]</em> two-way sync: would add ' . count($to_add) . ' to table' . ($deactivate_missing ? ('; would deactivate ' . count($to_deactivate)) : '') . '.</div>';
+              echo '<div><em>[dry]</em> custom-table repair: would add/reactivate ' . count($to_add) . ' ACF-only row(s); would mark inactive ' . count($to_deactivate) . ' table-only row(s).</div>';
             } else {
-              echo '<div>two-way sync: adding ' . count($to_add) . ' to table' . ($deactivate_missing ? ('; deactivating ' . count($to_deactivate)) : '') . '.</div>';
+              echo '<div>custom-table repair: adding/reactivating ' . count($to_add) . ' ACF-only row(s); marking inactive ' . count($to_deactivate) . ' table-only row(s).</div>';
             }
 
             // Insert missing rows or reactivate existing rows, respecting the unique key.
@@ -171,8 +150,8 @@ function gicinema__sync_all_screenings($opts = []) {
             echo '</div>';
           }
 
-          // Always update ACF from canonical merge (table + ACF)
-          gicinema__sync_screenings($post_id);
+          // Always preview or update ACF from canonical merge (table + ACF).
+          gicinema__sync_screenings($post_id, $dry_run);
 
         echo '</div>';
       }
