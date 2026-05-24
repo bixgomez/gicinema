@@ -33,7 +33,8 @@ function gicinema_page_display__sync_all_screenings() {
       'deactivate_missing' => !empty($_POST['deactivate_missing']),
     ]);
     $html = ob_get_clean();
-    echo "<div class='notice notice-success'><p><strong>Sync all screenings finished.</strong></p><div class='gicinema-notice-content'>{$html}</div></div>";
+    echo "<div class='notice notice-success'><p><strong>Sync all screenings finished.</strong></p></div>";
+    echo $html;
   } else {
     // Display warning and confirmation form
 ?>

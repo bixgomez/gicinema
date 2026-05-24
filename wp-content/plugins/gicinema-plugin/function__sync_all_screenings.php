@@ -27,9 +27,6 @@ function gicinema__sync_all_screenings($opts = []) {
     }
   }
 
-  echo '<div class="function-info">';
-  echo '<div class="function-name">gicinema__sync_all_screenings()</div>';
-
   // Options (allow override via $opts or POST)
   $copy_acf_to_table  = isset($opts['two_way'])            ? (bool)$opts['two_way']            : (!empty($_POST['two_way']));
   if (isset($opts['dry_run'])) {
@@ -44,7 +41,9 @@ function gicinema__sync_all_screenings($opts = []) {
   $deactivate_missing = isset($opts['deactivate_missing']) ? (bool)$opts['deactivate_missing'] : (!empty($_POST['deactivate_missing']));
   $repair_table       = $copy_acf_to_table || $deactivate_missing;
 
-  echo '<div><strong>Mode:</strong> ' . ($dry_run ? 'Dry run. No ACF or custom-table changes will be written.' : 'Commit changes. ACF changes and selected custom-table repairs will be written.') . '</div>';
+  echo '<div class="notice notice-info inline">';
+  echo '<p><strong>Mode:</strong> ' . ($dry_run ? 'Dry run. No ACF or custom-table changes will be written.' : 'Commit changes. ACF changes and selected custom-table repairs will be written.') . '</p>';
+  echo '</div>';
 
   // Arguments for the query
   $args = array(
@@ -60,20 +59,34 @@ function gicinema__sync_all_screenings($opts = []) {
   // Check if the Query returns any posts
   if ($the_query->have_posts()) {
 
-      // The Loop
+      echo '<div class="gicinema-sync-results-scroll">';
+      echo '<table class="widefat striped gicinema-sync-results">';
+      echo '<thead>';
+      echo '<tr>';
+      echo '<th scope="col">Film</th>';
+      echo '<th scope="col">Active table rows</th>';
+      echo '<th scope="col">Current ACF rows</th>';
+      echo '<th scope="col">Resulting ACF rows</th>';
+      echo '<th scope="col">ACF action</th>';
+      echo '<th scope="col">Custom-table action</th>';
+      echo '</tr>';
+      echo '</thead>';
+      echo '<tbody>';
+
       while ($the_query->have_posts()) {
-        echo '<div class="function-info">';
 
           $the_query->the_post();
           $post_link = get_permalink();
           $post_id = get_the_ID();
+          $post_title = get_the_title();
+          $posted_date = get_the_date('Y-m-d');
           $agile_id = get_field('agile_film_id');
-
-          echo '<div>';
-          echo 'Post ID ' . $post_id . ': ';
-          echo '<a href="' . esc_url($post_link) . '" target="_blank">' .  get_the_title() . '</a> ';
-          echo '(Posted ' . get_the_date('Y-m-d') . ')';
-          echo '</div>';
+          $repair_summary = [
+            'enabled' => $repair_table,
+            'dry_run' => $dry_run,
+            'to_add' => [],
+            'to_deactivate' => [],
+          ];
 
           // Optionally repair the custom table using the ACF set.
           if ($repair_table) {
@@ -102,13 +115,8 @@ function gicinema__sync_all_screenings($opts = []) {
               }
             }
 
-            // Report intent
-            echo '<div class="function-info">';
-            if ($dry_run) {
-              echo '<div><em>[dry]</em> custom-table repair: would add/reactivate ' . count($to_add) . ' ACF-only row(s); would mark inactive ' . count($to_deactivate) . ' table-only row(s).</div>';
-            } else {
-              echo '<div>custom-table repair: adding/reactivating ' . count($to_add) . ' ACF-only row(s); marking inactive ' . count($to_deactivate) . ' table-only row(s).</div>';
-            }
+            $repair_summary['to_add'] = $to_add;
+            $repair_summary['to_deactivate'] = $to_deactivate;
 
             // Insert missing rows or reactivate existing rows, respecting the unique key.
             if (!$dry_run && !empty($to_add)) {
@@ -147,14 +155,16 @@ function gicinema__sync_all_screenings($opts = []) {
                 $wpdb->query($sql);
               }
             }
-            echo '</div>';
           }
 
           // Always preview or update ACF from canonical merge (table + ACF).
-          gicinema__sync_screenings($post_id, $dry_run);
-
-        echo '</div>';
+          $sync_summary = gicinema__sync_screenings($post_id, $dry_run, false);
+          gicinema__render_sync_all_screenings_row($post_id, $post_title, $post_link, $posted_date, $sync_summary, $repair_summary);
       }
+
+      echo '</tbody>';
+      echo '</table>';
+      echo '</div>';
 
       /* Restore original Post Data 
       * NB: Because we are using new WP_Query we aren't stomping on the 
@@ -167,11 +177,74 @@ function gicinema__sync_all_screenings($opts = []) {
   } else {
 
       // No posts found
-      echo '<p>No films found.</p>';
+      echo '<div class="notice notice-warning inline"><p>No films found.</p></div>';
 
   }
+}
 
-  echo '</div>';
+function gicinema__render_sync_all_screenings_row($post_id, $post_title, $post_link, $posted_date, $sync_summary, $repair_summary) {
+  $decoded_title = wp_specialchars_decode($post_title, ENT_QUOTES);
 
+  echo '<tr>';
 
+  echo '<th scope="row">';
+  echo '<a href="' . esc_url($post_link) . '" target="_blank" rel="noopener">' . esc_html($decoded_title) . '</a>';
+  echo '<br><span class="description">Post ID ' . esc_html($post_id) . '; posted ' . esc_html($posted_date) . '</span>';
+  echo '</th>';
+
+  echo '<td>';
+  gicinema__render_screening_details($sync_summary['table_screenings']);
+  echo '</td>';
+
+  echo '<td>';
+  gicinema__render_screening_details($sync_summary['acf_screenings']);
+  echo '</td>';
+
+  echo '<td>';
+  gicinema__render_screening_details($sync_summary['merged_screenings']);
+  echo '</td>';
+
+  echo '<td>' . esc_html(gicinema__get_sync_screenings_action_label($sync_summary)) . '</td>';
+
+  echo '<td>';
+  gicinema__render_sync_all_table_repair_summary($repair_summary);
+  echo '</td>';
+
+  echo '</tr>';
+}
+
+function gicinema__render_sync_all_table_repair_summary($repair_summary) {
+  if (empty($repair_summary['enabled'])) {
+    echo '<span class="description">Not selected</span>';
+    return;
+  }
+
+  $to_add = isset($repair_summary['to_add']) ? (array) $repair_summary['to_add'] : [];
+  $to_deactivate = isset($repair_summary['to_deactivate']) ? (array) $repair_summary['to_deactivate'] : [];
+  $dry_run = !empty($repair_summary['dry_run']);
+  $add_count = count($to_add);
+  $deactivate_count = count($to_deactivate);
+
+  if ($dry_run) {
+    echo 'Would add/reactivate ' . esc_html($add_count) . '; would mark inactive ' . esc_html($deactivate_count) . '.';
+  } else {
+    echo 'Added/reactivated ' . esc_html($add_count) . '; marked inactive ' . esc_html($deactivate_count) . '.';
+  }
+
+  if ($add_count || $deactivate_count) {
+    echo '<details>';
+    echo '<summary>Show affected table rows</summary>';
+
+    if ($add_count) {
+      echo '<p><strong>Add/reactivate</strong></p>';
+      gicinema__render_screening_details($to_add);
+    }
+
+    if ($deactivate_count) {
+      echo '<p><strong>Mark inactive</strong></p>';
+      gicinema__render_screening_details($to_deactivate);
+    }
+
+    echo '</details>';
+  }
 }

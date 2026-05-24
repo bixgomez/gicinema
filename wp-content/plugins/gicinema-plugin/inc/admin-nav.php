@@ -84,7 +84,7 @@ function gicinema_get_admin_nav_items() {
           <li><strong>Mark active custom-table rows inactive when they are missing from ACF:</strong> Sets <code>gi_screenings.status = 0</code> for active table rows that are not present in ACF. It does not delete those rows. In Dry run mode, it only reports what would be marked inactive.</li>
         </ul>'
       . '<h3>Output</h3>'
-      . '<p>Prints detailed per-film diagnostics showing table values, ACF values, optional table-repair actions, and the merged list. The output can be very verbose.</p>'
+      . '<p>Shows a results table for each Film with active custom-table rows, current ACF rows, resulting ACF rows, the ACF action, and any selected custom-table action. Screening lists are collapsed by default so the page stays readable.</p>'
   ];
 
   // Backup DB (admins only; available in all environments)

@@ -290,6 +290,25 @@
   overflow: auto;
 }
 
+.gicinema-sync-results-scroll {
+  max-height: calc(100vh - 320px);
+  min-height: 240px;
+  overflow: auto;
+  border: 1px solid var(--gicinema-border);
+  background: var(--gicinema-surface);
+}
+
+.gicinema-sync-results {
+  border: 0;
+}
+
+.gicinema-sync-results thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--gicinema-surface);
+}
+
 .gicinema-option-list {
   margin-top: 10px;
 }
