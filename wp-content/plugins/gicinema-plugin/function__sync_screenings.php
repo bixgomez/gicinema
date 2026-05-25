@@ -71,16 +71,17 @@ function gicinema__format_screening_for_admin($screening) {
     return '';
   }
 
+  // Normalize the screening value using strict parser
+  $normalized = gicinema__parse_screening_datetime($screening, 'admin_display');
+  if (!$normalized) {
+    return $screening; // Return raw value if parsing failed
+  }
+
   $tz = function_exists('wp_timezone') ? wp_timezone() : new DateTimeZone(get_option('timezone_string') ?: 'UTC');
-  $dt = DateTime::createFromFormat('Y-m-d H:i:s', $screening, $tz);
+  $dt = DateTime::createFromFormat('Y-m-d H:i:s', $normalized, $tz);
 
   if ($dt instanceof DateTime) {
     return wp_date('D, M j, Y g:i a', $dt->getTimestamp(), $tz);
-  }
-
-  $timestamp = strtotime($screening);
-  if ($timestamp) {
-    return wp_date('D, M j, Y g:i a', $timestamp, $tz);
   }
 
   return $screening;
@@ -191,28 +192,8 @@ function gicinema__get_screenings_from_post($post_id) {
           // Directly access sub-field values
           $screeningString = get_sub_field('screening');
 
-          // Normalize to Y-m-d H:i:s in the WP timezone
-          $formatted = '';
-          if (is_string($screeningString) && $screeningString !== '') {
-            // If already normalized (Y-m-d H:i:s), keep as-is
-            if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $screeningString)) {
-              $formatted = $screeningString;
-            } else {
-              $tz = function_exists('wp_timezone') ? wp_timezone() : new DateTimeZone(get_option('timezone_string') ?: 'UTC');
-              $dt = DateTime::createFromFormat('m/d/Y g:i a', $screeningString, $tz);
-              if ($dt instanceof DateTime) {
-                // Ensure timezone is WP timezone
-                $dt->setTimezone($tz);
-                $formatted = $dt->format('Y-m-d H:i:s');
-              } else {
-                // Fallback parse
-                $ts = strtotime($screeningString);
-                if ($ts) {
-                  $formatted = date('Y-m-d H:i:s', $ts);
-                }
-              }
-            }
-          }
+          // Normalize to Y-m-d H:i:s in the WP timezone using strict parser
+          $formatted = gicinema__parse_screening_datetime($screeningString, 'acf_read');
 
           if ($formatted) {
             $screenings_data[] = $formatted;

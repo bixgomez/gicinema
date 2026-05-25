@@ -25,6 +25,7 @@ if (!defined('ABSPATH')) {
 
 // Imports all necessary functions and pages.
 require_once "function__create_custom_table.php";
+require_once "function__parse_screening_datetime.php";
 require_once "function__update_film_on_save.php";
 require_once "function__compare_screenings.php";
 require_once "function__delete_superfluous_screenings.php";

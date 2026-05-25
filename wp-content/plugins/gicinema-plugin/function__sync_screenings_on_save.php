@@ -69,25 +69,15 @@ function gicinema__get_saved_screenings_value($post_id) {
 
 function gicinema__simplify_screenings_array($originalArray) {
   $simplifiedArray = [];
-  $tz = function_exists('wp_timezone') ? wp_timezone() : new DateTimeZone(get_option('timezone_string') ?: 'UTC');
   foreach ($originalArray as $item) {
     if (!isset($item['screening']) || !is_string($item['screening'])) {
       continue;
     }
     $label = $item['screening'];
-    if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $label)) {
-      $simplifiedArray[] = $label;
-      continue;
-    }
-    $dt = DateTime::createFromFormat('m/d/Y g:i a', $label, $tz);
-    if ($dt instanceof DateTime) {
-      $dt->setTimezone($tz);
-      $simplifiedArray[] = $dt->format('Y-m-d H:i:s');
-    } else {
-      $ts = strtotime($label);
-      if ($ts) {
-        $simplifiedArray[] = date('Y-m-d H:i:s', $ts);
-      }
+    // Use strict parser for all screening values (always uses wp_timezone)
+    $normalized = gicinema__parse_screening_datetime($label, 'acf_save');
+    if ($normalized) {
+      $simplifiedArray[] = $normalized;
     }
   }
   return $simplifiedArray;

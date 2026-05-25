@@ -39,20 +39,8 @@ function gicinema__import_screenings_from_agile (
 
   foreach( $agile_array as $screening ) :
     if (is_array($screening)) { $screening = (object) $screening; }
-    // Parse StartDate; if it contains a timezone, PHP respects it; then convert to WP timezone
-    try {
-      $dt = new DateTime($screening->StartDate, $tz);
-    } catch (Exception $e) {
-      $dt = false;
-    }
-    if ($dt instanceof DateTime) {
-      $dt->setTimezone($tz);
-      $screening_datetime = $dt->format('Y-m-d H:i:s');
-    } else {
-      // Fallback
-      $ts = strtotime($screening->StartDate);
-      $screening_datetime = $ts ? date('Y-m-d H:i:s', $ts) : '';
-    }
+    // Use strict parser helper (always uses wp_timezone, rejects ambiguous values)
+    $screening_datetime = gicinema__parse_screening_datetime($screening->StartDate, 'agile_import');
     if ($screening_datetime) {
       $agile_screenings[] = $screening_datetime;
     }

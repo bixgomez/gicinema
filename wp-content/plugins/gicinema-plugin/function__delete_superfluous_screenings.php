@@ -188,22 +188,9 @@ function gicinema__normalize_screening_for_cleanup($label, $tz) {
     return '';
   }
 
-  if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $label)) {
-    return $label;
-  }
-
-  $dt = DateTime::createFromFormat('m/d/Y g:i a', $label, $tz);
-  if ($dt instanceof DateTime) {
-    $dt->setTimezone($tz);
-    return $dt->format('Y-m-d H:i:s');
-  }
-
-  $ts = strtotime($label);
-  if ($ts) {
-    return date('Y-m-d H:i:s', $ts);
-  }
-
-  return '';
+  // Use strict parser for all screening values (always uses wp_timezone)
+  $normalized = gicinema__parse_screening_datetime($label, 'superfluous_cleanup');
+  return $normalized ?: '';
 }
 
 
@@ -247,13 +234,20 @@ function gicinema__format_screening_date_range($screenings) {
 
 
 function gicinema__format_screening_date_for_admin($date) {
-  $ts = strtotime($date);
-
-  if (!$ts) {
-    return '';
+  // Normalize the date value using strict parser
+  $normalized = gicinema__parse_screening_datetime($date, 'admin_date_format');
+  if (!$normalized) {
+    return ''; // Return empty if parsing failed
   }
 
-  return date('n/j/Y', $ts);
+  $tz = function_exists('wp_timezone') ? wp_timezone() : new DateTimeZone(get_option('timezone_string') ?: 'UTC');
+  $dt = DateTime::createFromFormat('Y-m-d H:i:s', $normalized, $tz);
+
+  if ($dt instanceof DateTime) {
+    return $dt->format('n/j/Y');
+  }
+
+  return '';
 }
 
 
