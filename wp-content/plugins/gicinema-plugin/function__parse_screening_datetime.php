@@ -201,10 +201,10 @@ function gicinema__is_timezone_shadow($datetime1, $datetime2) {
     $dt2 = new DateTime($datetime2, $tz);
 
     $diff_seconds = abs($dt2->getTimestamp() - $dt1->getTimestamp());
-    $diff_hours = $diff_seconds / 3600;
 
     // Check for exactly 7 or 8 hour differences (Pacific timezone offsets)
-    return ($diff_hours === 7.0 || $diff_hours === 8.0);
+    // Compare seconds directly to avoid floating-point precision issues
+    return ($diff_seconds === 25200 || $diff_seconds === 28800); // 7*3600=25200, 8*3600=28800
   } catch (Exception $e) {
     return false;
   }
