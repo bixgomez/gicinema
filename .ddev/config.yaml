@@ -13,6 +13,7 @@ use_dns_when_possible: true
 timezone: America/Los_Angeles
 composer_version: "2"
 web_environment: []
+webimage_extra_packages: [subversion]
 
 # Key features of DDEV's config.yaml:
 

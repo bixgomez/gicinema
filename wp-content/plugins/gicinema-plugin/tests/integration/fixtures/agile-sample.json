@@ -1,0 +1,25 @@
+{
+  "ArrayOfShows": [
+    {
+      "ID": "12345",
+      "Name": "Test Film One",
+      "Duration": "95",
+      "ShortDescription": "A short description used only for testing.",
+      "InfoLink": "https://example.com/film/12345",
+      "AdditionalMedia": [
+        { "Type": "Image", "Value": "https://example.com/poster-12345.jpg" },
+        { "Type": "YouTube", "Value": "https://www.youtube.com/watch?v=test12345" }
+      ],
+      "CustomProperties": [
+        { "Name": "Release Year", "Value": "2026" },
+        { "Name": "Format", "Value": "DCP" },
+        { "Name": "Director", "Value": "Jane Director" },
+        { "Name": "Production Country", "Value": "USA" }
+      ],
+      "CurrentShowings": [
+        { "StartDate": "2026-06-15T19:30:00" },
+        { "StartDate": "2026-06-16T19:30:00" }
+      ]
+    }
+  ]
+}
