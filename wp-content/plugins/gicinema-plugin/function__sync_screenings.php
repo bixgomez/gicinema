@@ -1,12 +1,23 @@
 <?php
 /**
- * Per-film ACF and custom-table screening synchronization.
+ * Per-film ACF/custom-table screening sync helpers.
  *
- * Loaded by function__sync_all_screenings.php and called for each Film during
- * manual all-film sync. It reads active screenings from gi_screenings, reads
- * the Film post's ACF "screenings" repeater, merges and normalizes the values,
- * applies timezone-shadow duplicate guards, and writes the resulting list back
- * to the ACF repeater field unless dry-run mode is requested.
+ * This file is a function library. Including it only defines the helpers below;
+ * no sync runs until one of those functions is called.
+ *
+ * Normal plugin bootstrap loads this file through cron_jobs.php ->
+ * function__sync_all_screenings.php. The main entry point,
+ * gicinema__sync_screenings(), is called from two production workflows:
+ *
+ * 1. function__import_films_from_agile.php, after a Film's Agile showtimes are
+ *    written to gi_screenings during scheduled or manual Agile imports.
+ * 2. function__sync_all_screenings.php, once per Film during the manual Sync All
+ *    Screenings admin tool.
+ *
+ * gicinema__sync_screenings() reads active rows from gi_screenings, reads the
+ * Film post's ACF "screenings" repeater, merges those canonical values, filters
+ * timezone-shadow duplicates, and writes the resulting list back to ACF unless
+ * dry-run mode is requested.
  */
 
 // If this file is called directly, abort!
@@ -257,8 +268,6 @@ function gicinema__merge_screenings_arrays($array_1, $array_2) {
     $enable_guard = apply_filters('gicinema_enable_tz_shadow_guard', $enable_guard);
   }
 
-  $tz = function_exists('wp_timezone') ? wp_timezone() : new DateTimeZone(get_option('timezone_string') ?: 'UTC');
-
   $accepted_acf = [];
   foreach ((array) $array_1 as $v) {
     if (!is_string($v) || $v === '') {
@@ -272,23 +281,12 @@ function gicinema__merge_screenings_arrays($array_1, $array_2) {
     }
 
     // Guard against timezone-shadow duplicates only if enabled.
-    if ($enable_guard) {
-      $ts = strtotime($v);
-      if ($ts) {
-        try {
-          $dt = new DateTime($v, $tz);
-          $offset = $tz->getOffset($dt); // seconds (e.g., 25200 for PDT, 28800 for PST)
-        } catch (Exception $e) {
-          $offset = 0;
-        }
-        if ($offset) {
-          $plus  = date('Y-m-d H:i:s', $ts + $offset);
-          $minus = date('Y-m-d H:i:s', $ts - $offset);
-          if (isset($table_set[$plus]) || isset($table_set[$minus])) {
-            // Skip ACF value that is merely a timezone-shifted duplicate of a table value.
-            // To disable this behavior, see toggle notes above.
-            continue;
-          }
+    if ($enable_guard && function_exists('gicinema__is_timezone_shadow')) {
+      foreach (array_keys($table_set) as $table_screening) {
+        if (gicinema__is_timezone_shadow($v, $table_screening)) {
+          // Skip ACF value that is merely a timezone-shifted duplicate of a table value.
+          // To disable this behavior, see toggle notes above.
+          continue 2;
         }
       }
     }
