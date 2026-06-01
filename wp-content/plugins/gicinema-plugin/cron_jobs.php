@@ -1,4 +1,13 @@
 <?php
+/**
+ * WP-Cron registration for automated plugin maintenance.
+ *
+ * Loaded by gicinema.php whenever WordPress loads the active plugin. This file
+ * tells WordPress which automatic background jobs should exist and how often
+ * they should run. It sets up the Agile feed refresh every 23 minutes, the
+ * Agile film import every 30 minutes, and the database backup once per day.
+ * Those jobs run when WordPress processes WP-Cron.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {

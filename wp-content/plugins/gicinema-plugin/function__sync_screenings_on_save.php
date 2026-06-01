@@ -1,4 +1,12 @@
 <?php
+/**
+ * Film-save synchronization from ACF screenings to the custom table.
+ *
+ * Loaded by function__update_film_on_save.php and called from the save_post
+ * workflow after a Film post with ACF data is saved. It normalizes the submitted
+ * ACF screening rows, disables existing custom-table rows for the post, then
+ * reactivates or inserts rows that match the saved ACF values.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {
@@ -61,25 +69,15 @@ function gicinema__get_saved_screenings_value($post_id) {
 
 function gicinema__simplify_screenings_array($originalArray) {
   $simplifiedArray = [];
-  $tz = function_exists('wp_timezone') ? wp_timezone() : new DateTimeZone(get_option('timezone_string') ?: 'UTC');
   foreach ($originalArray as $item) {
     if (!isset($item['screening']) || !is_string($item['screening'])) {
       continue;
     }
     $label = $item['screening'];
-    if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $label)) {
-      $simplifiedArray[] = $label;
-      continue;
-    }
-    $dt = DateTime::createFromFormat('m/d/Y g:i a', $label, $tz);
-    if ($dt instanceof DateTime) {
-      $dt->setTimezone($tz);
-      $simplifiedArray[] = $dt->format('Y-m-d H:i:s');
-    } else {
-      $ts = strtotime($label);
-      if ($ts) {
-        $simplifiedArray[] = date('Y-m-d H:i:s', $ts);
-      }
+    // Use strict parser for all screening values (always uses wp_timezone)
+    $normalized = gicinema__parse_screening_datetime($label, 'acf_save');
+    if ($normalized) {
+      $simplifiedArray[] = $normalized;
     }
   }
   return $simplifiedArray;

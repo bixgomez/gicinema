@@ -1,4 +1,13 @@
 <?php
+/**
+ * Local-development admin page for deleting all Film posts.
+ *
+ * Loaded by gicinema.php, but the page callback is only defined when
+ * WP_LOCAL_DEV is true. This page will only appear and run on the local dev
+ * server, not on production. It shows a security-protected
+ * confirmation form, estimates the number of Film posts, asks for browser
+ * confirmation, and then calls delete_all_film_posts().
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {
@@ -26,7 +35,7 @@ if (defined('WP_LOCAL_DEV') && WP_LOCAL_DEV) {
       // Display warning and confirmation form
 ?>
 
-      <div class="warning">
+      <div class="notice notice-error inline">
         <p><strong>Warning:</strong> This action will permanently delete all Film posts. It cannot be undone. Make a fresh backup before proceeding.</p>
       </div>
       <?php

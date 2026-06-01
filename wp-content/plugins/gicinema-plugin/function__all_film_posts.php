@@ -1,4 +1,12 @@
 <?php
+/**
+ * Film post audit and screenings-table repair helpers.
+ *
+ * Loaded by page__all_film_posts.php, then run when an administrator opens the
+ * "All Film Posts" plugin page. It lists every Film post, shows edit links and
+ * dates, and attempts to connect rows in the custom screenings table that still
+ * have a missing post_id but do have a matching Agile film ID.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {

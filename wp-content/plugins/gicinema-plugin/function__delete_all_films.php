@@ -1,4 +1,13 @@
 <?php
+/**
+ * Local-development destructive Film cleanup routine.
+ *
+ * Loaded by page__delete_all_films.php, but only defines its delete function
+ * when WP_LOCAL_DEV is true. This tool will only be available on the local dev
+ * server, not on production. When run from the local-only admin
+ * confirmation form, it permanently deletes every post of type film with
+ * wp_delete_post().
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {

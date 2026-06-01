@@ -1,4 +1,13 @@
 <?php
+/**
+ * Local-development destructive screenings-table truncation routine.
+ *
+ * Loaded by page__truncate_screenings_table.php, but only defines its function
+ * when WP_LOCAL_DEV is true. This tool will only be available on the local dev
+ * server, not on production. When run from the local-only admin
+ * confirmation form, it checks the security token, counts current rows, and
+ * empties the gi_screenings table.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {

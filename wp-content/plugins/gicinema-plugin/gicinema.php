@@ -1,12 +1,21 @@
 <?php
 /* Plugin Name: Grand Illusion Cinema
  * Plugin URI:  https://grandillusioncinema.org/
- * Description: Retrieves the most recently added shows..
+ * Description: Imports Agile Ticketing films and screenings, syncs ACF showtimes, and provides GI Cinema admin tools.
  * Version:     1.0.0
  * Author:      Richard Gilbert
  * Author URI:  https://grandillusioncinema.org/
  * License:     GPL-2.0+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
+ */
+/**
+ * Main plugin bootstrap.
+ *
+ * WordPress loads this file whenever the plugin is active. It includes the
+ * function modules, admin page callbacks, cron registration, and shared admin
+ * navigation helpers. It also enqueues the plugin's admin stylesheet, adds the
+ * Film edit-screen status box, and registers the activation hook that creates
+ * the custom screenings table.
  */
 
 // If this file is called directly, abort!
@@ -16,6 +25,7 @@ if (!defined('ABSPATH')) {
 
 // Imports all necessary functions and pages.
 require_once "function__create_custom_table.php";
+require_once "function__parse_screening_datetime.php";
 require_once "function__update_film_on_save.php";
 require_once "function__compare_screenings.php";
 require_once "function__delete_superfluous_screenings.php";
@@ -25,7 +35,6 @@ require_once "page__all_film_posts.php";
 require_once "page__update_agile_array.php";
 require_once "page__import_from_agile.php";
 require_once "page__sync_all_screenings.php";
-require_once "page__delete_overnight_screenings.php";
 require_once "page__dedupe_screenings_table.php";
 require_once "page__db_backup_and_cleanup.php";
 require_once "page__delete_all_films.php";
@@ -41,7 +50,7 @@ add_action('admin_enqueue_scripts', 'gicinema_enqueue_styles');
 
 /**
  * Inject a simple info box at the very top of the Edit Film form
- * (after the title/permalink area). For now, it’s a placeholder.
+ * (after the title/permalink area). For now, it's a placeholder.
  */
 function gicinema_render_film_top_box() {
   // Ensure we are on a post edit screen and the post type is 'film'.
@@ -98,18 +107,18 @@ function gicinema_render_film_top_box() {
   $superfluous_count = function_exists('gicinema__count_superfluous_screenings')
     ? gicinema__count_superfluous_screenings($post->ID)
     : 0;
-  $btn_style = 'margin-top:4px;';
+  $btn_classes = 'button button-secondary gicinema-superfluous-button';
   if ($superfluous_count > 0) {
-    $btn_style .= ' background:#b32d2e; color:#fff; border-color:#b32d2e; font-weight:700;';
+    $btn_classes .= ' is-danger';
   }
 
-  echo '<div id="gicinema-film-top-box" class="gicinema-admin-box" style="margin:12px 0 18px;">'
-    . '<p style="margin:0 0 4px; color:#555;"><strong>' . esc_html($count_label) . '</strong> <span style="color:#888;">(from custom table)</span></p>'
+  echo '<div id="gicinema-film-top-box" class="gicinema-admin-box">'
+    . '<p class="gicinema-screening-count"><strong>' . esc_html($count_label) . '</strong> <span class="gicinema-source-label">(from custom table)</span></p>'
     . gicinema__render_table_screenings($post->ID)
-    . '<p style="margin:6px 6px 6px 0; color:#555;"><strong>' . esc_html($acf_count_label) . '</strong> <span style="color:#888;">(from Screenings field)</span></p>'
+    . '<p class="gicinema-screening-count gicinema-screening-count--acf"><strong>' . esc_html($acf_count_label) . '</strong> <span class="gicinema-source-label">(from Screenings field)</span></p>'
     . gicinema__render_matching_screenings($post->ID)
-    . '<div style="margin-top:8px;">'
-      . '<a class="button button-secondary" style="' . esc_attr($btn_style) . '" href="' . esc_url($delete_url) . '">DELETE SUPERFLUOUS SCREENINGS</a>'
+    . '<div class="gicinema-action-row">'
+      . '<a class="' . esc_attr($btn_classes) . '" href="' . esc_url($delete_url) . '">DELETE SUPERFLUOUS SCREENINGS</a>'
     . '</div>'
     . '</div>';
 }

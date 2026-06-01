@@ -1,4 +1,12 @@
 <?php
+/**
+ * Agile ID lookup helper for Film posts.
+ *
+ * Loaded when included by other plugin code that needs it; this file does not
+ * register any hooks on its own. The helper queries Film posts by the
+ * agile_film_id ACF field and returns the first matching post, allowing import
+ * or repair routines to connect Agile records to existing WordPress content.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {

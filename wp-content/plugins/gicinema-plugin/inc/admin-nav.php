@@ -1,4 +1,13 @@
 <?php
+/**
+ * Shared admin navigation metadata and rendering helpers.
+ *
+ * Loaded by gicinema.php after the page callback files are included. This file
+ * owns the ordered list of plugin tools, submenu registration, the horizontal
+ * admin navigation, page blurbs, and cron-info panels. It runs on admin_menu
+ * and in_admin_header so the WordPress sidebar and the plugin page header stay
+ * in sync from one metadata source.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {
@@ -9,7 +18,7 @@ function gicinema_get_admin_nav_items() {
   $items = [];
 
   // Match the sidebar submenu order as registered (require order):
-  // Home → All Film Posts → Update Agile Array → Import → Sync → Delete Overnight (Deprecated) → Dedupe → (local) Backup → (local) Delete All → (local) Truncate → Delete Superfluous (All)
+  // Home -> All Film Posts -> Update Agile Array -> Import -> Sync -> Dedupe -> Backup -> (local) Delete All -> (local) Truncate -> Delete Superfluous (All)
 
   $items[] = [
     'slug' => 'gicinema--admin',
@@ -47,7 +56,7 @@ function gicinema_get_admin_nav_items() {
     'deprecated' => false,
     'show' => true,
     'short' => 'Runs the importer: reads the cached Agile JSON (refreshes the transient if missing/invalid), creates/updates Film posts, downloads poster images when URLs change, imports screenings into the custom table (normalized to the site timezone), and immediately syncs the ACF “Screenings” field. Scheduled every 30 minutes; safe to run manually.',
-    'long'  => 'Source: cached feed stored as transient `agile_shows_array` (auto-refreshed if absent or undecodable; manual JSON paste available on the Import page). Idempotency: screenings are upserted with a unique key on the normalized timestamp to prevent duplicates; poster and fields update only when values change. Times are normalized to the WordPress timezone before writing. Output includes per-film diagnostics and an edit-link for quick review.',
+    'long'  => 'Source: cached feed stored as transient `agile_shows_array` (auto-refreshed if absent or undecodable; manual JSON paste available on the Import page). Repeatability: screenings are inserted or updated with a unique key on the normalized timestamp to prevent duplicates; poster and fields update only when values change. Times are normalized to the WordPress timezone before writing. Output includes per-film diagnostics and an edit-link for quick review.',
     'cron'  => [
       'hook'      => 'cron__import_films_from_agile',
       'schedule'  => 'every_30_minutes',
@@ -60,36 +69,22 @@ function gicinema_get_admin_nav_items() {
     'label' => 'Sync All Screenings',
     'deprecated' => false,
     'show' => true,
-    'short' => 'Re-syncs screenings for every Film by reading canonical times from the custom table and merging with any ACF-only entries. Uses a timezone-aware guard to avoid ±7/±8 hour duplicates. Useful after manual edits. Processes newest films first.',
-    'long'  => '<ul>'
-      . '<li><b>Entry points</b>: Admin page <code>gicinema--sync-all-screenings</code> shows a nonce-protected confirmation form and buffers routine output into a success notice with a scrollable area.</li>'
-      . '<li><b>Main routine</b>: <code>gicinema__sync_all_screenings()</code> queries all <code>film</code> posts, newest-first, and calls <code>gicinema__sync_screenings($post_id)</code> for each.</li>'
-      . '<li><b>Per-film sync</b>:
-            <ul>
-              <li>Reads canonical screenings from the custom table (<code>status = 1</code>, DISTINCT, sorted).</li>
-              <li>Reads ACF repeater <code>screenings</code>; normalizes each value to <code>Y-m-d H:i:s</code> in the WordPress timezone (preserves already-normalized strings).</li>
-              <li>Merges ACF + table with a timezone-shadow guard: skips any ACF value equal to a table value ± the current WP timezone offset (e.g., ±7h/±8h). Toggle via <code>define(&#39;GICINEMA_TZ_SHADOW_GUARD&#39;, false)</code> or filter <code>gicinema_enable_tz_shadow_guard</code>.</li>
-              <li>Writes the merged, unique, sorted set back to ACF via <code>update_field</code>, replacing all rows.</li>
-            </ul>
-          </li>'
-      . '<li><b>Optional two-way sync</b>:
-            <ul>
-              <li><i>Also update custom table (upsert)</i>: add any ACF-only screenings into the custom table (safe upsert). Default ON.</li>
-              <li><i>Strict mode</i>: deactivate table rows not present in ACF. Confirm prompt shown. Default OFF.</li>
-              <li><i>Require clean ACF</i>: preflight aborts two-way if any film still has superfluous screenings. Default ON.</li>
-              <li><i>Dry run</i>: preview two-way actions without writing. Default OFF.</li>
-            </ul>
-          </li>'
-      . '<li><b>Does not</b>:
-            <ul>
-              <li>Modify the custom screenings table <i>unless</i> two-way options are enabled.</li>
-              <li>Call Agile or refresh the feed.</li>
-              <li>Run the dedupe routine.</li>
-            </ul>
-          </li>'
-      . '<li><b>Output/UX</b>: Prints per-film details and arrays (table, ACF, merged). Can be verbose on large datasets.</li>'
-      . '<li><b>Notes</b>: This page does not fetch from Agile. When two-way is enabled, run only after deleting all superfluous screenings to avoid re-introducing incorrect times into the custom table.</li>'
-      . '</ul>'
+    'short' => 'Manual tool for rebuilding each Film&rsquo;s ACF “Screenings” field from the merged custom-table and ACF screening lists.',
+    'long'  => '<h3>Default behavior</h3>'
+      . '<p>With neither checkbox selected, the tool processes every Film, reads active custom-table screenings (<code>gi_screenings.status = 1</code>) and ACF screenings, normalizes and merges them, and rewrites the ACF <code>screenings</code> field from that merged list. It does not change the custom table.</p>'
+      . '<h3>How the merge works</h3>'
+      . '<ul class="ul-disc">
+          <li>Active custom-table rows (<code>status = 1</code>) are always included. Inactive custom-table rows (<code>status = 0</code>) are ignored and are not copied into ACF.</li>
+          <li>ACF-only rows are also included unless they look like timezone-shadow duplicates of table rows.</li>
+          <li>Because ordinary ACF-only rows are preserved, this page is not the cleanup tool for bad ACF data. Use Delete Superfluous for that.</li>
+        </ul>'
+      . '<h3>Additional options</h3>'
+      . '<ul class="ul-disc">
+          <li><strong>Copy ACF-only screenings into the custom table:</strong> Adds or reactivates ACF-only screenings in <code>gi_screenings</code>. In Dry run mode, it only reports what would be added.</li>
+          <li><strong>Mark active custom-table rows inactive when they are missing from ACF:</strong> Sets <code>gi_screenings.status = 0</code> for active table rows that are not present in ACF. It does not delete those rows. In Dry run mode, it only reports what would be marked inactive.</li>
+        </ul>'
+      . '<h3>Output</h3>'
+      . '<p>Shows a results table for each Film with active custom-table rows, current ACF rows, resulting ACF rows, the ACF action, and any selected custom-table action. Screening lists are collapsed by default so the page stays readable.</p>'
   ];
 
   // Backup DB (admins only; available in all environments)
@@ -129,19 +124,6 @@ function gicinema_get_admin_nav_items() {
     ];
   }
 
-  // Deprecated tool: keep visible but disabled with explanation.
-  $overnight_enabled = function_exists('apply_filters') ? apply_filters('gicinema_enable_overnight_tool', false) : false;
-  $items[] = [
-    'slug' => 'gicinema--delete-overnight-screenings',
-    'label' => 'Delete Overnight (Deprecated)',
-    'deprecated' => true,
-    'show' => true,
-    'enabled' => $overnight_enabled,
-    'deprecated_reason' => 'Replaced by timezone-normalized imports and the safer global cleanup tool.',
-    'short' => 'Deprecated. The former UTC shift issue is resolved by timezone-normalized imports. This tool used naive 22:00–10:00 windows and could remove legitimate shows. Prefer the safer “Delete Superfluous (All Films)” cleanup.',
-    'long'  => 'Hidden by default; can be temporarily re-enabled via the `gicinema_enable_overnight_tool` filter. Includes a dry-run preview but should generally be avoided.'
-  ];
-
   // Global cleanup tool appears last (added later in sidebar as well).
   $items[] = [
     'slug' => 'gicinema--delete-all-superfluous-screenings',
@@ -165,7 +147,6 @@ function gicinema_register_admin_submenus() {
     'gicinema--update-agile-array'             => 'gicinema_page_display__update_agile_array',
     'gicinema--import-films-from-agile'        => 'gicinema_page_display__import_films_from_agile',
     'gicinema--sync-all-screenings'            => 'gicinema_page_display__sync_all_screenings',
-    'gicinema--delete-overnight-screenings'    => 'gicinema_page_display__delete_overnight_screenings',
     'gicinema--dedupe-screenings-page'         => 'gicinema_page_display__dedupe_screenings_table',
     'gicinema--backup-database'                => 'gicinema_page_display__db_backup_and_cleanup',
     'gicinema--delete-all-films'               => 'gicinema_page_display__delete_all_films',
@@ -204,8 +185,8 @@ function gicinema_render_admin_nav($current_slug = '') {
   $items = gicinema_get_admin_nav_items();
   $base = admin_url('admin.php?page=');
 
-  echo '<div class="gicinema-admin-nav" style="margin:10px 0 16px; padding:0;">';
-  echo '<ul style="display:flex; flex-wrap:wrap; gap:4px; margin:0; padding:0; list-style:none;">';
+  echo '<div class="gicinema-admin-nav">';
+  echo '<ul class="gicinema-admin-nav__list">';
   foreach ($items as $it) {
     if (empty($it['show'])) { continue; }
     $slug = $it['slug'];
@@ -214,17 +195,16 @@ function gicinema_render_admin_nav($current_slug = '') {
     $is_deprecated = !empty($it['deprecated']);
     $enabled = isset($it['enabled']) ? (bool)$it['enabled'] : true;
 
-    $base_style = 'display:inline-block; padding:6px 10px; border:1px solid #ccd0d4; border-radius:4px; background:#fff; color:#1d2327; text-decoration:none;';
-    $active_style = 'background:#2271b1; color:#fff; border-color:#2271b1;';
-    $depr_style = 'background:#f6f7f7; color:#646970; border-style:dashed;';
-
-    echo '<li style="margin:0;">'; 
+    echo '<li class="gicinema-admin-nav__item">'; 
     if ($is_deprecated && !$enabled) {
       $title = isset($it['deprecated_reason']) ? $it['deprecated_reason'] : 'Deprecated tool';
-      echo '<span title="' . esc_attr($title) . '" style="' . $base_style . $depr_style . '">' . esc_html($label) . '</span>';
+      echo '<span title="' . esc_attr($title) . '" class="gicinema-admin-nav__link is-deprecated">' . esc_html($label) . '</span>';
     } else {
-      $style = $base_style . ($is_current ? $active_style : '');
-      echo '<a href="' . esc_url($base . $slug) . '" style="' . $style . '">' . esc_html($label) . '</a>';
+      $classes = 'gicinema-admin-nav__link';
+      if ($is_current) {
+        $classes .= ' is-current';
+      }
+      echo '<a href="' . esc_url($base . $slug) . '" class="' . esc_attr($classes) . '">' . esc_html($label) . '</a>';
     }
     echo '</li>';
   }
@@ -252,17 +232,6 @@ function gicinema_render_page_header() {
 }
 add_action('in_admin_header', 'gicinema_render_page_header', 20);
 
-function gicinema_render_page_blurb($slug, $full = false) {
-  $items = gicinema_get_admin_nav_items();
-  $map = [];
-  foreach ($items as $it) { $map[$it['slug']] = $it; }
-  if (!isset($map[$slug])) return;
-  $it = $map[$slug];
-  $text = $full ? (isset($it['long']) ? $it['long'] : '') : (isset($it['short']) ? $it['short'] : '');
-  if (!$text) return;
-  echo '<div class="info"><p>' . esc_html($text) . '</p></div>';
-}
-
 // Renders a single info box with both short and long blurbs (when present).
 function gicinema_render_page_info($slug) {
   $items = gicinema_get_admin_nav_items();
@@ -273,15 +242,15 @@ function gicinema_render_page_info($slug) {
   $short = isset($it['short']) ? $it['short'] : '';
   $long  = isset($it['long']) ? $it['long'] : '';
   if (!$short && !$long) return;
-  echo '<div class="info">';
+  echo '<div class="notice notice-info inline">';
   if ($short) { echo '<p>' . esc_html($short) . '</p>'; }
   if ($long)  {
-    // Allow limited markup in long descriptions so we can present bullet lists clearly.
+    // Allow limited markup in long descriptions so instructions can use headings and WordPress list classes.
     $allowed = [
-      'ul' => [ 'style' => [] ],
+      'ul' => [ 'class' => [], 'style' => [] ],
       'li' => [ 'style' => [] ],
-      'b'  => [],
       'strong' => [],
+      'h3' => [],
       'i'  => [],
       'em' => [],
       'code' => [],
@@ -290,7 +259,12 @@ function gicinema_render_page_info($slug) {
       'br' => []
     ];
 
-    echo '<p>' . wp_kses($long, $allowed) . '</p>';
+    $has_markup = preg_match('/<\s*(p|ul|ol|li|h[1-6]|strong|em|i|code|a|br)\b/i', $long);
+    if ($has_markup) {
+      echo wp_kses($long, $allowed);
+    } else {
+      echo '<p>' . esc_html($long) . '</p>';
+    }
   }
   echo '</div>';
 }
@@ -302,9 +276,9 @@ function gicinema_render_cron_info($slug) {
   foreach ($items as $it) { $map[$it['slug']] = $it; }
   if (!isset($map[$slug]) || empty($map[$slug]['cron'])) return;
   $c = $map[$slug]['cron'];
-  echo '<div class="info" style="margin-top:8px;">';
-  echo '<p><b>Cron</b></p>';
-  echo '<ul style="margin: -8px 0 0 0;">';
+  echo '<div class="notice notice-info inline gicinema-cron-info">';
+  echo '<h3>Cron</h3>';
+  echo '<ul class="gicinema-cron-list">';
   if (!empty($c['hook']))      echo '<li>Hook: ' . esc_html($c['hook']) . '</li>';
   if (!empty($c['frequency'])) echo '<li>Frequency: ' . esc_html($c['frequency']) . '</li>';
   if (!empty($c['schedule']))  echo '<li>Schedule key: ' . esc_html($c['schedule']) . '</li>';

@@ -1,4 +1,13 @@
 <?php
+/**
+ * WordPress save_post integration for Film posts.
+ *
+ * Loaded by gicinema.php during plugin bootstrap. This file runs when someone
+ * saves a Film post in the WordPress editor. It ignores
+ * autosaves and saves that do not include ACF data, then hands the screening
+ * sync work to function__sync_screenings_on_save.php. It also shows an admin
+ * notice after the save completes.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {
@@ -14,8 +23,6 @@ add_action('admin_notices', 'display_film_saved_admin_notice', 100);
 
 
 function gicinema__check_and_run_update_film_on_save($post_id, $post, $update) {
-    ob_start(); // Start buffering output
-    
     // Check if this is a 'film' post type
     if (get_post_type($post_id) !== 'film') {
         return;
@@ -34,9 +41,12 @@ function gicinema__check_and_run_update_film_on_save($post_id, $post, $update) {
     }
 
     // Now, call the function
-    gicinema__update_film_on_save($post_id);
-
-    ob_end_clean(); // Discard the output buffer
+    ob_start(); // Start buffering output from the save sync.
+    try {
+      gicinema__update_film_on_save($post_id);
+    } finally {
+      ob_end_clean(); // Discard the output buffer.
+    }
 }
 
 

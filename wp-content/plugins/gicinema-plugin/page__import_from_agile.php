@@ -1,4 +1,13 @@
 <?php
+/**
+ * Admin page wrapper for manual Agile imports.
+ *
+ * Loaded by gicinema.php and registered as a submenu callback by
+ * inc/admin-nav.php. This is the manual Import from Agile screen. The same
+ * import function also runs automatically from WP-Cron every
+ * 30 minutes. This page shows cron details, recent import logs, the standard
+ * security-protected import form, and a manual JSON paste fallback.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {
@@ -33,7 +42,7 @@ function gicinema_page_display__import_films_from_agile() {
     ob_start();
     gicinema__import_films_from_agile();
     $html = ob_get_clean();
-    echo "<div class='notice notice-success'><p><strong>Import from Agile finished.</strong></p><div class='gicinema-notice-content' style='max-height:420px; overflow:auto;'>{$html}</div></div>";
+    echo "<div class='notice notice-success'><p><strong>Import from Agile finished.</strong></p><div class='gicinema-notice-content'>{$html}</div></div>";
 
     // Check if the standard import form was submitted
   } elseif (isset($_POST['confirm_import']) && $_POST['confirm_import'] == 'yes') {
@@ -41,12 +50,12 @@ function gicinema_page_display__import_films_from_agile() {
     ob_start();
     gicinema__import_films_from_agile();
     $html = ob_get_clean();
-    echo "<div class='notice notice-success'><p><strong>Import from Agile finished.</strong></p><div class='gicinema-notice-content' style='max-height:420px; overflow:auto;'>{$html}</div></div>";
+    echo "<div class='notice notice-success'><p><strong>Import from Agile finished.</strong></p><div class='gicinema-notice-content'>{$html}</div></div>";
   } else {
     // Display warning and confirmation form
 ?>
 
-    <div class="warning">
+    <div class="notice notice-error inline">
       <p><strong>Warning:</strong> This action will import all film posts from Agile. This action is irreversible.</p>
     </div>
     <form method="post">
@@ -60,8 +69,8 @@ function gicinema_page_display__import_films_from_agile() {
     $log = get_option('gicinema_import_log');
     if (is_array($log) && count($log)) {
       echo '<h3>Recent Import Attempts</h3>';
-      echo '<table class="widefat striped" style="max-width:820px">';
-      echo '<thead><tr><th style="width:200px;">Time</th><th style="width:120px;">Context</th><th style="width:120px;">Refreshed</th><th>Shows Count</th></tr></thead><tbody>';
+      echo '<table class="widefat striped gicinema-table gicinema-table--log">';
+      echo '<thead><tr><th>Time</th><th>Context</th><th>Refreshed</th><th>Shows Count</th></tr></thead><tbody>';
       foreach (array_reverse($log) as $row) {
         $t = isset($row['time']) ? (int) $row['time'] : 0;
         $time_str = $t ? wp_date('Y-m-d H:i:s T', $t) : 'unknown';
@@ -88,11 +97,11 @@ function gicinema_page_display__import_films_from_agile() {
     </p>
     <p>
       URL for copy/paste:
-      <input type="text" readonly style="width:100%; font-family:monospace;" value="https://prod5.agileticketing.net/websales/feed.ashx?guid=52c1280f-be14-4579-8ddf-4b3dadbf96c7&showslist=true&withmedia=true&format=json&v=latest" onclick="this.select();">
+      <input type="text" readonly class="gicinema-monospace-input" value="https://prod5.agileticketing.net/websales/feed.ashx?guid=52c1280f-be14-4579-8ddf-4b3dadbf96c7&showslist=true&withmedia=true&format=json&v=latest" onclick="this.select();">
     </p>
     <form method="post">
       <?php wp_nonce_field('import_films_action', 'import_nonce'); ?>
-      <textarea name="agile_json_input" rows="10" style="width:100%; font-family:monospace;"></textarea>
+      <textarea name="agile_json_input" rows="10" class="gicinema-monospace-input"></textarea>
       <p>
         <button class="button">Validate, Cache, and Import</button>
         <input type="hidden" name="paste_agile_json" value="1">

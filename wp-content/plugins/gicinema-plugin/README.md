@@ -3,6 +3,16 @@
 A custom WordPress plugin for **Grand Illusion Cinema** that integrates with **Agile Ticketing** to automatically import, update, and manage film posts and screening schedules.  
 It maintains a custom “screenings” database table, supports automated cron jobs, and provides an admin interface for manual data management, deduplication, and cleanup.
 
+## Overview
+
+This plugin is the operations layer that keeps the Grand Illusion Cinema WordPress site aligned with Agile Ticketing. It fetches the Agile JSON feed, stores the raw feed in a WordPress transient, and uses that cached data to create or update WordPress `film` posts. During import it updates film metadata, ticket links, descriptions, runtime, format, release year, director, production country, poster URL, trailer URL, and featured poster images.
+
+Screening times are handled as their own data pipeline. The plugin normalizes Agile showtimes to the WordPress timezone, writes them to a custom database table named `gi_screenings`, and then syncs those canonical table values into the ACF `screenings` repeater field on each Film post. The ACF field gives editors and front-end templates an easy WordPress-native place to read showtimes, while the custom table remains the source used for deduplication, comparisons, cleanup, and repair tools.
+
+The plugin also adds a `GI Cinema` admin area with tools for checking Film posts, refreshing the Agile feed, importing films and screenings, syncing all screenings, deduplicating the screenings table, deleting superfluous screenings, backing up the database, and managing development-only destructive actions. On individual Film edit screens it adds a top information box that compares custom-table screenings against ACF screenings and provides a shortcut to delete ACF screenings that do not match the active table records.
+
+Automation is handled through WP-Cron. The plugin refreshes the Agile feed every 23 minutes, imports films and screenings every 30 minutes, and creates a compressed database backup once a day at 9 PM server time. It is built around repeatable imports: existing films are matched by Agile ID, screenings are inserted or updated using unique database keys, poster downloads are skipped when the poster URL has not changed, and timezone guards reduce recurring duplicate showtimes caused by UTC/Pacific offset problems.
+
 ## Features
 
 - **Film Importing & Updating**
@@ -16,18 +26,18 @@ It maintains a custom “screenings” database table, supports automated cron j
   - Syncs screenings automatically via cron or on-demand.
   - Deduplicates screenings to prevent duplicate entries.
 
-- **Admin Tools (under "Grand Illusion Cinema" in WP Admin)**
+- **Admin Tools (under "GI Cinema" in WP Admin)**
   - **Update Agile Shows Array**: Manually refreshes cached API data from Agile.
   - **Import from Agile**: Manually trigger film and screening imports. Now includes immediate sync to ACF fields.
   - **Sync All Screenings**: Reconciles screenings between the custom table and the ACF field.
     - Always: reads from the custom table and ACF, merges with timezone-aware guards, and writes the merged set back to ACF so editors see the canonical times.
-    - Optional two-way: can also upsert ACF-only screenings into the custom table (safe upsert). A strict mode can deactivate table rows not present in ACF. Includes dry-run and a “require clean ACF” preflight that aborts two-way if any film still has superfluous screenings.
+    - Optional two-way: can also insert missing ACF-only screenings into the custom table without creating duplicates. A strict mode can deactivate table rows not present in ACF. Includes dry-run and a “require clean ACF” preflight that aborts two-way if any film still has superfluous screenings.
   - **View All Film Posts**: Lists all film posts in the system.
   - **Deduplicate Screenings Table**: Removes duplicate screening rows.
-  - **Delete All Films**: Bulk delete all film posts (use with caution).
-  - **Delete Overnight Screenings**: Removes screenings with start times between 12:00 AM and 6:00 AM. This helps clean up unexpected duplicate screenings caused by time zone offsets (likely GMT vs Pacific Time). The exact cause is unclear — could stem from Agile, WordPress, server config, or plugin logic.
-  - **Truncate Screenings Table**: Completely empties the screenings table.
-  - **Database Backup & Cleanup**: Backs up the screenings table and performs cleanup tasks.
+  - **Delete Superfluous (All)**: Removes ACF screening rows that do not match active rows in the custom screenings table, with dry-run and stop/start controls.
+  - **Delete All Films**: Bulk delete all film posts in local development only (use with caution).
+  - **Truncate Screenings Table**: Completely empties the screenings table in local development only.
+  - **Database Backup & Cleanup**: Backs up the full WordPress database and cleans up old backup files according to the retention policy.
 
 - **Automation**
   - `cron_jobs.php` schedules regular API data updates and imports.
@@ -53,7 +63,7 @@ It maintains a custom “screenings” database table, supports automated cron j
 
 1. Upload the `gicinema-plugin` folder to `/wp-content/plugins/`.
 2. Activate the plugin from **Plugins → Installed Plugins** in WordPress.
-3. Configure any required constants (API keys, Agile endpoint URLs) in `gicinema.php` or your environment.
+3. Confirm the hardcoded Agile feed URL in the update/import code is correct for the site.
 4. Ensure the WordPress cron system is running for automated syncing.
 
 ## Requirements
@@ -61,14 +71,14 @@ It maintains a custom “screenings” database table, supports automated cron j
 - WordPress 6.0+
 - PHP 7.4+ (tested with PHP 8.x)
 - MySQL/MariaDB with permission to create custom tables
-- Agile Ticketing API credentials
-- cURL enabled in PHP
+- Outbound HTTP access from WordPress to the Agile Ticketing JSON feed
+- A `film` post type and the ACF fields used by the site, especially the `screenings` repeater
 
 ## Safety Notes
 
 - **Destructive Actions**:  
-  - `Delete All Films` permanently removes all film posts.  
-  - `Truncate Screenings Table` permanently deletes all screening records.  
+  - `Delete All Films` permanently removes all film posts and is available only when `WP_LOCAL_DEV` is true.  
+  - `Truncate Screenings Table` permanently deletes all screening records and is available only when `WP_LOCAL_DEV` is true.  
   - Use these only in development or with confirmed backups.
 - The **Database Backup & Cleanup** tool should be run before performing destructive actions.
 
@@ -97,7 +107,7 @@ The custom plugin `gicinema-plugin` schedules several automated tasks. These run
   - Hook: `cron__import_films_from_agile`
   - Schedule: every 30 minutes
   - Function: `gicinema__import_films_from_agile`
-  - Purpose: Creates/updates Film posts and screenings from the transient; downloads poster images; syncs screenings and runs dedupe. If the transient is missing, it refreshes it first.
+  - Purpose: Creates/updates Film posts and screenings from the transient; downloads poster images when URLs change; syncs screenings to ACF. If the transient is missing or invalid, it refreshes it first. The standalone dedupe tool is separate; importer idempotency comes from the screenings table unique keys and schema guard.
 
 - Database backup and cleanup
   - Hook: `cron__db_backup_and_cleanup`
@@ -120,7 +130,7 @@ The custom plugin `gicinema-plugin` schedules several automated tasks. These run
 
 ### Local development: forcing runs
 
-If an event exists but isn’t yet due, make it due or run the callback directly.
+If an event exists but isn't yet due, make it due or run the callback directly.
 
 - Ensure environment and plugin
   - Start DDEV: `ddev start`
@@ -191,14 +201,14 @@ This section documents, in detail, the two core actions that power the data flow
 - Update action writes the raw feed JSON into the `agile_shows_array` transient.
 - Import action reads and decodes that transient, then:
   - Creates/updates Film posts; downloads posters if changed.
-  - Normalizes and upserts screenings into the custom table.
+  - Normalizes screenings and inserts or updates them in the custom table without creating duplicates.
   - Syncs screenings into the ACF repeater so front-end templates use the same canonical timestamps.
 - If the transient is missing/invalid, the importer automatically calls the updater first.
 
 ### Timezones and Uniqueness
 
 - Timezone normalization: Importer and sync routines standardize times to the WordPress timezone and format `Y-m-d H:i:s` to eliminate recurring ±7/8h duplicates.
-- Database uniqueness: The screenings table includes `UNIQUE KEY unique_screening_str (film_id, post_id, screening(19))` so inserts are idempotent via `ON DUPLICATE KEY` even if legacy `screening_date/time` uniqueness isn’t present.  
+- Database uniqueness: The screenings table includes `UNIQUE KEY unique_screening_str (film_id, post_id, screening(19))` so inserts are idempotent via `ON DUPLICATE KEY` even if legacy `screening_date/time` uniqueness isn't present.  
   File: `function__create_custom_table.php`.
 
 ### Manual Triggers and Troubleshooting
@@ -208,7 +218,7 @@ This section documents, in detail, the two core actions that power the data flow
   - Update feed now: `ddev wp eval 'gicinema__update_agile_shows_array();'`
   - Import now: `ddev wp eval 'gicinema__import_films_from_agile();'`
   - Run scheduled: `ddev wp cron event run cron__update_agile_shows_array --due-now` and `cron__import_films_from_agile`.
-- If “Found X films…” doesn’t appear or feed logs show HTML instead of JSON:
+- If “Found X films…” doesn't appear or feed logs show HTML instead of JSON:
   - Re-run Update; verify headers/retries in the log.
   - Use the paste-JSON fallback on the Import page as a temporary workaround.
   - Consider shorter HTTP timeouts and additional diagnostics if production networking is flaky.

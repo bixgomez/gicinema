@@ -1,4 +1,13 @@
 <?php
+/**
+ * Admin page wrapper for database backup, cleanup, and downloads.
+ *
+ * Loaded by gicinema.php and registered as the Backup DB submenu callback by
+ * inc/admin-nav.php. This is the manual Backup DB screen. The same backup
+ * function also runs automatically from WP-Cron once per day. This
+ * page runs that backup function after security confirmation, displays existing
+ * backup files, and handles secure backup downloads.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {
@@ -52,7 +61,7 @@ function gicinema_page_display__db_backup_and_cleanup() {
 
     // Always show the confirmation form
 ?>
-    <div class="warning">
+    <div class="notice notice-error inline">
       <p><strong>Warning:</strong> This action will back up the current database and delete old backups according to the retention policy. This action is irreversible.</p>
     </div>
     <form method="post">
@@ -84,13 +93,13 @@ function gicinema_page_display__db_backup_and_cleanup() {
       });
 
       echo '<h3>Existing Backups</h3>';
-      echo '<table class="widefat striped" style="max-width:980px">';
+      echo '<table class="widefat striped gicinema-table gicinema-table--backups">';
       echo '<thead><tr>'
         . '<th>Filename</th>'
-        . '<th style="width:180px;">Created</th>'
-        . '<th style="width:120px;">Size</th>'
-        . '<th style="width:120px;">Type</th>'
-        . '<th style="width:120px;">Action</th>'
+        . '<th>Created</th>'
+        . '<th>Size</th>'
+        . '<th>Type</th>'
+        . '<th>Action</th>'
         . '</tr></thead><tbody>';
       foreach ($items as $it) {
         $created = wp_date('Y-m-d H:i:s T', (int)$it['mtime']);
@@ -101,7 +110,7 @@ function gicinema_page_display__db_backup_and_cleanup() {
           . '<td>' . esc_html($size_h) . '</td>'
           . '<td>' . esc_html($it['ext']) . '</td>'
           . '<td>'
-          . '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '" style="display:inline;">'
+          . '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '" class="gicinema-inline-form">'
           . wp_nonce_field('download_backup_action', 'download_nonce', true, false)
           . '<input type="hidden" name="action" value="gicinema_download_backup">'
           . '<input type="hidden" name="file" value="' . esc_attr($it['name']) . '">'
@@ -112,7 +121,7 @@ function gicinema_page_display__db_backup_and_cleanup() {
       }
       echo '</tbody></table>';
     } else {
-      echo '<p style="margin-top:12px;color:#666;">No backups found yet.</p>';
+      echo '<p class="gicinema-muted-message">No backups found yet.</p>';
     }
 
     echo '</div>';

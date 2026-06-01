@@ -1,13 +1,46 @@
-body {
-  background-color: #fff !important;
-  color: #000 !important;
+/**
+ * Admin stylesheet for the GI Cinema plugin.
+ *
+ * Enqueued by gicinema_enqueue_styles() from gicinema.php on the
+ * admin_enqueue_scripts hook. These styles apply to the plugin's admin pages
+ * and Film edit-screen status box, including diagnostic output containers,
+ * warnings, notices, and the navigation/page information UI.
+ */
+
+:root {
+  --gicinema-color-white: #fff;
+  --gicinema-color-gray-50: #f8f9fa;
+  --gicinema-color-gray-100: #f6f7f7;
+  --gicinema-color-gray-300: #ddd;
+  --gicinema-color-gray-400: #ccd0d4;
+  --gicinema-color-gray-600: #666;
+  --gicinema-color-gray-800: #1d2327;
+  --gicinema-color-blue-600: #2271b1;
+  --gicinema-color-red-600: #b32d2e;
+  --gicinema-color-green-600: #008a20;
+  --gicinema-color-debug-blue: #0000ff;
+  --gicinema-color-function-bg: #00000033;
+  --gicinema-color-function-nested-bg: #ffffff55;
+
+  --gicinema-surface: var(--gicinema-color-white);
+  --gicinema-surface-subtle: var(--gicinema-color-gray-50);
+  --gicinema-surface-muted: var(--gicinema-color-gray-100);
+  --gicinema-text: var(--gicinema-color-gray-800);
+  --gicinema-text-muted: var(--gicinema-color-gray-600);
+  --gicinema-text-subtle: #888;
+  --gicinema-text-disabled: #646970;
+  --gicinema-border: var(--gicinema-color-gray-400);
+  --gicinema-border-light: var(--gicinema-color-gray-300);
+  --gicinema-primary: var(--gicinema-color-blue-600);
+  --gicinema-danger: var(--gicinema-color-red-600);
+  --gicinema-success: var(--gicinema-color-green-600);
+  --gicinema-debug: var(--gicinema-color-debug-blue);
+  --gicinema-function-bg: var(--gicinema-color-function-bg);
+  --gicinema-function-nested-bg: var(--gicinema-color-function-nested-bg);
 }
 
-#wpbody-content {
-  padding-bottom: 40px;
-}
-
-pre {
+.function-info pre,
+.gicinema-transient-dump {
   margin: 0;
   font-weight: 300;
   font-family: monospace;
@@ -17,8 +50,8 @@ pre {
 .function-info {
   margin: 10px 0;
   padding: 10px;
-  background: #00000033;
-  border: 1px solid #00000033;
+  background: var(--gicinema-function-bg);
+  border: 1px solid var(--gicinema-function-bg);
   display: flex;
   flex-direction: column;
   grid-gap: 8px;
@@ -26,12 +59,12 @@ pre {
 
 .function-info .function-info {
   margin: 0;
-  background: #FFFFFF55;
+  background: var(--gicinema-function-nested-bg);
 }
 
 .function-name {
   font-weight: 500;
-  color: blue;
+  color: var(--gicinema-debug);
   font-style: italic;
 }
 
@@ -70,107 +103,334 @@ pre {
 }
 
 .success {
-  color: green;
+  color: var(--gicinema-success);
   font-style: italic;
 }
 
 .failure {
-  color: red;
+  color: var(--gicinema-danger);
   font-style: italic;
-}
-
-.wrap--gicinema {
-  margin: 0 20px 0 0;
-  display: flex;
-  flex-direction: column;
-  height: max-content;
-}
-
-.wrap--gicinema > * {
-  order: 1;
-}
-
-.wrap--gicinema > div.notice {
-  order: 0;
-}
-
-.wrap--gicinema .yoast-notification {
-  display: none;
-}
-
-.wrap--gicinema>h2:first-child {
-  margin-top: 0;
-  padding-top: 0;
-}
-
-.wrap--gicinema table {
-  background-color: #efefef;
-  border-spacing: 0;
-  border-color: #fff;
-  border-width: 1px 1px 0 0;
-  border-style: dashed;
-  border-color: #ccc;
-}
-
-.wrap--gicinema table th {
-  background-color: #efefef;
-}
-
-.wrap--gicinema table tr {
-  background-color: #efefef;
-}
-
-.wrap--gicinema table td,
-.wrap--gicinema table th {
-  padding: 5px 5px 5px 7px;
-  border-width: 0 0 1px 1px;
-  border-style: dashed;
-  border-color: #ccc;
-  text-align: left;
-}
-
-.wrap--gicinema table th {
-  border-bottom-style: double;
-  border-bottom-width: 3px;
-  padding-right: 20px;
-}
-
-.wrap--gicinema h3 {
-  font-size: .9rem;
-}
-
-.wrap--gicinema h2, 
-.wrap--gicinema h3, 
-.wrap--gicinema h4 {
-  margin: 1.25rem 0 .25em;
-} 
-
-.wrap--gicinema p {
-  margin: 0 0 1.25rem;
-} 
-
-.wrap--gicinema p + p {
-  margin-top: -0.75rem;
-} 
-
-.wrap--gicinema p:last-child {
-  margin-bottom: 0;
-} 
-
-.wrap--gicinema > div {
-  background-color: #eee;
-  margin: 0 0 0.5rem;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-}
-
-.wrap--gicinema > div.warning {
-  border-color: red;
 }
 
 /* Simple film edit top box */
 #gicinema-film-top-box.gicinema-admin-box {
-  background: #f8f9fa;
-  border: 1px solid #e2e4e7;
+  background: var(--gicinema-surface-subtle);
+  border: 1px solid var(--gicinema-border-light);
   padding: 12px 14px;
+  margin: 12px 0 18px;
+}
+
+.gicinema-screening-count {
+  margin: 0 0 4px;
+  color: var(--gicinema-text-muted);
+}
+
+.gicinema-screening-count--acf {
+  margin: 6px 6px 6px 0;
+}
+
+.gicinema-source-label {
+  color: var(--gicinema-text-subtle);
+}
+
+.gicinema-action-row {
+  margin-top: 8px;
+}
+
+.gicinema-superfluous-button {
+  margin-top: 4px;
+}
+
+.gicinema-superfluous-button.is-danger {
+  background: var(--gicinema-danger);
+  border-color: var(--gicinema-danger);
+  color: var(--gicinema-surface);
+  font-weight: 700;
+}
+
+.gicinema-section-heading {
+  margin: 8px 0 6px;
+}
+
+.gicinema-empty {
+  margin: 0;
+  color: var(--gicinema-text-muted);
+}
+
+.gicinema-compact-list {
+  margin: 0 0 2px 18px;
+  list-style: disc;
+}
+
+.gicinema-status {
+  margin: 6px 0 0;
+}
+
+.gicinema-status--bad,
+.gicinema-error,
+.gicinema-danger-text,
+.gicinema-deprecated-label {
+  color: var(--gicinema-danger);
+}
+
+.gicinema-status--good {
+  color: var(--gicinema-success);
+}
+
+.gicinema-deprecated-label {
+  font-weight: 600;
+}
+
+.gicinema-admin-nav {
+  margin: 10px 0 16px;
+  padding: 0;
+}
+
+.gicinema-admin-nav__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gicinema-admin-nav__item {
+  margin: 0;
+}
+
+.gicinema-admin-nav__link {
+  display: inline-block;
+  padding: 6px 10px;
+  border: 1px solid var(--gicinema-border);
+  border-radius: 4px;
+  background: var(--gicinema-surface);
+  color: var(--gicinema-text);
+  text-decoration: none;
+}
+
+.gicinema-admin-nav__link.is-current {
+  background: var(--gicinema-primary);
+  border-color: var(--gicinema-primary);
+  color: var(--gicinema-surface);
+}
+
+.gicinema-admin-nav__link.is-deprecated {
+  background: var(--gicinema-surface-muted);
+  color: var(--gicinema-text-disabled);
+  border-style: dashed;
+}
+
+.gicinema-cron-info {
+  margin-top: 8px;
+}
+
+.gicinema-cron-list {
+  margin: -8px 0 0;
+}
+
+.gicinema-batch-controls {
+  margin: 12px 0;
+}
+
+.gicinema-control-label {
+  margin-right: 12px;
+}
+
+.gicinema-button-spaced {
+  margin-left: 6px;
+}
+
+.gicinema-progress {
+  margin-left: 10px;
+  color: var(--gicinema-text-muted);
+}
+
+.gicinema-summary {
+  margin: 8px 0;
+  color: var(--gicinema-text);
+}
+
+.wrap--gicinema-delete-superfluous {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 150px);
+}
+
+.gicinema-log-box {
+  max-height: 360px;
+  overflow: auto;
+  border: 1px solid var(--gicinema-border);
+  padding: 8px;
+  background: var(--gicinema-surface);
+}
+
+.wrap--gicinema-delete-superfluous .gicinema-log-box {
+  flex: 1 1 auto;
+  min-height: 240px;
+  max-height: none;
+}
+
+.gicinema-preview-list,
+.gicinema-offender-list {
+  margin: 0 0 0 18px;
+  list-style: disc;
+}
+
+.gicinema-preview-list {
+  margin-top: 6px;
+}
+
+.gicinema-followup-form {
+  margin-top: 10px;
+}
+
+.gicinema-notice-content {
+  max-height: 420px;
+  overflow: auto;
+}
+
+.gicinema-sync-results-scroll {
+  max-height: calc(100vh - 320px);
+  min-height: 240px;
+  overflow: auto;
+  border: 1px solid var(--gicinema-border);
+  background: var(--gicinema-surface);
+}
+
+.gicinema-sync-results {
+  border: 0;
+}
+
+.gicinema-sync-results thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--gicinema-surface);
+}
+
+.gicinema-option-list {
+  margin-top: 10px;
+}
+
+.gicinema-sync-mode-toggle {
+  margin: 12px 0 10px;
+}
+
+.gicinema-sync-mode-toggle legend {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.gicinema-sync-mode-toggle label {
+  margin-right: 16px;
+}
+
+.gicinema-option {
+  display: block;
+  margin: 6px 0;
+}
+
+.gicinema-dry-run-label {
+  display: inline-block;
+  margin: 6px 0 10px;
+}
+
+.gicinema-table {
+  max-width: 820px;
+}
+
+.gicinema-table--backups {
+  max-width: 980px;
+}
+
+.gicinema-table--delete-log {
+  max-width: none;
+}
+
+.gicinema-table--log th:nth-child(1) {
+  width: 200px;
+}
+
+.gicinema-table--log th:nth-child(n+2) {
+  width: 120px;
+}
+
+.gicinema-table--delete-log th:nth-child(1) {
+  width: 70px;
+}
+
+.gicinema-table--delete-log th:nth-child(3) {
+  width: 140px;
+}
+
+.gicinema-table--delete-log th:nth-child(4),
+.gicinema-table--delete-log th:nth-child(5),
+.gicinema-table--delete-log th:nth-child(6) {
+  width: 90px;
+}
+
+.gicinema-table--delete-log td {
+  vertical-align: top;
+}
+
+.gicinema-delete-log__row--has-discrepancy td:first-child {
+  border-left: 4px solid #d63638;
+}
+
+.gicinema-delete-log__row--has-discrepancy td {
+  background: #fcf0f1;
+}
+
+.gicinema-table--backups th:nth-child(2) {
+  width: 180px;
+}
+
+.gicinema-table--backups th:nth-child(n+3) {
+  width: 120px;
+}
+
+.gicinema-inline-form {
+  display: inline;
+}
+
+.gicinema-muted-message {
+  margin-top: 12px;
+  color: var(--gicinema-text-muted);
+}
+
+.gicinema-transient-heading {
+  margin-top: 16px;
+}
+
+.gicinema-meta-line {
+  margin: 6px 0;
+  color: var(--gicinema-text-muted);
+}
+
+.gicinema-meta-line--expires {
+  margin: 0 0 8px;
+}
+
+.gicinema-meta-line--bytes {
+  margin: 6px 0 8px;
+}
+
+.gicinema-transient-dump {
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 420px;
+  overflow: auto;
+  border: 1px solid var(--gicinema-border);
+  padding: 8px;
+  background: var(--gicinema-surface);
+}
+
+.gicinema-notice-offset {
+  margin-top: 12px;
+}
+
+.gicinema-monospace-input {
+  width: 100%;
+  font-family: monospace;
 }

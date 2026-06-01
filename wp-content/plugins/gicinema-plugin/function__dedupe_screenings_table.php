@@ -1,4 +1,12 @@
 <?php
+/**
+ * Manual duplicate cleanup for the custom screenings table.
+ *
+ * Loaded by the import and sync modules, and run directly from the Dedupe
+ * Screenings admin page. It deletes duplicate gi_screenings rows by keeping the
+ * lowest screening_id for each screening/film/post combination. When invoked
+ * from the admin form, it requires the page nonce before making changes.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {

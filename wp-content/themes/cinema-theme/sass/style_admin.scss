@@ -1,10 +1,5 @@
 @import "breakpoint";
 @import "config/config";
-// @import "beaver/beaver";
-
-body {
-  background-color: mix($c--admin-background, $c--white, 75%);
-}
 
 #edit-slug-box {
   margin-top: 17px;

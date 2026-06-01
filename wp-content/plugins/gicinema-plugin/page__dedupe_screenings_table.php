@@ -1,4 +1,12 @@
 <?php
+/**
+ * Admin page wrapper for custom screenings table dedupe.
+ *
+ * Loaded by gicinema.php and added to the GI Cinema admin menu by
+ * inc/admin-nav.php. This is the manual Dedupe Screenings screen. It runs only
+ * after an administrator confirms the security-protected
+ * form, then calls gicinema__dedupe_screenings_table() and displays the result.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {
@@ -23,7 +31,7 @@ function gicinema_page_display__dedupe_screenings_table() {
     // Display warning and confirmation form
 ?>
     
-    <div class="warning">
+    <div class="notice notice-error inline">
       <p><strong>Warning:</strong> This action will dedupe the screenings table. This action is irreversible.</p>
     </div>
     <form method="post">

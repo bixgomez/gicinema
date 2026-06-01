@@ -1,4 +1,13 @@
 <?php
+/**
+ * Admin page wrapper for refreshing and inspecting the cached Agile feed.
+ *
+ * Loaded by gicinema.php and registered as a submenu callback by
+ * inc/admin-nav.php. This is the manual screen for fetching the latest Agile
+ * JSON feed and seeing what is currently cached. The same feed
+ * refresh function also runs automatically from WP-Cron every 23 minutes. This
+ * page shows recent fetch attempts, cached-feed details, and the raw JSON.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {
@@ -25,8 +34,8 @@ function gicinema_page_display__update_agile_array() {
     $log = get_option('gicinema_update_feed_log');
     if (is_array($log) && count($log)) {
       echo '<h3>Recent Feed Update Attempts</h3>';
-      echo '<table class="widefat striped" style="max-width:820px">';
-      echo '<thead><tr><th style="width:200px;">Time</th><th style="width:120px;">Context</th><th style="width:90px;">Retried</th><th style="width:90px;">Success</th><th style="width:90px;">HTTP</th><th>Bytes</th></tr></thead><tbody>';
+      echo '<table class="widefat striped gicinema-table gicinema-table--log">';
+      echo '<thead><tr><th>Time</th><th>Context</th><th>Retried</th><th>Success</th><th>HTTP</th><th>Bytes</th></tr></thead><tbody>';
       foreach (array_reverse($log) as $row) {
         $t = isset($row['time']) ? (int) $row['time'] : 0;
         $time_str = $t ? wp_date('Y-m-d H:i:s T', $t) : 'unknown';
@@ -56,11 +65,11 @@ function gicinema_page_display__update_agile_array() {
       $timeout = get_option('_transient_timeout_agile_shows_array');
       $updated_str = $updated_ts ? wp_date('Y-m-d H:i:s T', $updated_ts) : 'unknown';
       $expires_str = $timeout ? wp_date('Y-m-d H:i:s T', (int)$timeout) : 'unknown';
-      echo '<h3 style="margin-top:16px;">agile_shows_array transient (raw)</h3>';
-      echo '<p style="margin:6px 0;color:#666;">Updated: ' . esc_html($updated_str) . '</p>';
-      echo '<p style="margin:0 0 8px;color:#666;">Expires: ' . esc_html($expires_str) . '</p>';
-      echo '<p style="margin:6px 0 8px;color:#666;">Bytes: ' . intval($len) . '</p>';
-      echo '<pre class="gicinema-transient-dump" style="white-space:pre-wrap;word-break:break-word;max-height:420px;overflow:auto;border:1px solid #ccd0d4;padding:8px;background:#fff;">' . esc_html((string)$body) . '</pre>';
+      echo '<h3 class="gicinema-transient-heading">agile_shows_array transient (raw)</h3>';
+      echo '<p class="gicinema-meta-line">Updated: ' . esc_html($updated_str) . '</p>';
+      echo '<p class="gicinema-meta-line gicinema-meta-line--expires">Expires: ' . esc_html($expires_str) . '</p>';
+      echo '<p class="gicinema-meta-line gicinema-meta-line--bytes">Bytes: ' . intval($len) . '</p>';
+      echo '<pre class="gicinema-transient-dump">' . esc_html((string)$body) . '</pre>';
     } else {
       echo "<div class='notice notice-warning'><p>No agile_shows_array transient is currently set.</p></div>";
     }
@@ -77,8 +86,8 @@ function gicinema_page_display__update_agile_array() {
   $log = get_option('gicinema_update_feed_log');
   if (is_array($log) && count($log)) {
     echo '<h3>Recent Feed Update Attempts</h3>';
-    echo '<table class="widefat striped" style="max-width:820px">';
-    echo '<thead><tr><th style="width:200px;">Time</th><th style="width:120px;">Context</th><th style="width:90px;">Retried</th><th style="width:90px;">Success</th><th style="width:90px;">HTTP</th><th>Bytes</th></tr></thead><tbody>';
+    echo '<table class="widefat striped gicinema-table gicinema-table--log">';
+    echo '<thead><tr><th>Time</th><th>Context</th><th>Retried</th><th>Success</th><th>HTTP</th><th>Bytes</th></tr></thead><tbody>';
     foreach (array_reverse($log) as $row) {
       $t = isset($row['time']) ? (int) $row['time'] : 0;
       $time_str = $t ? wp_date('Y-m-d H:i:s T', $t) : 'unknown';
@@ -107,13 +116,13 @@ function gicinema_page_display__update_agile_array() {
     $timeout2 = get_option('_transient_timeout_agile_shows_array');
     $updated_str2 = $updated_ts2 ? wp_date('Y-m-d H:i:s T', $updated_ts2) : 'unknown';
     $expires_str2 = $timeout2 ? wp_date('Y-m-d H:i:s T', (int)$timeout2) : 'unknown';
-    echo '<h3 style="margin-top:16px;">Current agile_shows_array transient (raw)</h3>';
-    echo '<p style="margin:6px 0;color:#666;">Updated: ' . esc_html($updated_str2) . '</p>';
-    echo '<p style="margin:0 0 8px;color:#666;">Expires: ' . esc_html($expires_str2) . '</p>';
-    echo '<p style="margin:6px 0 8px;color:#666;">Bytes: ' . intval($len2) . '</p>';
-    echo '<pre class="gicinema-transient-dump" style="white-space:pre-wrap;word-break:break-word;max-height:420px;overflow:auto;border:1px solid #ccd0d4;padding:8px;background:#fff;">' . esc_html((string)$current) . '</pre>';
+    echo '<h3 class="gicinema-transient-heading">Current agile_shows_array transient (raw)</h3>';
+    echo '<p class="gicinema-meta-line">Updated: ' . esc_html($updated_str2) . '</p>';
+    echo '<p class="gicinema-meta-line gicinema-meta-line--expires">Expires: ' . esc_html($expires_str2) . '</p>';
+    echo '<p class="gicinema-meta-line gicinema-meta-line--bytes">Bytes: ' . intval($len2) . '</p>';
+    echo '<pre class="gicinema-transient-dump">' . esc_html((string)$current) . '</pre>';
   } else {
-    echo "<div class='notice notice-info' style='margin-top:12px;'><p>No existing agile_shows_array transient found. Click the button above to fetch and cache the feed.</p></div>";
+    echo "<div class='notice notice-info gicinema-notice-offset'><p>No existing agile_shows_array transient found. Click the button above to fetch and cache the feed.</p></div>";
   }
     ?>
 <?php

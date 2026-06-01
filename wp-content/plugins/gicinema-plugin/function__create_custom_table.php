@@ -1,4 +1,12 @@
 <?php
+/**
+ * Custom screenings table creation.
+ *
+ * Loaded by gicinema.php and run through register_activation_hook() when the
+ * plugin is activated. It uses dbDelta() to create or update the
+ * {$wpdb->prefix}gi_screenings table, including keys that keep repeated Agile
+ * imports from creating duplicate screening rows.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {

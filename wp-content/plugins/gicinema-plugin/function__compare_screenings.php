@@ -1,4 +1,12 @@
 <?php
+/**
+ * Film edit-screen comparison helpers for table and ACF screenings.
+ *
+ * Loaded by gicinema.php during plugin bootstrap. These functions are called
+ * from the Film edit-screen top box to show active custom-table screenings,
+ * matching ACF repeater rows, and counts of ACF rows that no longer match the
+ * canonical table values. They return HTML snippets rather than rendering pages.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {
@@ -46,28 +54,16 @@ function gicinema__render_matching_screenings($post_id) {
       foreach ($acf_value as $row) {
         if (isset($row['screening']) && is_string($row['screening'])) {
           $label = $row['screening'];
-          // If already normalized (Y-m-d H:i:s), keep as-is
-          if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $label)) {
-            $acf_screenings[] = $label;
-          } else {
-            // Normalize to Y-m-d H:i:s in WP timezone
-            $tz = function_exists('wp_timezone') ? wp_timezone() : new DateTimeZone(get_option('timezone_string') ?: 'UTC');
-            $dt = DateTime::createFromFormat('m/d/Y g:i a', $label, $tz);
-            if ($dt instanceof DateTime) {
-              $dt->setTimezone($tz);
-              $acf_screenings[] = $dt->format('Y-m-d H:i:s');
-            } else {
-              $ts = strtotime($label);
-              if ($ts) {
-                $acf_screenings[] = date('Y-m-d H:i:s', $ts);
-              }
-            }
+          // Use strict parser for normalization (always uses wp_timezone)
+          $normalized = gicinema__parse_screening_datetime($label, 'acf_comparison');
+          if ($normalized) {
+            $acf_screenings[] = $normalized;
           }
         }
       }
     }
   } else {
-    // If ACF unavailable, attempt to read a count but we can’t derive values; return early.
+    // If ACF unavailable, attempt to read a count but we can't derive values; return early.
     return '';
   }
 
@@ -78,17 +74,20 @@ function gicinema__render_matching_screenings($post_id) {
 
   // 4) Render HTML list
   $html = '';
-  $html .= '<h4 style="margin:8px 0 6px;">Matching screenings:</h4>';
+  $html .= '<h4 class="gicinema-section-heading">Matching screenings:</h4>';
   $date_format = get_option('date_format') ?: 'M j, Y';
   $time_format = get_option('time_format') ?: 'g:i a';
   if (empty($matching)) {
-    $html .= '<p style="margin:0; color:#777;">None</p>';
+    $html .= '<p class="gicinema-empty">None</p>';
   } else {
-    $html .= '<ul style="margin:0 0 2px 18px; list-style:disc;">';
+    $html .= '<ul class="gicinema-compact-list">';
+    $tz = function_exists('wp_timezone') ? wp_timezone() : new DateTimeZone(get_option('timezone_string') ?: 'UTC');
     foreach ($matching as $val) {
-      $ts = strtotime($val);
-      if ($ts) {
-        $label = date_i18n($date_format . ' ' . $time_format, $ts);
+      // Normalize value using strict parser before display formatting
+      $normalized = gicinema__parse_screening_datetime($val, 'matching_display');
+      if ($normalized) {
+        $dt = DateTime::createFromFormat('Y-m-d H:i:s', $normalized, $tz);
+        $label = $dt ? date_i18n($date_format . ' ' . $time_format, $dt->getTimestamp()) : $val;
       } else {
         $label = $val; // fallback raw
       }
@@ -109,9 +108,9 @@ function gicinema__render_matching_screenings($post_id) {
   }
 
   if ($superfluous_count > 0) {
-    $html .= '<p style="margin:6px 0 0; color:#b32d2e;"><strong>' . esc_html($superfluous_count) . ' ' . esc_html(_n('Superfluous Screening', 'Superfluous Screenings', $superfluous_count, 'gicinema')) . '</strong></p>';
+    $html .= '<p class="gicinema-status gicinema-status--bad"><strong>' . esc_html($superfluous_count) . ' ' . esc_html(_n('Superfluous Screening', 'Superfluous Screenings', $superfluous_count, 'gicinema')) . '</strong></p>';
   } else {
-    $html .= '<p style="margin:6px 0 0; color:#008a20;"><strong>' . esc_html__('No Superfluous Screenings', 'gicinema') . '</strong></p>';
+    $html .= '<p class="gicinema-status gicinema-status--good"><strong>' . esc_html__('No Superfluous Screenings', 'gicinema') . '</strong></p>';
   }
 
   return $html;
@@ -130,10 +129,10 @@ function gicinema__render_table_screenings($post_id) {
   $table_name = $wpdb->prefix . 'gi_screenings';
   $table_exists = ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table_name)) === $table_name);
   $html = '';
-  $html .= '<h4 style="margin:8px 0 6px;">Screenings (from custom table):</h4>';
+  $html .= '<h4 class="gicinema-section-heading">Screenings (from custom table):</h4>';
 
   if (!$table_exists) {
-    $html .= '<p style="margin:0; color:#777;">None</p>';
+    $html .= '<p class="gicinema-empty">None</p>';
     return $html;
   }
 
@@ -143,16 +142,23 @@ function gicinema__render_table_screenings($post_id) {
   ));
 
   if (empty($rows)) {
-    $html .= '<p style="margin:0; color:#777;">None</p>';
+    $html .= '<p class="gicinema-empty">None</p>';
     return $html;
   }
 
   $date_format = get_option('date_format') ?: 'M j, Y';
   $time_format = get_option('time_format') ?: 'g:i a';
-  $html .= '<ul style="margin:0 0 2px 18px; list-style:disc;">';
+  $tz = function_exists('wp_timezone') ? wp_timezone() : new DateTimeZone(get_option('timezone_string') ?: 'UTC');
+  $html .= '<ul class="gicinema-compact-list">';
   foreach ($rows as $val) {
-    $ts = strtotime($val);
-    $label = $ts ? date_i18n($date_format . ' ' . $time_format, $ts) : $val;
+    // Normalize value using strict parser before display formatting
+    $normalized = gicinema__parse_screening_datetime($val, 'table_display');
+    if ($normalized) {
+      $dt = DateTime::createFromFormat('Y-m-d H:i:s', $normalized, $tz);
+      $label = $dt ? date_i18n($date_format . ' ' . $time_format, $dt->getTimestamp()) : $val;
+    } else {
+      $label = $val;
+    }
     $html .= '<li>' . esc_html($label) . '</li>';
   }
   $html .= '</ul>';

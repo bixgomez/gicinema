@@ -1,4 +1,14 @@
 <?php
+/**
+ * One-time schema repair for the custom screenings table.
+ *
+ * Loaded by gicinema.php and called by the Agile importer before it writes
+ * screening rows. Because the importer also runs from WP-Cron, this repair can
+ * run during the automatic 30-minute import job as well as during a manual
+ * import. It checks that the screenings table has the unique index needed to
+ * prevent duplicate showtimes, adds it if needed, and performs
+ * a guarded one-time dedupe.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {

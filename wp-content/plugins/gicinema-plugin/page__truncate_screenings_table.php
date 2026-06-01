@@ -1,4 +1,13 @@
 <?php
+/**
+ * Local-development admin page for truncating the screenings table.
+ *
+ * Loaded by gicinema.php, but the page callback is only defined when
+ * WP_LOCAL_DEV is true. This page will only appear and run on the local dev
+ * server, not on production. It shows the current row count,
+ * requires a security token and browser confirmation, then calls
+ * gicinema__truncate_screenings_table() to empty gi_screenings.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {
@@ -26,7 +35,7 @@ if (defined('WP_LOCAL_DEV') && WP_LOCAL_DEV) {
       // Display warning and confirmation form
 ?>
 
-      <div class="warning">
+      <div class="notice notice-error inline">
         <p><strong>Warning:</strong> This will permanently truncate the custom screenings table. It cannot be undone. Film posts remain; all screenings rows will be removed.</p>
       </div>
       <?php

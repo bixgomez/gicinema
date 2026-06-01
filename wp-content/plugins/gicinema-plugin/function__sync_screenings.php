@@ -1,52 +1,151 @@
 <?php
+/**
+ * Per-film ACF/custom-table screening sync helpers.
+ *
+ * This file is a function library. Including it only defines the helpers below;
+ * no sync runs until one of those functions is called.
+ *
+ * Normal plugin bootstrap loads this file through cron_jobs.php ->
+ * function__sync_all_screenings.php. The main entry point,
+ * gicinema__sync_screenings(), is called from two production workflows:
+ *
+ * 1. function__import_films_from_agile.php, after a Film's Agile showtimes are
+ *    written to gi_screenings during scheduled or manual Agile imports.
+ * 2. function__sync_all_screenings.php, once per Film during the manual Sync All
+ *    Screenings admin tool.
+ *
+ * gicinema__sync_screenings() reads active rows from gi_screenings, reads the
+ * Film post's ACF "screenings" repeater, merges those canonical values, filters
+ * timezone-shadow duplicates, and writes the resulting list back to ACF unless
+ * dry-run mode is requested.
+ */
 
 // If this file is called directly, abort!
 if (!defined('ABSPATH')) {
   exit;
 }
 
-function gicinema__sync_screenings($post_id) {
-
-  global $wpdb;
-
-  echo '<div class="function-info">';
-  echo '<div class="function-name">gicinema__sync_screenings($post_id)</div>';
-    
-  $table_name = $wpdb->prefix . 'gi_screenings';
-
-  echo '<div>' . $post_id . '</div>';
-
+function gicinema__sync_screenings($post_id, $dry_run = false, $echo_output = true) {
   // $agile_id_from_post = gicinema__get_agile_id_from_post($post_id);
 
   $screenings_from_table = gicinema__get_screenings_from_table($post_id);
-
-  echo '<div class="function-info">';
-  echo '<div>Array of screenings from custom table:</div>';
-  echo '<pre>';
-  print_r($screenings_from_table);
-  echo '</pre>';
-  echo '</div>';
-
   $screenings_from_post = gicinema__get_screenings_from_post($post_id);
-
-  echo '<div class="function-info">';
-  echo '<div>Array of screenings from ACF repeater field:</div>';
-  echo '<pre>';
-  print_r($screenings_from_post);
-  echo '</pre>';
-  echo '</div>';
-
   $merged_screenings = gicinema__merge_screenings_arrays($screenings_from_post, $screenings_from_table);
 
-  echo '<div class="function-info">';
-  echo '<div>Array of merged screenings from both sources:</div>';
-  echo '<pre>';
-  print_r($merged_screenings);
-  echo '</pre>';
-  echo '</div>';
+  $current_acf_values = gicinema__normalize_screening_list_for_comparison($screenings_from_post);
+  $merged_values = gicinema__normalize_screening_list_for_comparison($merged_screenings);
+  $added_to_acf = array_values(array_diff($merged_values, $current_acf_values));
+  $removed_from_acf = array_values(array_diff($current_acf_values, $merged_values));
+  $acf_changed = ($current_acf_values !== $merged_values);
 
-  gicinema__replace_all_screenings_in_post($merged_screenings, $post_id);
+  $summary = [
+    'post_id' => $post_id,
+    'dry_run' => $dry_run,
+    'table_screenings' => array_values((array) $screenings_from_table),
+    'acf_screenings' => array_values((array) $screenings_from_post),
+    'merged_screenings' => array_values((array) $merged_screenings),
+    'added_to_acf' => $added_to_acf,
+    'removed_from_acf' => $removed_from_acf,
+    'acf_changed' => $acf_changed,
+    'acf_written' => false,
+  ];
 
+  if (!$dry_run) {
+    gicinema__replace_all_screenings_in_post($merged_screenings, $post_id);
+    $summary['acf_written'] = true;
+  }
+
+  if ($echo_output) {
+    gicinema__render_sync_screenings_summary($summary);
+  }
+
+  return $summary;
+}
+
+function gicinema__normalize_screening_list_for_comparison($screenings) {
+  $values = [];
+
+  foreach ((array) $screenings as $screening) {
+    if (is_string($screening) && $screening !== '') {
+      $values[] = $screening;
+    }
+  }
+
+  $values = array_values(array_unique($values));
+  sort($values);
+
+  return $values;
+}
+
+function gicinema__format_screening_for_admin($screening) {
+  if (!is_string($screening) || $screening === '') {
+    return '';
+  }
+
+  // Normalize the screening value using strict parser
+  $normalized = gicinema__parse_screening_datetime($screening, 'admin_display');
+  if (!$normalized) {
+    return $screening; // Return raw value if parsing failed
+  }
+
+  $tz = function_exists('wp_timezone') ? wp_timezone() : new DateTimeZone(get_option('timezone_string') ?: 'UTC');
+  $dt = DateTime::createFromFormat('Y-m-d H:i:s', $normalized, $tz);
+
+  if ($dt instanceof DateTime) {
+    return wp_date('D, M j, Y g:i a', $dt->getTimestamp(), $tz);
+  }
+
+  return $screening;
+}
+
+function gicinema__render_screening_details($screenings) {
+  $screenings = array_values((array) $screenings);
+  $count = count($screenings);
+
+  if ($count === 0) {
+    echo '0';
+    return;
+  }
+
+  $summary = $count === 1 ? '1 screening' : $count . ' screenings';
+
+  echo '<details>';
+  echo '<summary>' . esc_html($summary) . '</summary>';
+  echo '<ul class="ul-disc">';
+  foreach ($screenings as $screening) {
+    echo '<li><code>' . esc_html($screening) . '</code><br><span class="description">' . esc_html(gicinema__format_screening_for_admin($screening)) . '</span></li>';
+  }
+  echo '</ul>';
+  echo '</details>';
+}
+
+function gicinema__get_sync_screenings_action_label($summary) {
+  $changed = !empty($summary['acf_changed']);
+  $dry_run = !empty($summary['dry_run']);
+  $added = isset($summary['added_to_acf']) ? count($summary['added_to_acf']) : 0;
+  $removed = isset($summary['removed_from_acf']) ? count($summary['removed_from_acf']) : 0;
+
+  if ($dry_run) {
+    $label = $changed ? 'Would rewrite ACF' : 'No ACF changes needed';
+  } else {
+    $label = $changed ? 'Rewrote ACF' : 'Rewrote ACF; values already matched';
+  }
+
+  if ($added || $removed) {
+    $label .= ' (' . $added . ' added, ' . $removed . ' removed)';
+  }
+
+  return $label;
+}
+
+function gicinema__render_sync_screenings_summary($summary) {
+  echo '<div class="notice notice-info inline">';
+  echo '<p><strong>ACF screenings:</strong> ' . esc_html(gicinema__get_sync_screenings_action_label($summary)) . '.</p>';
+  echo '<ul class="ul-disc">';
+  echo '<li>Active custom-table rows: ' . count($summary['table_screenings']) . '</li>';
+  echo '<li>Current ACF rows: ' . count($summary['acf_screenings']) . '</li>';
+  echo '<li>Resulting ACF rows: ' . count($summary['merged_screenings']) . '</li>';
+  echo '</ul>';
   echo '</div>';
 }
 
@@ -104,28 +203,8 @@ function gicinema__get_screenings_from_post($post_id) {
           // Directly access sub-field values
           $screeningString = get_sub_field('screening');
 
-          // Normalize to Y-m-d H:i:s in the WP timezone
-          $formatted = '';
-          if (is_string($screeningString) && $screeningString !== '') {
-            // If already normalized (Y-m-d H:i:s), keep as-is
-            if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $screeningString)) {
-              $formatted = $screeningString;
-            } else {
-              $tz = function_exists('wp_timezone') ? wp_timezone() : new DateTimeZone(get_option('timezone_string') ?: 'UTC');
-              $dt = DateTime::createFromFormat('m/d/Y g:i a', $screeningString, $tz);
-              if ($dt instanceof DateTime) {
-                // Ensure timezone is WP timezone
-                $dt->setTimezone($tz);
-                $formatted = $dt->format('Y-m-d H:i:s');
-              } else {
-                // Fallback parse
-                $ts = strtotime($screeningString);
-                if ($ts) {
-                  $formatted = date('Y-m-d H:i:s', $ts);
-                }
-              }
-            }
-          }
+          // Normalize to Y-m-d H:i:s in the WP timezone using strict parser
+          $formatted = gicinema__parse_screening_datetime($screeningString, 'acf_read');
 
           if ($formatted) {
             $screenings_data[] = $formatted;
@@ -189,8 +268,6 @@ function gicinema__merge_screenings_arrays($array_1, $array_2) {
     $enable_guard = apply_filters('gicinema_enable_tz_shadow_guard', $enable_guard);
   }
 
-  $tz = function_exists('wp_timezone') ? wp_timezone() : new DateTimeZone(get_option('timezone_string') ?: 'UTC');
-
   $accepted_acf = [];
   foreach ((array) $array_1 as $v) {
     if (!is_string($v) || $v === '') {
@@ -204,23 +281,12 @@ function gicinema__merge_screenings_arrays($array_1, $array_2) {
     }
 
     // Guard against timezone-shadow duplicates only if enabled.
-    if ($enable_guard) {
-      $ts = strtotime($v);
-      if ($ts) {
-        try {
-          $dt = new DateTime($v, $tz);
-          $offset = $tz->getOffset($dt); // seconds (e.g., 25200 for PDT, 28800 for PST)
-        } catch (Exception $e) {
-          $offset = 0;
-        }
-        if ($offset) {
-          $plus  = date('Y-m-d H:i:s', $ts + $offset);
-          $minus = date('Y-m-d H:i:s', $ts - $offset);
-          if (isset($table_set[$plus]) || isset($table_set[$minus])) {
-            // Skip ACF value that is merely a timezone-shifted duplicate of a table value.
-            // To disable this behavior, see toggle notes above.
-            continue;
-          }
+    if ($enable_guard && function_exists('gicinema__is_timezone_shadow')) {
+      foreach (array_keys($table_set) as $table_screening) {
+        if (gicinema__is_timezone_shadow($v, $table_screening)) {
+          // Skip ACF value that is merely a timezone-shifted duplicate of a table value.
+          // To disable this behavior, see toggle notes above.
+          continue 2;
         }
       }
     }
@@ -241,10 +307,6 @@ function gicinema__merge_screenings_arrays($array_1, $array_2) {
 
 
 function gicinema__replace_all_screenings_in_post($new_screenings, $post_id) {
-
-  echo '<div class="function-info">';
-  echo '<div class="function-name">gicinema__replace_all_screenings_in_post($new_screenings, $post_id)</div>';
-
   // Prepare the array to update the repeater field
   $screenings_to_update = [];
   foreach ($new_screenings as $date) {
@@ -254,8 +316,6 @@ function gicinema__replace_all_screenings_in_post($new_screenings, $post_id) {
   // Update the repeater field with the new array of screenings
   // Replace 'screenings' with your actual repeater field name
   update_field('screenings', $screenings_to_update, $post_id);
-  
-  echo '</div>';
 }
 
 
