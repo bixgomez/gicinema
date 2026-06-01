@@ -23,8 +23,6 @@ add_action('admin_notices', 'display_film_saved_admin_notice', 100);
 
 
 function gicinema__check_and_run_update_film_on_save($post_id, $post, $update) {
-    ob_start(); // Start buffering output
-    
     // Check if this is a 'film' post type
     if (get_post_type($post_id) !== 'film') {
         return;
@@ -43,9 +41,12 @@ function gicinema__check_and_run_update_film_on_save($post_id, $post, $update) {
     }
 
     // Now, call the function
-    gicinema__update_film_on_save($post_id);
-
-    ob_end_clean(); // Discard the output buffer
+    ob_start(); // Start buffering output from the save sync.
+    try {
+      gicinema__update_film_on_save($post_id);
+    } finally {
+      ob_end_clean(); // Discard the output buffer.
+    }
 }
 
 

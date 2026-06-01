@@ -35,6 +35,13 @@ class ImportFilmsFromAgileTest extends WP_UnitTestCase {
 	 */
 	private $table_name;
 
+	/**
+	 * The currently registered HTTP stub callback, if any.
+	 *
+	 * @var callable|null
+	 */
+	private $http_stub_callback;
+
 	public function setUp(): void {
 		parent::setUp();
 
@@ -60,13 +67,53 @@ class ImportFilmsFromAgileTest extends WP_UnitTestCase {
 
 		// Stub ALL outbound HTTP (only the poster download) with a WP_Error so
 		// nothing hits the network and the attachment pipeline is skipped.
+		$this->http_stub_callback = static function () {
+			return new WP_Error( 'http_request_failed', 'stubbed in test' );
+		};
 		add_filter(
 			'pre_http_request',
-			static function () {
-				return new WP_Error( 'http_request_failed', 'stubbed in test' );
-			},
+			$this->http_stub_callback,
 			10,
 			3
+		);
+	}
+
+	public function tearDown(): void {
+		if ( $this->http_stub_callback ) {
+			remove_filter( 'pre_http_request', $this->http_stub_callback, 10 );
+			$this->http_stub_callback = null;
+		}
+
+		parent::tearDown();
+	}
+
+	/**
+	 * Run the full Agile import while capturing its echoed admin output.
+	 */
+	private function run_import() {
+		ob_start();
+		try {
+			gicinema__import_films_from_agile();
+		} finally {
+			ob_get_clean();
+		}
+	}
+
+	/**
+	 * Locate imported Film posts by Agile ID.
+	 *
+	 * @param string $agile_id Agile film ID.
+	 * @return int[] Post IDs.
+	 */
+	private function find_films_by_agile_id( $agile_id ) {
+		return get_posts(
+			array(
+				'post_type'      => 'film',
+				'posts_per_page' => -1,
+				'meta_key'       => 'agile_film_id',
+				'meta_value'     => $agile_id,
+				'fields'         => 'ids',
+			)
 		);
 	}
 
@@ -77,15 +124,26 @@ class ImportFilmsFromAgileTest extends WP_UnitTestCase {
 	 * @return int Post ID (0 if not found).
 	 */
 	private function find_film_by_agile_id( $agile_id ) {
-		$films = get_posts(
-			array(
-				'post_type'      => 'film',
-				'posts_per_page' => 1,
-				'meta_key'       => 'agile_film_id',
-				'meta_value'     => $agile_id,
+		$films = $this->find_films_by_agile_id( $agile_id );
+		return empty( $films ) ? 0 : (int) $films[0];
+	}
+
+	/**
+	 * Count active screening rows in the custom table for a Film.
+	 *
+	 * @param int $post_id Film post ID.
+	 * @return int Active row count.
+	 */
+	private function count_active_table_screenings( $post_id ) {
+		global $wpdb;
+		return (int) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*)
+				   FROM {$this->table_name}
+				  WHERE post_id = %d AND status = 1",
+				$post_id
 			)
 		);
-		return empty( $films ) ? 0 : $films[0]->ID;
 	}
 
 	/**
@@ -93,9 +151,7 @@ class ImportFilmsFromAgileTest extends WP_UnitTestCase {
 	 */
 	public function test_import_writes_all_film_fields_from_feed() {
 		// Run the importer; it echoes a lot of progress HTML, so capture/discard.
-		ob_start();
-		gicinema__import_films_from_agile();
-		ob_get_clean();
+		$this->run_import();
 
 		$post_id = $this->find_film_by_agile_id( '12345' );
 		$this->assertGreaterThan( 0, $post_id, 'The import should create exactly one film post for the fixture show.' );
@@ -132,6 +188,37 @@ class ImportFilmsFromAgileTest extends WP_UnitTestCase {
 			array( '2026-06-15 19:30:00', '2026-06-16 19:30:00' ),
 			$screenings,
 			'Screening datetimes must import without any timezone shift.'
+		);
+	}
+
+	public function test_import_is_idempotent_for_same_cached_feed() {
+		$expected_screenings = array( '2026-06-15 19:30:00', '2026-06-16 19:30:00' );
+
+		$this->run_import();
+		$this->run_import();
+
+		$film_ids = $this->find_films_by_agile_id( '12345' );
+		$this->assertCount(
+			1,
+			$film_ids,
+			'Running the same feed twice should not create a duplicate Film post.'
+		);
+
+		$post_id = $film_ids[0];
+
+		$this->assertSame(
+			2,
+			$this->count_active_table_screenings( $post_id ),
+			'Running the same feed twice should leave exactly two active custom-table screenings.'
+		);
+
+		$screenings = gicinema__get_screenings_from_post( $post_id );
+		sort( $screenings );
+
+		$this->assertSame(
+			$expected_screenings,
+			$screenings,
+			'Running the same feed twice should leave exactly the two expected ACF screenings.'
 		);
 	}
 }
