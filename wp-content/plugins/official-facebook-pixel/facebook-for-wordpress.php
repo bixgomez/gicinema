@@ -6,7 +6,9 @@
  * Description: <strong><em>***ATTENTION: After upgrade the plugin may be deactivated due to a known issue, to workaround please refresh this page and activate plugin.***</em></strong> The Facebook pixel is an analytics tool that helps you measure the effectiveness of your advertising. You can use the Facebook pixel to understand the actions people are taking on your website and reach audiences you care about.
  * Author: Facebook
  * Author URI: https://www.facebook.com/
- * Version: 5.1.0
+ * Version: 5.2.2
+ * License: GPLv2
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: official-facebook-pixel
  *
  * @package FacebookPixelPlugin
@@ -35,15 +37,22 @@ if ( file_exists( $local_config ) ) {
 }
 
 require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+require_once plugin_dir_path( __FILE__ ) . 'core/class-signals.php';
+require_once plugin_dir_path( __FILE__ ) . 'core/class-facebooksignalstate.php';
+require_once plugin_dir_path( __FILE__ ) . 'core/class-releasesignalsajax.php';
 
 use FacebookPixelPlugin\Core\FacebookPixel;
+use FacebookPixelPlugin\Core\Signals;
 use FacebookPixelPlugin\Core\FacebookPluginConfig;
 use FacebookPixelPlugin\Core\FacebookPluginUtils;
+use FacebookPixelPlugin\Core\FacebookSignalState;
 use FacebookPixelPlugin\Core\FacebookWordpressOpenBridge;
 use FacebookPixelPlugin\Core\FacebookWordpressOptions;
 use FacebookPixelPlugin\Core\FacebookWordpressPixelInjection;
 use FacebookPixelPlugin\Core\FacebookWordpressSettingsPage;
 use FacebookPixelPlugin\Core\FacebookWordpressSettingsRecorder;
+use FacebookPixelPlugin\Core\ReleaseSignalsAjax;
+use FacebookPixelPlugin\Core\FacebookParamBuilder;
 use FacebookPixelPlugin\Core\ServerEventAsyncTask;
 
 /**
@@ -66,6 +75,15 @@ class FacebookForWordpress {
 
     $options = FacebookWordpressOptions::get_options();
     FacebookPixel::initialize( FacebookWordpressOptions::get_active_pixel_id() );
+    new Signals();
+    new ReleaseSignalsAjax();
+
+    if ( Signals::should_hold_signals() ) {
+        FacebookSignalState::hold();
+    }
+
+    // Initialize ParamBuilder server-side before pixel injection.
+    FacebookParamBuilder::server_setup();
 
     add_action( 'init', array( $this, 'register_pixel_injection' ), 0 );
     add_action( 'parse_request', array( $this, 'handle_events_request' ), 0 );

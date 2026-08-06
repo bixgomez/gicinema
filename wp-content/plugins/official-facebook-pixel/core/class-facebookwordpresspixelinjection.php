@@ -60,6 +60,10 @@ class FacebookWordpressPixelInjection {
         $pixel_id = FacebookWordpressOptions::get_active_pixel_id();
         if ( FacebookPluginUtils::is_positive_integer( $pixel_id ) ) {
             add_action(
+                'wp_enqueue_scripts',
+                array( $this, 'enqueue_signal_script' )
+            );
+            add_action(
                 'wp_head',
                 array( $this, 'inject_pixel_code' )
             );
@@ -89,6 +93,10 @@ class FacebookWordpressPixelInjection {
      * @return void
      */
     public function send_pending_events() {
+        if ( FacebookSignalState::is_held() ) {
+            return;
+        }
+
         $pending_events =
         FacebookServerSideEvent::get_instance()->get_pending_events();
         if ( count( $pending_events ) > 0 ) {
@@ -127,16 +135,7 @@ class FacebookWordpressPixelInjection {
 
         self::$render_cache[ FacebookPluginConfig::IS_PIXEL_RENDERED ] = true;
         echo FacebookPixel::get_pixel_base_code(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-        $capi_integration_status =
-        FacebookWordpressOptions::get_capi_integration_status();
-        // Only include user info for frontend users, not internal/admin users.
-        $user_info = FacebookPluginUtils::is_internal_user() ?
-            array() : FacebookWordpressOptions::get_user_info();
-        echo FacebookPixel::get_pixel_init_code( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-            FacebookWordpressOptions::get_agent_string(),
-            $user_info, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-            '1' === $capi_integration_status // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-        );
+        echo $this->get_facebook_signal_init_code(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         echo FacebookPixel::get_pixel_page_view_code(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
@@ -151,5 +150,81 @@ class FacebookWordpressPixelInjection {
      */
     public function inject_pixel_noscript_code() {
         echo FacebookPixel::get_pixel_noscript_code(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+    }
+
+    /**
+     * Enqueue FacebookSignal helper script.
+     *
+     * @return void
+     */
+    public function enqueue_signal_script() {
+        wp_enqueue_script(
+            'facebook-signal',
+            plugins_url( '../js/facebook_signal.js', __FILE__ ),
+            array(),
+            FacebookPluginConfig::PLUGIN_VERSION,
+            false
+        );
+
+        wp_localize_script(
+            'facebook-signal',
+            'facebookSignalConfig',
+            array(
+                'cookieName'    => Signals::COOKIE_NAME,
+                'ajaxUrl'       => admin_url( 'admin-ajax.php' ),
+                'signalsAction' => Signals::AJAX_ACTION,
+                'signalsNonce'  => wp_create_nonce( Signals::NONCE_ACTION ),
+            )
+        );
+    }
+
+    /**
+     * Initialize FacebookSignal with current config.
+     *
+     * @return string
+     */
+    private function get_facebook_signal_init_code() {
+        $pixel_id  = FacebookPixel::get_pixel_id();
+        $user_info = FacebookPluginUtils::is_internal_user()
+            ? array()
+            : FacebookWordpressOptions::get_user_info();
+        $options   = array(
+            'agent'                  => FacebookWordpressOptions::get_agent_string(),
+            'includeCapiIntegration' => '1' === FacebookWordpressOptions::get_capi_integration_status(),
+        );
+
+        $config = array(
+            'held'          => false,
+            'ajaxUrl'       => admin_url( 'admin-ajax.php' ),
+            'releaseAction' => ReleaseSignalsAjax::ACTION,
+            'pixelId'       => $pixel_id,
+            'attribution'   => (object) array(),
+            'capig'         => FacebookWordpressOptions::get_capig(),
+        );
+
+        if ( FacebookSignalState::is_held() ) {
+            $attribution = array_filter(
+                array(
+                    'fbp'       => FacebookSignalState::get_attribution_data( 'fbp' ),
+                    'fbc'       => FacebookSignalState::get_attribution_data( 'fbc' ),
+                    'fbpDomain' => FacebookSignalState::get_attribution_data( 'fbp_domain' ),
+                    'fbcDomain' => FacebookSignalState::get_attribution_data( 'fbc_domain' ),
+                )
+            );
+            if ( ! empty( $attribution ) ) {
+                $config['attribution'] = $attribution;
+            }
+        }
+
+        $flags = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
+
+        return "<script type='text/javascript'>" .
+            'FacebookSignal.init(' . wp_json_encode( $config, $flags ) . ');' .
+            'FacebookSignal.initPixel(' .
+                wp_json_encode( $pixel_id, $flags ) . ',' .
+                wp_json_encode( (object) $user_info, $flags ) . ',' .
+                wp_json_encode( $options, $flags ) .
+            ');' .
+            '</script>';
     }
 }

@@ -58,6 +58,13 @@ class FacebookWordpressSettingsRecorder {
                 'save_capi_pii_caching_status',
             )
         );
+        add_action(
+            'wp_ajax_save_capig',
+            array(
+                $this,
+                'save_capig',
+            )
+        );
         // FBL4B AJAX actions.
         add_action(
             'wp_ajax_save_fbl4b_settings',
@@ -177,6 +184,16 @@ class FacebookWordpressSettingsRecorder {
         \update_option(
             FacebookPluginConfig::SETTINGS_KEY,
             $settings
+        );
+        \delete_transient(
+            FacebookPluginConfig::CONNECTION_INVALID_TRANSIENT
+        );
+        delete_metadata(
+            'user',
+            0,
+            FacebookPluginConfig::ADMIN_IGNORE_CONNECTION_INVALID_NOTICE,
+            '',
+            true
         );
         return $this->handle_success_request( $settings );
     }
@@ -325,6 +342,43 @@ class FacebookWordpressSettingsRecorder {
     }
 
     /**
+     * Persists the Conversions API Gateway (CAPIG) admin toggle.
+     *
+     * Accepts '1' (default — fbq optinMetaEnabledCapi command is emitted) or
+     * '0' (suppress the command). Admin-only.
+     *
+     * @return array response data
+     */
+    public function save_capig() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return $this->handle_unauthorized_request();
+        }
+
+        if ( empty( FacebookWordpressOptions::get_active_pixel_id() ) ) {
+            \update_option(
+                FacebookPluginConfig::CAPIG,
+                FacebookPluginConfig::CAPIG_DEFAULT
+            );
+            return $this->handle_invalid_request();
+        }
+
+        check_admin_referer(
+            FacebookPluginConfig::SAVE_CAPIG_ACTION_NAME
+        );
+        $val = sanitize_text_field(
+            isset( $_POST['val'] ) ?
+            wp_unslash( $_POST['val'] ) : ''
+        );
+
+        if ( ! ( '0' === $val || '1' === $val ) ) {
+            return $this->handle_invalid_request();
+        }
+
+        \update_option( FacebookPluginConfig::CAPIG, $val );
+        return $this->handle_success_request( $val );
+    }
+
+    /**
      * Deletes the Facebook Business Extension settings.
      *
      * This function deletes the Facebook Business
@@ -432,6 +486,16 @@ class FacebookWordpressSettingsRecorder {
                     );
                 }
             }
+            \delete_transient(
+                FacebookPluginConfig::CONNECTION_INVALID_TRANSIENT
+            );
+            delete_metadata(
+                'user',
+                0,
+                FacebookPluginConfig::ADMIN_IGNORE_CONNECTION_INVALID_NOTICE,
+                '',
+                true
+            );
             return $this->handle_success_request( $existing );
         }
 
@@ -446,6 +510,16 @@ class FacebookWordpressSettingsRecorder {
         \update_option(
             FacebookPluginConfig::FBL4B_SETTINGS_KEY,
             $fbl4b_settings
+        );
+        \delete_transient(
+            FacebookPluginConfig::CONNECTION_INVALID_TRANSIENT
+        );
+        delete_metadata(
+            'user',
+            0,
+            FacebookPluginConfig::ADMIN_IGNORE_CONNECTION_INVALID_NOTICE,
+            '',
+            true
         );
 
         return $this->handle_success_request( 'FBL4B settings saved' );

@@ -10,4 +10,5 @@ return array(
     'FacebookPixelPlugin\\FacebookAds\\' => array($baseDir . '/FacebookAds'),
     'FacebookPixelPlugin\\Core\\' => array($baseDir . '/core'),
     'FacebookPixelPlugin\\' => array($baseDir . '/'),
+    'FacebookAds\\' => array($vendorDir . '/facebook/capi-param-builder-php/php/capi-param-builder/src'),
 );

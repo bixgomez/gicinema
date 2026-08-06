@@ -137,67 +137,6 @@ src="https://www.facebook.com/tr?id=%s&ev=%s%s&noscript=1" />
     }
 
     /**
-     * Gets OpenBridge set config code
-     */
-    public static function get_open_bridge_config_code() {
-      if ( empty( self::$pixel_id ) ) {
-          return;
-      }
-
-        $code = "var url = window.location.origin + '?ob=open-bridge';
-            fbq('set', 'openbridge', '%s', url);";
-        return sprintf( $code, self::$pixel_id );
-    }
-
-
-    /**
-     * Gets FB pixel init code
-     *
-     * @param string $agent_string The agent string to be used
-     * in the pixel init code.
-     * @param array  $param        The parameters for the pixel event.
-     * Defaults to an empty array.
-     * @param bool   $include_capi        Whether CAPI injection is
-     * enabled or not.
-     * @param bool   $with_script_tag Whether to include the script tag in
-     * the pixel init code. Defaults to true.
-     */
-    public static function get_pixel_init_code(
-        $agent_string,
-        $param,
-        $include_capi,
-        $with_script_tag = true
-    ) {
-        if ( empty( self::$pixel_id ) ) {
-            return;
-        }
-
-        $capi_integration_injection    = $include_capi ?
-            ( self::get_open_bridge_config_code() . PHP_EOL ) : '';
-        $pixel_fbq_code_without_script = $capi_integration_injection .
-            "fbq('%s', '%s'%s%s)";
-
-        $code      = $with_script_tag ? "<script type='text/javascript'>" .
-        $pixel_fbq_code_without_script .
-        '</script>' : $pixel_fbq_code_without_script;
-        $param_str = $param;
-        if ( is_array( $param ) ) {
-            $param_str = wp_json_encode(
-                $param,
-                JSON_PRETTY_PRINT | JSON_FORCE_OBJECT
-            );
-        }
-        $agent_param = array( 'agent' => $agent_string );
-        return sprintf(
-            $code,
-            'init',
-            self::$pixel_id,
-            ', ' . $param_str,
-            ', ' . wp_json_encode( $agent_param, JSON_PRETTY_PRINT )
-        );
-    }
-
-    /**
      * Gets FB pixel track code
      * $param is the parameter for the pixel event.
      *   If it is an array, FB_INTEGRATION_TRACKING_KEY parameter with
@@ -223,6 +162,15 @@ src="https://www.facebook.com/tr?id=%s&ev=%s%s&noscript=1" />
             return;
         }
 
+        if ( self::are_signals_held() ) {
+            return self::get_pixel_queue_code(
+                $event,
+                $param,
+                $tracking_name,
+                $with_script_tag
+            );
+        }
+
         $code      = $with_script_tag ? "<script type='text/javascript'>" .
         self::$pixel_fbq_code_without_script .
         '</script>' : self::$pixel_fbq_code_without_script;
@@ -233,16 +181,132 @@ src="https://www.facebook.com/tr?id=%s&ev=%s%s&noscript=1" />
             }
             $param_str = wp_json_encode( $param, JSON_PRETTY_PRINT );
         }
-        $class = new ReflectionClass( __CLASS__ );
+        $class      = new ReflectionClass( __CLASS__ );
+        $const_name = strtoupper( (string) $event );
         return sprintf(
             $code,
-            $class->getConstant(
-                strtoupper( $event )
-            ) !== false ? 'track' : 'trackCustom',
+            $class->hasConstant( $const_name ) ? 'track' : 'trackCustom',
             $event,
             ', ' . $param_str,
             ''
         );
+    }
+
+    /**
+     * Gets queueing code for a held event.
+     *
+     * @param string $event           Event name.
+     * @param array  $param           Event parameters.
+     * @param string $tracking_name   Integration tracking name.
+     * @param bool   $with_script_tag Whether to include a script wrapper.
+     *
+     * @return string
+     */
+    private static function get_pixel_queue_code(
+        $event,
+        $param,
+        $tracking_name,
+        $with_script_tag
+    ) {
+        $is_custom = ( new ReflectionClass( __CLASS__ ) )
+            ->getConstant( strtoupper( $event ) ) === false;
+
+        if ( is_array( $param ) ) {
+            $payload = self::build_queue_payload(
+                $event,
+                $param,
+                $tracking_name,
+                $is_custom
+            );
+            $code    = 'FacebookSignal.queueEvent(' .
+                wp_json_encode(
+                    $payload,
+                    JSON_PRETTY_PRINT | JSON_HEX_TAG | JSON_HEX_AMP |
+                        JSON_HEX_APOS | JSON_HEX_QUOT
+                ) .
+                ');';
+        } else {
+            $code = sprintf(
+                'FacebookSignal.queueEvent({"event_name":%s,'
+                . '"custom_data":%s,"event_id":null,"event_time":%d,'
+                . '"is_custom":%s});',
+                wp_json_encode(
+                    $event,
+                    JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+                ),
+                (string) $param,
+                time(),
+                $is_custom ? 'true' : 'false'
+            );
+        }
+
+        if ( ! $with_script_tag ) {
+            return $code;
+        }
+
+        return "<script type='text/javascript'>{$code}</script>";
+    }
+
+    /**
+     * Build queue payload for a held event.
+     *
+     * @param string       $event         Event name.
+     * @param array|string $param         Event params.
+     * @param string       $tracking_name Integration tracking name.
+     * @param bool|null    $is_custom     Whether the event is a custom event;
+     *                                    null = auto-detect.
+     *
+     * @return array
+     */
+    public static function build_queue_payload(
+        $event,
+        $param = array(),
+        $tracking_name = '',
+        $is_custom = null
+    ) {
+        $custom_data = is_array( $param ) ? $param : array();
+        $event_id    = null;
+
+        if ( isset( $custom_data['eventID'] ) ) {
+            $event_id = $custom_data['eventID'];
+            unset( $custom_data['eventID'] );
+        }
+
+        if ( ! empty( $tracking_name ) ) {
+            $custom_data[ self::FB_INTEGRATION_TRACKING_KEY ] = $tracking_name;
+        }
+
+        if ( null === $is_custom ) {
+            $is_custom = ( new ReflectionClass( __CLASS__ ) )
+                ->getConstant( strtoupper( $event ) ) === false;
+        }
+
+        $payload = array(
+            'event_name'  => $event,
+            'custom_data' => $custom_data,
+            'event_id'    => $event_id,
+            'event_time'  => time(),
+            'is_custom'   => (bool) $is_custom,
+        );
+
+        if ( ! empty( $event_id ) ) {
+            $queued_user_data = FacebookSignalState::get_queued_user_data( $event_id );
+            if ( null !== $queued_user_data ) {
+                $payload['user_data'] = $queued_user_data;
+            }
+        }
+
+        return $payload;
+    }
+
+    /**
+     * Whether signals are held for the current request.
+     *
+     * @return bool
+     */
+    private static function are_signals_held() {
+        return class_exists( '\FacebookPixelPlugin\Core\FacebookSignalState' ) &&
+            FacebookSignalState::is_held();
     }
 
     /**

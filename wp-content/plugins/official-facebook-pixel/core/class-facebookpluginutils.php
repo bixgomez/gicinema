@@ -42,7 +42,7 @@ class FacebookPluginUtils {
      */
     public static function is_positive_integer( $pixel_id ) {
         return isset( $pixel_id )
-        && ctype_digit( $pixel_id ) && '0' !== $pixel_id;
+        && ctype_digit( (string) $pixel_id ) && '0' !== $pixel_id;
     }
 
     /**
@@ -132,5 +132,23 @@ class FacebookPluginUtils {
      */
     public static function string_contains( $haystack, $needle ) {
         return (bool) strstr( $haystack, $needle );
+    }
+
+    /**
+     * Logs a message at most once per day per key.
+     *
+     * Uses a WordPress transient to throttle repeated error
+     * messages from flooding the logs.
+     *
+     * @param string $key     Short identifier for the error.
+     * @param string $message The message to log.
+     */
+    public static function log_once_daily( $key, $message ) {
+        $transient = 'fbpix_err_' . $key;
+        if ( false !== get_transient( $transient ) ) {
+            return;
+        }
+        set_transient( $transient, 1, DAY_IN_SECONDS );
+        error_log( $message ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
     }
 }

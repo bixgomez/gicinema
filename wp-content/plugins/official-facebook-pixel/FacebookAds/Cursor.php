@@ -1,4 +1,5 @@
 <?php
+// phpcs:ignoreFile — third-party Meta Business SDK (vendored); excluded from linting.
  /*
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  * All rights reserved.
@@ -452,7 +453,7 @@ class Cursor implements \Iterator, \Countable, \ArrayAccess {
   }
 
   public function valid() : bool {
-    return isset($this->objects[$this->position]);
+    return $this->position !== null && isset($this->objects[$this->position]);
   }
 
   public function count() : int {

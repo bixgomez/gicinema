@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit3bd3e2af4a274ae9c74b2ab67c80b0a6
+class ComposerStaticInitec347124124aa9c7ee442c5be7c99fb0
 {
     public static $prefixLengthsPsr4 = array (
         'F' =>
@@ -13,6 +13,7 @@ class ComposerStaticInit3bd3e2af4a274ae9c74b2ab67c80b0a6
             'FacebookPixelPlugin\\FacebookAds\\' => 32,
             'FacebookPixelPlugin\\Core\\' => 25,
             'FacebookPixelPlugin\\' => 20,
+            'FacebookAds\\' => 12,
         ),
     );
 
@@ -33,29 +34,65 @@ class ComposerStaticInit3bd3e2af4a274ae9c74b2ab67c80b0a6
         array (
             0 => __DIR__ . '/../..' . '/',
         ),
+        'FacebookAds\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/src',
+        ),
     );
 
     public static $classMap = array (
+        'AppendixProviderTest' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/tests/AppendixProviderTest.php',
         'Async' => __DIR__ . '/..' . '/techcrunch/wp-async-task/tests/phpunit/mocks/Async.php',
         'BaseAsync' => __DIR__ . '/..' . '/techcrunch/wp-async-task/tests/phpunit/mocks/BaseAsync.php',
+        'CityUtilsTest' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/tests/CityUtilsTest.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'CountryUtilsTest' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/tests/CountryUtilsTest.php',
+        'DOBUtilsTest' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/tests/DOBUtilsTest.php',
+        'Drupal\\param_builder\\Controller\\ExampleController' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/examples/drupal/web/modules/custom/param_builder/src/Controller/ExampleController.php',
+        'Drupal\\param_builder\\EventSubscriber\\CookieSubscriber' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/examples/drupal/web/modules/custom/param_builder/src/EventSubscriber/CookieSubscriber.php',
+        'Drupal\\param_builder\\EventSubscriber\\ExampleETLDPlus1Resolver' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/examples/drupal/web/modules/custom/param_builder/src/EventSubscriber/CookieSubscriber.php',
+        'ETLDPlus1ResolverForTest' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/examples/local/ETLDPlus1ResolverForTest.php',
+        'ETLDPlus1ResolverForUnitTest' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/tests/ETLDPlus1ResolverForUnitTest.php',
+        'EmailUtilsTest' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/tests/EmailUtilsTest.php',
         'EmptyAsync' => __DIR__ . '/..' . '/techcrunch/wp-async-task/tests/phpunit/mocks/EmptyAsync.php',
+        'ExternalIDUtilsTest' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/tests/ExternalIDUtilsTest.php',
+        'FacebookAds\\AppendixProvider' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/src/util/AppendixProvider.php',
+        'FacebookAds\\CookieSettings' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/src/model/CookieSettings.php',
+        'FacebookAds\\DOBUtils' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/src/piiUtil/DOBUtils.php',
+        'FacebookAds\\ETLDPlus1Resolver' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/src/ETLDPlus1Resolver.php',
+        'FacebookAds\\EmailUtils' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/src/piiUtil/EmailUtils.php',
+        'FacebookAds\\FbcParamConfig' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/src/model/FbcParamConfig.php',
+        'FacebookAds\\GenderUtils' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/src/piiUtil/GenderUtils.php',
+        'FacebookAds\\PIIUtils' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/src/piiUtil/PIIUtils.php',
+        'FacebookAds\\PII_DATA_TYPE' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/src/model/Constants.php',
+        'FacebookAds\\ParamBuilder' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/src/ParamBuilder.php',
+        'FacebookAds\\PhoneUtils' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/src/piiUtil/PhoneUtils.php',
+        'FacebookAds\\SharedUtils' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/src/piiUtil/SharedUtils.php',
+        'FacebookAds\\StringUtils' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/src/piiUtil/StringUtils.php',
+        'FacebookAds\\VersionProvider' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/src/util/VersionProvider.php',
+        'FacebookAds\\ZipCodeUtils' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/src/piiUtil/ZipCodeUtils.php',
+        'FacebookParamManager' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/examples/local/FacebookParamManager.php',
         'FacebookPixelPlugin\\Core\\AAMFieldsExtractor' => __DIR__ . '/../..' . '/core/class-aamfieldsextractor.php',
         'FacebookPixelPlugin\\Core\\AAMSettingsFields' => __DIR__ . '/../..' . '/core/class-aamsettingsfields.php',
         'FacebookPixelPlugin\\Core\\EventIdGenerator' => __DIR__ . '/../..' . '/core/class-eventidgenerator.php',
+        'FacebookPixelPlugin\\Core\\FacebookCapiCircuitBreaker' => __DIR__ . '/../..' . '/core/class-facebookcapicircuitbreaker.php',
         'FacebookPixelPlugin\\Core\\FacebookCapiEvent' => __DIR__ . '/../..' . '/core/class-facebookcapievent.php',
+        'FacebookPixelPlugin\\Core\\FacebookParamBuilder' => __DIR__ . '/../..' . '/core/class-facebookparambuilder.php',
         'FacebookPixelPlugin\\Core\\FacebookPixel' => __DIR__ . '/../..' . '/core/class-facebookpixel.php',
         'FacebookPixelPlugin\\Core\\FacebookPluginConfig' => __DIR__ . '/../..' . '/core/class-facebookpluginconfig.php',
         'FacebookPixelPlugin\\Core\\FacebookPluginUtils' => __DIR__ . '/../..' . '/core/class-facebookpluginutils.php',
         'FacebookPixelPlugin\\Core\\FacebookServerSideEvent' => __DIR__ . '/../..' . '/core/class-facebookserversideevent.php',
+        'FacebookPixelPlugin\\Core\\FacebookSignalState' => __DIR__ . '/../..' . '/core/class-facebooksignalstate.php',
         'FacebookPixelPlugin\\Core\\FacebookWordpressOpenBridge' => __DIR__ . '/../..' . '/core/class-facebookwordpressopenbridge.php',
         'FacebookPixelPlugin\\Core\\FacebookWordpressOptions' => __DIR__ . '/../..' . '/core/class-facebookwordpressoptions.php',
         'FacebookPixelPlugin\\Core\\FacebookWordpressPixelInjection' => __DIR__ . '/../..' . '/core/class-facebookwordpresspixelinjection.php',
         'FacebookPixelPlugin\\Core\\FacebookWordpressSettingsPage' => __DIR__ . '/../..' . '/core/class-facebookwordpresssettingspage.php',
         'FacebookPixelPlugin\\Core\\FacebookWordpressSettingsRecorder' => __DIR__ . '/../..' . '/core/class-facebookwordpresssettingsrecorder.php',
         'FacebookPixelPlugin\\Core\\PixelRenderer' => __DIR__ . '/../..' . '/core/class-pixelrenderer.php',
+        'FacebookPixelPlugin\\Core\\ReleaseSignalsAjax' => __DIR__ . '/../..' . '/core/class-releasesignalsajax.php',
         'FacebookPixelPlugin\\Core\\ServerEventAsyncTask' => __DIR__ . '/../..' . '/core/class-servereventasynctask.php',
         'FacebookPixelPlugin\\Core\\ServerEventFactory' => __DIR__ . '/../..' . '/core/class-servereventfactory.php',
+        'FacebookPixelPlugin\\Core\\Signals' => __DIR__ . '/../..' . '/core/class-signals.php',
         'FacebookPixelPlugin\\FacebookAds\\AnonymousSession' => __DIR__ . '/../..' . '/FacebookAds/AnonymousSession.php',
         'FacebookPixelPlugin\\FacebookAds\\Api' => __DIR__ . '/../..' . '/FacebookAds/Api.php',
         'FacebookPixelPlugin\\FacebookAds\\ApiConfig' => __DIR__ . '/../..' . '/FacebookAds/ApiConfig.php',
@@ -2445,16 +2482,24 @@ class ComposerStaticInit3bd3e2af4a274ae9c74b2ab67c80b0a6
         'FacebookPixelPlugin\\Integration\\FacebookWordpressWPForms' => __DIR__ . '/../..' . '/integration/class-facebookwordpresswpforms.php',
         'FacebookPixelPlugin\\Integration\\FacebookWordpressWooCommerce' => __DIR__ . '/../..' . '/integration/class-facebookwordpresswoocommerce.php',
         'FacebookPixelPlugin\\Integration\\IntegrationUtils' => __DIR__ . '/../..' . '/integration/class-integrationutils.php',
+        'GenderUtilsTest' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/tests/GenderUtilsTest.php',
+        'GetClientIpTest' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/tests/GetClientIpTest.php',
+        'NameUtilsTest' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/tests/NameUtilsTest.php',
+        'PIIUtilsTest' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/tests/PIIUtilsTest.php',
+        'ParamBuilderTest' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/tests/ParamBuilderTest.php',
+        'PhoneUtilsTest' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/tests/PhoneUtilsTest.php',
+        'StateUtilsTest' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/tests/StateUtilsTest.php',
         'WP_Async_Task' => __DIR__ . '/..' . '/techcrunch/wp-async-task/wp-async-task.php',
         'WP_Async_Task_Tests' => __DIR__ . '/..' . '/techcrunch/wp-async-task/tests/phpunit/WP-Async-TaskTest.php',
+        'ZipCodeUtilsTest' => __DIR__ . '/..' . '/facebook/capi-param-builder-php/php/capi-param-builder/tests/ZipCodeUtilsTest.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit3bd3e2af4a274ae9c74b2ab67c80b0a6::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit3bd3e2af4a274ae9c74b2ab67c80b0a6::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit3bd3e2af4a274ae9c74b2ab67c80b0a6::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitec347124124aa9c7ee442c5be7c99fb0::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitec347124124aa9c7ee442c5be7c99fb0::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitec347124124aa9c7ee442c5be7c99fb0::$classMap;
 
         }, null, ClassLoader::class);
     }

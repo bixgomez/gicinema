@@ -32,6 +32,7 @@ use FacebookPixelPlugin\FacebookAds\Object\ServerSide\Event;
 use FacebookPixelPlugin\FacebookAds\Object\ServerSide\EventRequest;
 use FacebookPixelPlugin\FacebookAds\Object\ServerSide\UserData;
 use FacebookPixelPlugin\FacebookAds\Exception\Exception;
+use FacebookPixelPlugin\FacebookAds\Http\Exception\RequestException;
 
 defined( 'ABSPATH' ) || die( 'Direct access not allowed' );
 
@@ -93,11 +94,15 @@ class FacebookServerSideEvent {
     public function track( $event, $send_now = true ) {
         $this->tracked_events[] = $event;
         if ( $send_now ) {
-            do_action(
-                'send_server_events',
-                array( $event ),
-                1
-            );
+            if ( self::should_suppress_frontend_send() ) {
+                FacebookSignalState::queue_event( $event );
+            } else {
+                do_action(
+                    'send_server_events',
+                    array( $event ),
+                    1
+                );
+            }
         } else {
             $this->pending_events[] = $event;
         }
@@ -161,16 +166,23 @@ class FacebookServerSideEvent {
     /**
      * Sends a list of events to the Conversions API.
      *
-     * This function can be used to send events to the Conversions API directly.
-     * It will apply the 'before_conversions_api_event_sent'
-     * filter to the events before sending them.
+     * All CAPI event sending flows through this method.
      *
-     * @param ServerEvent[] $events The events to send to the Conversions API.
+     * @param ServerEvent[] $events          The events to send.
+     * @param string|null   $test_event_code Optional test event code.
+     * @return array|null Result array with 'success' key, or null if skipped.
      */
-    public static function send( $events ) {
+    public static function send( $events, $test_event_code = null ) {
         $events = apply_filters( 'before_conversions_api_event_sent', $events );
         if ( empty( $events ) ) {
-            return;
+            return null;
+        }
+
+        if ( self::should_suppress_frontend_send() ) {
+            foreach ( $events as $queued_event ) {
+                FacebookSignalState::queue_event( $queued_event );
+            }
+            return null;
         }
 
         $pixel_id     = FacebookWordpressOptions::get_active_pixel_id();
@@ -178,12 +190,23 @@ class FacebookServerSideEvent {
         $agent        = FacebookWordpressOptions::get_agent_string();
 
         if ( self::is_open_bridge_event( $events ) ) {
-            $agent .= '_ob'; // agent suffix is openbridge.
+            $agent .= '_ob';
         }
 
         if ( empty( $pixel_id ) || empty( $access_token ) ) {
-            return;
+            return null;
         }
+
+        if ( ! FacebookCapiCircuitBreaker::is_send_allowed() ) {
+            return array(
+                'success' => false,
+                'error'   => array(
+                    'message' => 'Connection invalid (circuit open)',
+                    'code'    => 0,
+                ),
+            );
+        }
+
         try {
             $api = Api::init( null, null, $access_token );
 
@@ -191,14 +214,73 @@ class FacebookServerSideEvent {
                     ->setEvents( $events )
                     ->setPartnerAgent( $agent );
 
-            $response = $request->execute();
-        } catch ( \Exception $e ) {
-            // phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_error_log
-            error_log( '[Facebook Pixel for WordPress] Send Events Exception: ' . $e->getMessage() );
-            error_log( $e->getTraceAsString() );
-            // phpcs:enable WordPress.PHP.DevelopmentFunctions.error_log_error_log
+            if ( $test_event_code ) {
+                $request->setTestEventCode( $test_event_code );
+            }
 
+            $response = $request->execute();
+
+            FacebookCapiCircuitBreaker::record_success();
+
+            return array(
+                'success'         => true,
+                'events_received' => $response->getEventsReceived(),
+            );
+        } catch ( \Exception $e ) {
+            FacebookCapiCircuitBreaker::record_exception( $e );
+            if ( self::should_log_exception( $e, $test_event_code ) ) {
+                // phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_error_log
+                error_log( '[Facebook Pixel for WordPress] CAPI error: ' . $e->getMessage() );
+                error_log( $e->getTraceAsString() );
+                // phpcs:enable WordPress.PHP.DevelopmentFunctions.error_log_error_log
+            }
+            return array(
+                'success' => false,
+                'error'   => self::build_error_payload( $e ),
+            );
         }
+    }
+
+    /**
+     * Builds a user-facing error payload from an exception.
+     *
+     * @param \Exception $e The exception raised by the CAPI send.
+     * @return array
+     */
+    private static function build_error_payload( \Exception $e ) {
+        $error_message      = $e->getMessage();
+        $error_user_message = $error_message;
+
+        if ( $e instanceof RequestException ) {
+            $error_user_message = $e->getErrorUserMessage();
+            if ( empty( $error_user_message ) ) {
+                $error_user_message = $error_message;
+            }
+        }
+
+        return array(
+            'message'        => $error_message,
+            'error_user_msg' => $error_user_message,
+            'code'           => $e->getCode(),
+        );
+    }
+
+    /**
+     * Determines whether an exception should be written to debug.log.
+     *
+     * For test-event sends, RequestException errors are expected when payloads
+     * are invalid and are therefore not logged.
+     *
+     * @param \Exception  $e The exception raised by the CAPI send.
+     * @param string|null $test_event_code Optional test event code.
+     * @return bool
+     */
+    private static function should_log_exception( \Exception $e, $test_event_code = null ) {
+        if ( ! empty( $test_event_code ) && $e instanceof RequestException ) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -230,5 +312,21 @@ class FacebookServerSideEvent {
 
         return 'wp-cloudbridge-plugin' ===
         $custom_properties['fb_integration_tracking'];
+    }
+
+    /**
+     * Whether the current request should suppress frontend sends.
+     *
+     * @return bool
+     */
+    private static function should_suppress_frontend_send() {
+        $is_admin_request = function_exists( 'is_admin' ) ? is_admin() : false;
+        $is_cron_request  = function_exists( 'wp_doing_cron' ) ?
+            wp_doing_cron() :
+            false;
+
+        return FacebookSignalState::is_held() &&
+            ! $is_admin_request &&
+            ! $is_cron_request;
     }
 }
