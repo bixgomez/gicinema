@@ -7,14 +7,14 @@ namespace Composer\Autoload;
 class ComposerStaticInit5300e49fe86bd50f95b88ce4db036dcb
 {
     public static $prefixLengthsPsr4 = array (
-        'N' => 
+        'N' =>
         array (
             'NPX\\DisableMediaPages\\' => 22,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'NPX\\DisableMediaPages\\' => 
+        'NPX\\DisableMediaPages\\' =>
         array (
             0 => __DIR__ . '/../..' . '/lib',
         ),
