@@ -7,6 +7,7 @@
 /wp-content/cache/
 /wp-content/upgrade/
 /wp-content/uploads/
+/wp-content/wflogs/
 /wp-content/wp-cache-config.php
 /wp-content/plugins/hello.php
 /wp-content/mu-plugins/*

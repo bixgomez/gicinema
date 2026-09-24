@@ -21,6 +21,34 @@ require_once "function__import_screenings_from_agile.php";
 require_once "function__dedupe_screenings_table.php";
 require_once "function__update_agile_shows_array.php";
 
+function gicinema__limit_poster_width($file) {
+    $editor = wp_get_image_editor($file);
+    if (is_wp_error($editor)) {
+        return $editor;
+    }
+
+    $size = $editor->get_size();
+    if (empty($size['width'])) {
+        return new WP_Error('invalid_poster', 'Could not read the poster width.');
+    }
+
+    if ($size['width'] <= 550) {
+        return true;
+    }
+
+    $resized = $editor->resize(550, null, false);
+    if (is_wp_error($resized)) {
+        return $resized;
+    }
+
+    $saved = $editor->save($file);
+    if (is_wp_error($saved)) {
+        return $saved;
+    }
+
+    return true;
+}
+
 function gicinema__import_films_from_agile() {
 
     // Ensure DB schema/index is in place even when running via WP-Cron
@@ -302,30 +330,42 @@ function gicinema__import_films_from_agile() {
                     $image_data = wp_remote_retrieve_body($response);
                     $filename = basename(parse_url($image_url, PHP_URL_PATH));
                     if (!$filename) { $filename = 'image-' . uniqid() . '.jpg'; }
+                    $filename = sanitize_file_name($filename);
 
                     if (wp_mkdir_p($upload_dir['path'])) {
-                        $file = $upload_dir['path'] . '/' . $filename;
+                        $destination = $upload_dir['path'];
                     } else {
-                        $file = $upload_dir['basedir'] . '/' . $filename;
+                        $destination = $upload_dir['basedir'];
                     }
 
-                    file_put_contents($file, $image_data);
-                    $wp_filetype = wp_check_filetype($filename, null);
-                    $attachment = array(
-                        'post_mime_type' => $wp_filetype['type'],
-                        'post_title' => sanitize_file_name($filename),
-                        'post_content' => '',
-                        'post_status' => 'inherit'
-                    );
-                    $attach_id = wp_insert_attachment($attachment, $file);
-                    require_once(ABSPATH . 'wp-admin/includes/image.php');
-                    $attach_data = wp_generate_attachment_metadata($attach_id, $file);
-                    wp_update_attachment_metadata($attach_id, $attach_data);
+                    $filename = wp_unique_filename($destination, $filename);
+                    $file = $destination . '/' . $filename;
+                    if (file_put_contents($file, $image_data) === false) {
+                        echo '<div class="failure">Could not save the downloaded poster.</div>';
+                    } else {
+                        $prepared = gicinema__limit_poster_width($file);
+                        if (is_wp_error($prepared)) {
+                            unlink($file);
+                            echo '<div class="failure">Could not prepare the poster: ' . esc_html($prepared->get_error_message()) . '</div>';
+                        } else {
+                            $wp_filetype = wp_check_filetype($filename, null);
+                            $attachment = array(
+                                'post_mime_type' => $wp_filetype['type'],
+                                'post_title' => $filename,
+                                'post_content' => '',
+                                'post_status' => 'inherit'
+                            );
+                            $attach_id = wp_insert_attachment($attachment, $file);
+                            require_once(ABSPATH . 'wp-admin/includes/image.php');
+                            $attach_data = wp_generate_attachment_metadata($attach_id, $file);
+                            wp_update_attachment_metadata($attach_id, $attach_data);
 
-                    // And finally assign featured image to post
-                    echo '<div>Inserting image ' . $attach_id . ' into film ' . $insert_id . '</div>';
-                    set_post_thumbnail($insert_id, $attach_id);
-                    update_field('film_poster', $attach_id, $insert_id);
+                            // And finally assign featured image to post
+                            echo '<div>Inserting image ' . $attach_id . ' into film ' . $insert_id . '</div>';
+                            set_post_thumbnail($insert_id, $attach_id);
+                            update_field('film_poster', $attach_id, $insert_id);
+                        }
+                    }
                 } else {
                     $err = is_wp_error($response) ? $response->get_error_message() : ('HTTP ' . wp_remote_retrieve_response_code($response));
                     echo '<div class="failure">Failed to download image: ' . esc_html($err) . '</div>';

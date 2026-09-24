@@ -73,6 +73,7 @@ add_action( 'after_setup_theme', 'cinema_theme_setup' );
  *   - small:     400px width (proportional)
  *   - medium:    768px width (proportional)
  *   - large:     1040px width (proportional)
+ *   - movie-poster: 550px width (proportional)
  */
 function cinema_theme_image_sizes() {
     // Define our image sizes
@@ -80,6 +81,7 @@ function cinema_theme_image_sizes() {
     add_image_size( 'small', 400, 0, false );
     add_image_size( 'medium', 768, 0, false );
     add_image_size( 'large', 1040, 0, false );
+    add_image_size( 'movie-poster', 550, 0, false );
 }
 add_action( 'after_setup_theme', 'cinema_theme_image_sizes' );
 
@@ -89,7 +91,7 @@ add_action( 'after_setup_theme', 'cinema_theme_image_sizes' );
  */
 function cinema_theme_filter_image_sizes( $sizes ) {
     // Only keep our explicitly defined sizes
-    $allowed = array( 'thumbnail', 'small', 'medium', 'large' );
+    $allowed = array( 'thumbnail', 'small', 'medium', 'large', 'movie-poster' );
     return array_intersect_key( $sizes, array_flip( $allowed ) );
 }
 add_filter( 'intermediate_image_sizes_advanced', 'cinema_theme_filter_image_sizes' );
