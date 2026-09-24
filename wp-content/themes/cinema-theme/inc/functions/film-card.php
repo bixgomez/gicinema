@@ -125,27 +125,35 @@ function filmCard($filmPostId, $classes='film', $isLCP=false) {
                   && $posterSizes['small']['width'] <= 550
                   && $originalFile
                   && is_file(dirname($originalFile) . '/' . $posterSizes['small']['file']);
+                $hasMedium = isset($posterSizes['medium']['width'], $posterSizes['medium']['file'])
+                  && $posterSizes['medium']['width'] > 550
+                  && $posterSizes['medium']['width'] <= 768
+                  && $originalFile
+                  && is_file(dirname($originalFile) . '/' . $posterSizes['medium']['file']);
                 $useOriginal = $hasOriginal && $originalWidth > 0 && $originalWidth <= 550;
                 $posterSize = $hasMoviePoster || $useOriginal
                   ? 'movie-poster'
-                  : ($hasSmall ? 'small' : null);
+                  : ($hasMedium ? 'medium' : ($hasSmall ? 'small' : null));
 
                 if ($posterSize) {
                   $sources = [];
-                  foreach (['small', 'movie-poster'] as $size) {
-                    $hasSize = $size === 'small' ? $hasSmall : $hasMoviePoster;
-                    if (!$hasSize && !$useOriginal) {
-                      continue;
-                    }
+                  $sourceSizes = $hasSmall ? ['small'] : [];
+                  $sourceSizes[] = $posterSize === 'movie-poster' && !$hasMoviePoster ? 'full' : $posterSize;
+                  $maxSourceWidth = $posterSize === 'medium' ? 768 : 550;
+                  foreach (array_unique($sourceSizes) as $size) {
                     $source = wp_get_attachment_image_src($posterId, $size);
-                    if ($source && $source[1] > 0 && $source[1] <= 550) {
-                      $sources[(int) $source[1]] = esc_url_raw($source[0]) . ' ' . (int) $source[1] . 'w';
+                    $sourceWidth = $size === 'full' ? $originalWidth : (int) ($posterSizes[$size]['width'] ?? 0);
+                    if ($source && $sourceWidth > 0 && $sourceWidth <= $maxSourceWidth) {
+                      $sources[$sourceWidth] = esc_url_raw($source[0]) . ' ' . $sourceWidth . 'w';
                     }
                   }
                   ksort($sources, SORT_NUMERIC);
 
                   if ($sources) {
+                    $selectedMeta = $posterSize === 'movie-poster' && !$hasMoviePoster ? $posterMeta : $posterSizes[$posterSize];
                     $imgAttrs = [
+                      'width' => (int) $selectedMeta['width'],
+                      'height' => (int) $selectedMeta['height'],
                       'sizes' => '(max-width: 549px) 400px, 520px',
                       'srcset' => implode(', ', $sources),
                       'alt' => '' // Decorative because the link has an accessible name.
