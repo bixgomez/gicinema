@@ -109,18 +109,57 @@ function filmCard($filmPostId, $classes='film', $isLCP=false) {
             ?>
             <a class="film-title" href="<?php echo $link; ?>" aria-label="<?php echo esc_attr($accessibleTitle); ?>">
               <?php
+              $posterHtml = '';
               if (has_post_thumbnail($filmPostId)) {
-                // Responsive sizes: small (400px) for mobile, large (1040px) for desktop
-                // Browser picks best srcset image based on viewport + device pixel ratio
-                $imgAttrs = [
-                  'sizes' => '(max-width: 549px) 400px, 520px',
-                  'alt' => '' // Decorative - link has aria-label
-                ];
-                if ($isLCP) {
-                  $imgAttrs['fetchpriority'] = 'high';
-                  $imgAttrs['loading'] = 'eager';
+                $posterId = get_post_thumbnail_id($filmPostId);
+                $posterMeta = wp_get_attachment_metadata($posterId);
+                $originalWidth = (int) ($posterMeta['width'] ?? 0);
+                $posterSizes = $posterMeta['sizes'] ?? [];
+                $originalFile = get_attached_file($posterId);
+                $hasOriginal = $originalFile && is_file($originalFile);
+                $hasMoviePoster = isset($posterSizes['movie-poster']['width'], $posterSizes['movie-poster']['file'])
+                  && $posterSizes['movie-poster']['width'] <= 550
+                  && $originalFile
+                  && is_file(dirname($originalFile) . '/' . $posterSizes['movie-poster']['file']);
+                $hasSmall = isset($posterSizes['small']['width'], $posterSizes['small']['file'])
+                  && $posterSizes['small']['width'] <= 550
+                  && $originalFile
+                  && is_file(dirname($originalFile) . '/' . $posterSizes['small']['file']);
+                $useOriginal = $hasOriginal && $originalWidth > 0 && $originalWidth <= 550;
+                $posterSize = $hasMoviePoster || $useOriginal
+                  ? 'movie-poster'
+                  : ($hasSmall ? 'small' : null);
+
+                if ($posterSize) {
+                  $sources = [];
+                  foreach (['small', 'movie-poster'] as $size) {
+                    $hasSize = $size === 'small' ? $hasSmall : $hasMoviePoster;
+                    if (!$hasSize && !$useOriginal) {
+                      continue;
+                    }
+                    $source = wp_get_attachment_image_src($posterId, $size);
+                    if ($source && $source[1] > 0 && $source[1] <= 550) {
+                      $sources[(int) $source[1]] = esc_url_raw($source[0]) . ' ' . (int) $source[1] . 'w';
+                    }
+                  }
+                  ksort($sources, SORT_NUMERIC);
+
+                  if ($sources) {
+                    $imgAttrs = [
+                      'sizes' => '(max-width: 549px) 400px, 520px',
+                      'srcset' => implode(', ', $sources),
+                      'alt' => '' // Decorative because the link has an accessible name.
+                    ];
+                    if ($isLCP) {
+                      $imgAttrs['fetchpriority'] = 'high';
+                      $imgAttrs['loading'] = 'eager';
+                    }
+                    $posterHtml = get_the_post_thumbnail($filmPostId, $posterSize, $imgAttrs);
+                  }
                 }
-                echo get_the_post_thumbnail($filmPostId, 'large', $imgAttrs);
+              }
+              if ($posterHtml) {
+                echo $posterHtml;
               } else {
                 $poster = get_field('poster_url', $filmPostId);
                 if ($poster) {
