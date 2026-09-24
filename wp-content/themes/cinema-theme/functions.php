@@ -115,6 +115,25 @@ function cinema_theme_widgets_init() {
 add_action( 'widgets_init', 'cinema_theme_widgets_init' );
 
 /**
+ * Detect shortcode galleries in the current post or its sidebar content.
+ */
+if ( ! function_exists( 'cinema_theme_has_gallery' ) ) {
+	function cinema_theme_has_gallery() {
+		if ( ! is_singular() ) {
+			return false;
+		}
+
+		$post = get_queried_object();
+		if ( ! $post instanceof WP_Post ) {
+			return false;
+		}
+
+		return has_shortcode( $post->post_content, 'gallery' )
+			|| has_shortcode( (string) get_post_meta( $post->ID, 'sidebar_content', true ), 'gallery' );
+	}
+}
+
+/**
  * Enqueue scripts and styles.
  */
 function cinema_theme_scripts() {
@@ -123,6 +142,14 @@ function cinema_theme_scripts() {
 	wp_enqueue_script( 'hc-offcanvas-nav', get_template_directory_uri() .'/js/hc-offcanvas-nav.js', array('jquery'), null, true );
 	wp_enqueue_script( 'hc-offcanvas-nav--config', get_template_directory_uri() .'/js/hc-offcanvas-nav--config.js', array('jquery'), null, true );
 	wp_enqueue_script( 'cinema_theme-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20151215', true );
+
+	if ( cinema_theme_has_gallery() ) {
+		wp_enqueue_style( 'photoswipe', get_template_directory_uri() . '/vendor/photoswipe/photoswipe.css', array( 'cinema_theme-style' ), '5.4.4' );
+		wp_enqueue_style( 'cinema-theme-gallery', get_template_directory_uri() . '/css/gallery-slideshow.css', array( 'photoswipe' ), filemtime( get_template_directory() . '/css/gallery-slideshow.css' ) );
+		wp_enqueue_script( 'photoswipe', get_template_directory_uri() . '/vendor/photoswipe/photoswipe.umd.min.js', array(), '5.4.4', true );
+		wp_enqueue_script( 'photoswipe-lightbox', get_template_directory_uri() . '/vendor/photoswipe/photoswipe-lightbox.umd.min.js', array( 'photoswipe' ), '5.4.4', true );
+		wp_enqueue_script( 'cinema-theme-gallery', get_template_directory_uri() . '/js/gallery-slideshow.js', array( 'photoswipe-lightbox' ), filemtime( get_template_directory() . '/js/gallery-slideshow.js' ), true );
+	}
 	
 	if ( is_page_template( 'page--calendar__monthly.php' )) {
 		wp_enqueue_script( 'cinema_theme-calendar', get_template_directory_uri() . '/js/calendar.js', array(), '20151215', true );
@@ -135,6 +162,31 @@ function cinema_theme_scripts() {
 	}
 }
 add_action( 'wp_enqueue_scripts', 'cinema_theme_scripts' );
+
+/**
+ * Supply full image dimensions for PhotoSwipe galleries.
+ */
+if ( ! function_exists( 'cinema_theme_gallery_link_attributes' ) ) {
+	function cinema_theme_gallery_link_attributes( $attributes, $attachment_id ) {
+		if ( ! cinema_theme_has_gallery() ) {
+			return $attributes;
+		}
+
+		$image = wp_get_attachment_image_src( $attachment_id, 'full' );
+		if ( ! $image || empty( $image[1] ) || empty( $image[2] ) || $attributes['href'] !== $image[0] ) {
+			return $attributes;
+		}
+
+		$attributes['data-pswp-width']  = $image[1];
+		$attributes['data-pswp-height'] = $image[2];
+		$srcset = wp_get_attachment_image_srcset( $attachment_id, 'full' );
+		if ( $srcset ) {
+			$attributes['data-pswp-srcset'] = $srcset;
+		}
+		return $attributes;
+	}
+}
+add_filter( 'wp_get_attachment_link_attributes', 'cinema_theme_gallery_link_attributes', 10, 2 );
 
 /**
  * Move jQuery to footer and remove jQuery Migrate.

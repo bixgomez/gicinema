@@ -1,0 +1,18 @@
+/* Theme integration for the locally bundled PhotoSwipe gallery. */
+.cinema-photoswipe .pswp__gallery-caption {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100% - 32px);
+  padding: 8px 12px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  text-align: center;
+}
+
+.cinema-photoswipe .pswp__gallery-caption[hidden] {
+  display: none;
+}
