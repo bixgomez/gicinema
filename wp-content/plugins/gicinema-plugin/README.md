@@ -59,6 +59,55 @@ Automation is handled through WP-Cron. The plugin refreshes the Agile feed every
 5. **Cleanup & Maintenance** →  
    Cron jobs and admin tools handle deduplication, pruning, and backup.
 
+## Private screenings API
+
+`GET /wp-json/gicinema/v1/screenings` returns active screenings linked to published Film posts, starting at midnight today in the WordPress timezone. It includes screenings earlier today so the volunteer site can retain the entire day's schedule. Results are ordered by start time and screening ID, with no future date limit or pagination.
+
+The endpoint is provided by this plugin independently of the theme. It reads the canonical `gi_screenings` table and each Film's `film_length` metadata without triggering an Agile refresh or changing screenings.
+
+Example response:
+
+```json
+{
+  "timezone": "America/Los_Angeles",
+  "from_date": "2026-10-05",
+  "generated_at": "2026-10-05T12:00:00-07:00",
+  "screenings": [
+    {
+      "screening_id": 123,
+      "movie_title": "Example Movie",
+      "show_date": "2026-10-05",
+      "show_time": "19:30:00",
+      "duration_minutes": 95,
+      "starts_at": "2026-10-05T19:30:00-07:00"
+    }
+  ]
+}
+```
+
+`duration_minutes` is a positive integer, or `null` when runtime is missing or invalid. Drupal should flag a missing duration for review before calculating shift end times. `starts_at` includes the UTC offset applicable to the screening date, including daylight saving time changes. `show_date` and `show_time` represent local cinema time.
+
+### Authentication and publishing
+
+1. Deploy the updated plugin bootstrap and `function__screenings_api.php` to the WordPress site through its normal deployment process. The plugin must be active. The `Screenings API Reader` role becomes available on the next WordPress request.
+2. In WordPress Users, create a dedicated integration account with the `Screenings API Reader` role. This role grants `read` and `read_gicinema_screenings`, with no content editing or site administration permissions.
+3. Edit that user's profile and create an Application Password named `Drupal volunteer screenings`. Save the generated password securely; WordPress displays it once.
+4. Configure Drupal to send the integration username and Application Password using HTTP Basic authentication over HTTPS. Store credentials in server-side settings or environment configuration, outside committed configuration exports.
+5. Verify an unauthenticated request receives HTTP 401, and an authenticated integration request receives HTTP 200 with the expected schedule. Security plugins or web-server rules may need to permit Application Password authentication and forward the Authorization header.
+
+Reference: [WordPress Application Passwords](https://developer.wordpress.org/advanced-administration/security/application-passwords/).
+
+The local endpoint is `https://gicinema.ddev.site/wp-json/gicinema/v1/screenings`. On production, use the production WordPress site's HTTPS base URL with the same path. Users with `manage_options` can also access the endpoint for administration. Ordinary authenticated subscribers receive HTTP 403. No endpoint is registered for POST, PUT, PATCH, or DELETE.
+
+### Consumer behavior and limitations
+
+- Use `screening_id` to match repeated imports within the same WordPress database. IDs are local to the database, so local and production feeds must not be mixed. A rescheduled showing may have a new row ID; match changes carefully before altering staffed shifts.
+- Treat the feed as a snapshot of currently active WordPress records from `from_date` onward. It contains no canceled-event records. Do not remove past shifts merely because they fall outside that date range.
+- The existing Agile importer adds or reactivates showings but does not automatically deactivate a showing absent from a later Agile feed. Reliable cancellation propagation needs separate work before Drupal can treat this feed as authoritative for cancellations.
+- The feed is only as fresh as the existing WordPress synchronization jobs. `generated_at` records response generation, not the time of the last successful Agile import.
+- A valid empty schedule returns HTTP 200 with an empty `screenings` array. Database failures or malformed screening datetimes return HTTP 503 rather than a misleading empty or partial schedule. On any error, Drupal should retain previously imported shifts.
+- Successful responses use `Cache-Control: private, no-store`. Keep this authenticated endpoint out of any shared cache configured outside WordPress.
+
 ## Installation
 
 1. Upload the `gicinema-plugin` folder to `/wp-content/plugins/`.

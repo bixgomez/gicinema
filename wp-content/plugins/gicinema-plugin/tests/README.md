@@ -6,7 +6,7 @@ Current validation status:
 
 ```text
 Unit:        OK (42 tests, 45 assertions)
-Integration: OK (11 tests, 66 assertions)
+Integration: OK (18 tests, 97 assertions)
 ```
 
 ## Setup
@@ -148,6 +148,18 @@ Integration mode is enabled with `GICINEMA_INTEGRATION_TESTS=1`:
 - loads the GI Cinema plugin through the WordPress test bootstrap
 
 ## What Is Tested
+
+### Private screenings API
+
+`integration/ScreeningsApiTest.php` exercises `/gicinema/v1/screenings` through WordPress REST dispatch and real database records. It covers anonymous and unauthorized denial, reader and administrator access, read-only methods and role permissions, WordPress Application Password authentication, today's midnight boundary, future ordering, inactive and unpublished exclusions, repeatable IDs, daylight saving offsets, missing runtime, valid empty feeds, invalid datetimes, and database failures.
+
+For a test installation retained within this plugin's ignored `tmp/` directory, run from the site project root:
+
+```bash
+ddev exec 'cd wp-content/plugins/gicinema-plugin && GICINEMA_INTEGRATION_TESTS=1 WP_TESTS_DIR=/var/www/html/wp-content/plugins/gicinema-plugin/tmp/wordpress-tests-lib WP_PHPUNIT__TESTS_CONFIG=/var/www/html/wp-content/plugins/gicinema-plugin/tmp/wordpress-tests-lib/wp-tests-config.php vendor/bin/phpunit --testsuite integration'
+```
+
+That test configuration uses the separate `gicinema_screenings_api_test` database. It must never point at the live development or production database.
 
 ### Unit tests
 

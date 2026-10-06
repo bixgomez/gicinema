@@ -23,6 +23,7 @@
             <file>./tests/integration/ImportFilmsFromAgileTest.php</file>
             <file>./tests/integration/SyncScreeningsToAcfTest.php</file>
             <file>./tests/integration/SyncOnSaveTest.php</file>
+            <file>./tests/integration/ScreeningsApiTest.php</file>
         </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true">
